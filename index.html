@@ -5,57 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monje Negro - Catálogo</title>
     <style>
-        body { background-color: #050505; color: white; font-family: 'Helvetica', sans-serif; margin: 0; padding-bottom: 100px; }
-        header { background: #000; padding: 30px; text-align: center; border-bottom: 3px solid #ed1c24; }
-        .brand { color: #ed1c24; font-size: 2.5em; font-weight: bold; margin: 0; text-transform: uppercase; }
-        .sub { color: #fff; font-size: 1em; letter-spacing: 3px; }
+        :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; }
+        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding-bottom: 120px; }
         
-        .container { padding: 20px; max-width: 600px; margin: auto; }
-        .seccion-titulo { border-left: 4px solid #ed1c24; padding-left: 10px; margin: 30px 0 20px; text-transform: uppercase; }
+        header { background: black; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--rojo); box-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+        .brand { color: var(--rojo); font-size: 2.8em; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .sub { color: white; font-size: 0.9em; letter-spacing: 5px; text-transform: uppercase; margin-top: 5px; opacity: 0.8; }
 
-        .producto { background: #1a1a1a; display: flex; align-items: center; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
-        .info { flex-grow: 1; }
-        .nombre { font-weight: bold; font-size: 1.1em; display: block; }
-        .precio { color: #ed1c24; font-size: 1.2em; font-weight: bold; }
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
         
-        .btn-add { background: #ed1c24; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         
-        #cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #25d366; color: white; padding: 20px; text-align: center; font-weight: bold; text-decoration: none; display: none; font-size: 1.2em; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; transition: transform 0.2s; position: relative; overflow: hidden; }
+        .producto img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+        .nombre { font-weight: bold; font-size: 1.1em; display: block; height: 45px; overflow: hidden; line-height: 1.2; margin-bottom: 10px; }
+        .categoria { font-size: 0.7em; color: var(--rojo); text-transform: uppercase; display: block; margin-bottom: 5px; letter-spacing: 1px; }
+        .precio { color: white; font-size: 1.3em; font-weight: bold; display: block; margin-bottom: 15px; }
+        
+        .btn-add { background: var(--rojo); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.8em; transition: 0.3s; }
+        .btn-add:active { transform: scale(0.95); background: #b01217; }
+
+        /* Barra de WhatsApp Flotante */
+        #cart-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #25d366; color: white; padding: 18px; text-align: center; font-weight: bold; text-decoration: none; border-radius: 50px; display: none; font-size: 1.1em; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 100; animation: slideUp 0.5s ease; }
+        
+        @keyframes slideUp { from { bottom: -100px; } to { bottom: 25px; } }
+        
+        #loading { text-align: center; padding: 50px; font-style: italic; color: #666; }
     </style>
 </head>
 <body>
 
 <header>
     <h1 class="brand">MONJE NEGRO</h1>
-    <div class="sub">BOTILLERÍA</div>
+    <div class="sub">Botillería</div>
 </header>
 
 <div class="container">
-    <h2 class="seccion-titulo">Mes del Malbec 🍷</h2>
-    
-    <div class="producto">
-        <div class="info">
-            <span class="nombre">El Enemigo Malbec</span>
-            <span class="precio">$23.600</span>
-        </div>
-        <button class="btn-add" onclick="addItem('El Enemigo Malbec', 25500)">AÑADIR</button>
-    </div>
-
-    <div class="producto">
-        <div class="info">
-            <span class="nombre">DV Catena Malbec</span>
-            <span class="precio">$22.000</span>
-        </div>
-        <button class="btn-add" onclick="addItem('DV Catena Malbec', 22000)">AÑADIR</button>
-    </div>
+    <div id="loading">Consultando la cava...</div>
+    <div id="catalogo-grid" class="grid"></div>
 </div>
 
 <a href="#" id="cart-bar" onclick="sendWpp()">
-    PEDIR POR WHATSAPP (<span id="count">0</span>)
+    🛒 PEDIR POR WHATSAPP (<span id="count">0</span>)
 </a>
 
 <script>
-   const EXCEL_URL = https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pubhtml;
+    // --- CONFIGURACIÓN ---
+    // 1. Pegá acá tu link de Google Sheets (el que termina en output=csv)
+    const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
+    
+    // 2. Pegá tu número de WhatsApp acá (sin el + ni espacios)
+    const WHATSAPP_NUMBER = "5493512345678"; 
 
     let cart = [];
 
@@ -63,30 +63,41 @@
         try {
             const response = await fetch(EXCEL_URL);
             const data = await response.text();
-            const rows = data.split('\n').slice(1); // Salta la primera fila de títulos
+            
+            // Función para limpiar y separar los datos del CSV
+            const rows = data.split('\n').slice(1); 
             const grid = document.getElementById('catalogo-grid');
+            const loader = document.getElementById('loading');
+            
             grid.innerHTML = '';
+            loader.style.display = 'none';
 
             rows.forEach(row => {
-                const cols = row.split(','); // Divide por comas
+                // Usamos una expresión regular para separar por comas ignorando comas dentro de comillas
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
                 if (cols.length >= 2) {
-                    const name = cols[0];
-                    const price = cols[1];
-                    const category = cols[2];
-                    const img = cols[3] || 'https://via.placeholder.com/150';
+                    const name = cols[0].replace(/"/g, '').trim();
+                    const price = cols[1].replace(/"/g, '').trim();
+                    const category = cols[2] ? cols[2].replace(/"/g, '').trim() : "General";
+                    const img = cols[3] ? cols[3].replace(/"/g, '').trim() : 'https://via.placeholder.com/300x400?text=Monje+Negro';
 
-                    grid.innerHTML += `
-                        <div class="producto">
-                            <img src="${img}" alt="${name}">
-                            <span class="nombre">${name}</span>
-                            <span class="precio">$${price}</span>
-                            <button class="btn-add" onclick="addItem('${name}', '${price}')">AÑADIR</button>
-                        </div>
-                    `;
+                    if(name !== "") {
+                        grid.innerHTML += `
+                            <div class="producto">
+                                <span class="categoria">${category}</span>
+                                <img src="${img}" alt="${name}" onerror="this.src='https://via.placeholder.com/300x400?text=Vino'">
+                                <span class="nombre">${name}</span>
+                                <span class="precio">$${price}</span>
+                                <button class="btn-add" onclick="addItem('${name}', '${price}')">Añadir al carrito</button>
+                            </div>
+                        `;
+                    }
                 }
             });
         } catch (e) {
-            console.error("Error cargando el Excel", e);
+            document.getElementById('loading').innerText = "Error al conectar con el monasterio.";
+            console.error(e);
         }
     }
 
@@ -94,16 +105,32 @@
         cart.push({name, price});
         document.getElementById('cart-bar').style.display = 'block';
         document.getElementById('count').innerText = cart.length;
+        
+        // Efecto visual rápido
+        const bar = document.getElementById('cart-bar');
+        bar.style.transform = 'translateX(-50%) scale(1.05)';
+        setTimeout(() => bar.style.transform = 'translateX(-50%) scale(1)', 200);
     }
 
     function sendWpp() {
-        let phone = "549351XXXXXXX"; // TU CELULAR ACÁ
-        let text = "¡Hola Monje Negro! 🍷 Quiero encargar:%0A";
-        cart.forEach(item => { text += `- ${item.name} ($${item.price})%0A`; });
-        window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        let text = "¡Hola Monje Negro! 🍷 Me gustaría encargar:%0A%0A";
+        let total = 0;
+        
+        cart.forEach(item => {
+            text += `• ${item.name} - $${item.price}%0A`;
+            // Quitamos puntos de miles para sumar correctamente si es necesario
+            let p = parseFloat(item.price.replace(/\./g, ''));
+            if(!isNaN(p)) total += p;
+        });
+        
+        text += `%0A*TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*`;
+        text += "%0A%0A¿Tienen stock disponible?";
+        
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
     }
 
     fetchProducts();
 </script>
+
 </body>
 </html>
