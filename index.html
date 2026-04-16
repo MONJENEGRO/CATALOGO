@@ -19,32 +19,37 @@
 
         /* Buscador y Filtros */
         .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+        #buscador:focus { border-color: var(--rojo); }
         .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; }
         .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
 
         /* Grid de Productos */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
+        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
         .producto img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; }
-        .nombre { font-weight: bold; font-size: 0.9em; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; }
+        .nombre { font-weight: bold; font-size: 0.9em; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; line-height: 1.2; }
         .precio { color: #fff; font-size: 1.1em; font-weight: bold; display: block; margin-bottom: 10px; }
+
+        /* Controles de Cantidad en Catálogo */
+        .selector-cantidad { display: flex; align-items: center; justify-content: center; background: #000; border-radius: 6px; border: 1px solid #333; margin-bottom: 8px; }
+        .btn-qty { background: #222; color: white; border: none; padding: 8px 12px; cursor: pointer; width: 40px; font-weight: bold; }
+        .input-qty { background: transparent; color: white; border: none; width: 40px; text-align: center; font-weight: bold; outline: none; }
         .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.7em; }
 
         /* Barra Flotante */
         #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--verde-wpp); color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 15px; cursor: pointer; display: none; z-index: 99; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
 
         /* MODAL DEL CARRITO */
-        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: #1a1a1a; max-width: 500px; margin: auto; border-radius: 15px; padding: 20px; max-height: 80vh; overflow-y: auto; border: 1px solid var(--rojo); }
+        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; box-sizing: border-box; align-items: center; justify-content: center; }
+        .modal-content { background: #1a1a1a; width: 100%; max-width: 500px; border-radius: 15px; padding: 20px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--rojo); position: relative; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; font-size: 0.9em; }
         .cart-item-info { flex-grow: 1; }
         .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.2em; cursor: pointer; margin-left: 15px; font-weight: bold; }
         .modal-footer { margin-top: 20px; text-align: center; }
         .btn-send { background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; font-size: 1em; cursor: pointer; }
-        .btn-close { color: #aaa; background: none; border: none; margin-top: 15px; cursor: pointer; text-decoration: underline; }
-        .promo-text { color: #d4af37; font-size: 0.8em; margin-top: 10px; display: block; font-weight: bold; }
+        .btn-close { color: #aaa; background: none; border: none; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -56,178 +61,12 @@
 
 <div class="filtros-area">
     <div class="container">
-        <input type="text" id="buscador" placeholder="Buscar vino..." oninput="renderProducts()">
+        <input type="text" id="buscador" placeholder="Buscar por nombre o bodega..." oninput="renderProducts()">
         <div id="filtros-tipo" class="filtro-grupo"></div>
     </div>
 </div>
 
 <div class="container">
-    <div id="loading" style="text-align: center; padding-top: 50px;">Cargando cava...</div>
+    <div id="loading" style="text-align: center; padding-top: 50px; color: var(--rojo);">Preparando la cava...</div>
     <div id="catalogo-grid" class="grid"></div>
 </div>
-
-<div id="cart-bar" onclick="toggleModal(true)">
-    🛒 VER MI PEDIDO (<span id="count">0</span>)
-</div>
-
-<div id="cart-modal">
-    <div class="modal-content">
-        <h2 style="color:var(--rojo); margin-top:0;">Mi Pedido</h2>
-        <div id="cart-list">
-            </div>
-        <div class="modal-footer">
-            <div id="total-details" style="text-align: right; margin-bottom: 15px;">
-                </div>
-            <button class="btn-send" onclick="sendWpp()">ENVIAR PEDIDO POR WHATSAPP</button>
-            <button class="btn-close" onclick="toggleModal(false)">Seguir comprando</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
-    const WHATSAPP_NUMBER = "5493512345678"; 
-
-    const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
-    const CATEGORIAS_PROMO = ["Vino Tinto", "Vino Blanco", "Vino Rosado", "Espumante"];
-
-    let allProducts = [];
-    let cart = [];
-    let fTipo = 'Todos';
-
-    async function fetchProducts() {
-        try {
-            const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
-            const text = await res.text();
-            const rows = text.split('\n').slice(1);
-            allProducts = rows.map(r => {
-                const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (c.length < 5) return null;
-                const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-                return { name: clean(c[0]), price: clean(c[1]), img: clean(c[3]) || 'https://via.placeholder.com/200', tipo: clean(c[4]), cepa: clean(c[5]) };
-            }).filter(p => p && p.name !== "");
-            renderFiltros();
-            renderProducts();
-            document.getElementById('loading').style.display = 'none';
-        } catch (e) { console.error(e); }
-    }
-
-    function renderFiltros() {
-        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('${t}')">${t}</button>`).join('');
-    }
-
-    function setFiltro(val) { fTipo = val; renderFiltros(); renderProducts(); }
-
-    function renderProducts() {
-        const grid = document.getElementById('catalogo-grid');
-        const search = document.getElementById('buscador').value.toLowerCase();
-        grid.innerHTML = '';
-        const filtered = allProducts.filter(p => {
-            const mTipo = fTipo === 'Todos' || p.tipo.toLowerCase() === fTipo.toLowerCase();
-            const mSearch = p.name.toLowerCase().includes(search);
-            return mTipo && mSearch;
-        });
-        filtered.forEach((p, index) => {
-            grid.innerHTML += `
-                <div class="producto">
-                    <img src="${p.img}">
-                    <span class="nombre">${p.name}</span>
-                    <span class="precio">$${p.price}</span>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}')">Añadir al pedido</button>
-                </div>`;
-        });
-    }
-
-    function addItem(n, p, t) {
-        const item = cart.find(i => i.n === n);
-        if (item) item.q += 1; else cart.push({n, p, t, q: 1});
-        updateCartUI();
-    }
-
-    function removeItem(index) {
-        cart.splice(index, 1);
-        updateCartUI();
-        if (cart.length === 0) toggleModal(false);
-    }
-
-    function toggleModal(show) {
-        document.getElementById('cart-modal').style.display = show ? 'flex' : 'none';
-        if(show) renderCartModal();
-    }
-
-    function updateCartUI() {
-        const count = cart.reduce((acc, i) => acc + i.q, 0);
-        document.getElementById('cart-bar').style.display = count > 0 ? 'block' : 'none';
-        document.getElementById('count').innerText = count;
-    }
-
-    function renderCartModal() {
-        const list = document.getElementById('cart-list');
-        const details = document.getElementById('total-details');
-        list.innerHTML = '';
-        
-        let subtotal = 0;
-        let itemsVino = 0;
-
-        cart.forEach((item, index) => {
-            const precioNum = parseFloat(item.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (precioNum * item.q);
-            if (CATEGORIAS_PROMO.includes(item.t)) itemsVino += item.q;
-
-            list.innerHTML += `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <strong>${item.q}x ${item.n}</strong><br>
-                        <small>$${item.p} c/u</small>
-                    </div>
-                    <span>$${(precioNum * item.q).toLocaleString('es-AR')}</span>
-                    <button class="cart-remove" onclick="removeItem(${index})">✕</button>
-                </div>`;
-        });
-
-        let totalFinal = subtotal;
-        let htmlDetails = `<div>Subtotal: $${subtotal.toLocaleString('es-AR')}</div>`;
-
-        if (itemsVino >= 6) {
-            const desc = subtotal * 0.15;
-            totalFinal = subtotal - desc;
-            htmlDetails += `
-                <div style="color: #d4af37; font-weight:bold;">Descuento 15% OFF: -$${desc.toLocaleString('es-AR')}</div>
-                <div style="font-size:1.2em; font-weight:bold; margin-top:5px;">TOTAL: $${totalFinal.toLocaleString('es-AR')}</div>`;
-        } else {
-            htmlDetails += `<div style="font-size:1.2em; font-weight:bold; margin-top:5px;">TOTAL: $${totalFinal.toLocaleString('es-AR')}</div>`;
-            if (itemsVino > 0) {
-                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vinos. ¡Con 6 tenés 15% OFF!</small>`;
-            }
-        }
-        details.innerHTML = htmlDetails;
-    }
-
-    function sendWpp() {
-        let subtotal = 0;
-        let itemsVino = 0;
-        let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
-        
-        cart.forEach(i => {
-            const pNum = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (pNum * i.q);
-            if (CATEGORIAS_PROMO.includes(i.t)) itemsVino += i.q;
-            msg += `• ${i.q}x ${i.n} ($${i.p})%0A`;
-        });
-
-        if (itemsVino >= 6) {
-            const desc = subtotal * 0.15;
-            msg += `%0A*Subtotal:* $${subtotal.toLocaleString('es-AR')}`;
-            msg += `%0A*Descuento (15%):* -$${desc.toLocaleString('es-AR')}`;
-            msg += `%0A*TOTAL: $${(subtotal - desc).toLocaleString('es-AR')}*`;
-        } else {
-            msg += `%0A*TOTAL: $${subtotal.toLocaleString('es-AR')}*`;
-        }
-
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-    }
-
-    fetchProducts();
-</script>
-</body>
-</html>
