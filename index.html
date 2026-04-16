@@ -41,7 +41,15 @@
         
         .nombre { font-weight: bold; font-size: 0.95em; height: 38px; overflow: hidden; margin-bottom: 8px; line-height: 1.2; }
         .precio { color: #fff; font-size: 1.2em; font-weight: bold; margin-bottom: 12px; }
-        .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.75em; margin-top: auto; }
+
+        /* SELECTOR DE CANTIDAD */
+        .controles-compra { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+        .selector-cantidad { display: flex; align-items: center; justify-content: center; background: #000; border-radius: 6px; border: 1px solid #333; overflow: hidden; }
+        .btn-qty { background: #222; color: white; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 1.1em; width: 40px; }
+        .btn-qty:active { background: #444; }
+        .input-qty { background: transparent; color: white; border: none; width: 40px; text-align: center; font-weight: bold; font-size: 1em; pointer-events: none; }
+
+        .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.75em; }
 
         /* Botón WhatsApp */
         #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: #25d366; color: white; padding: 16px; text-align: center; font-weight: bold; text-decoration: none; border-radius: 12px; display: none; z-index: 100; box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
@@ -58,7 +66,6 @@
     <div class="container">
         <span class="filtro-label">1. Tipo de Bebida</span>
         <div id="filtros-tipo" class="filtro-grupo"></div>
-        
         <span class="filtro-label" id="label-cepa">2. Variedad / Cepa</span>
         <div id="filtros-cepa" class="filtro-grupo"></div>
     </div>
@@ -108,31 +115,30 @@
 
     function renderFiltros() {
         const tipos = ['Todos', ...new Set(allProducts.map(p => p.tipo))];
-        
-        // Filtramos las cepas que pertenecen al TIPO seleccionado
         let cepasDisponibles = [];
         if (fTipo === 'Todos') {
             cepasDisponibles = ['Todos', ...new Set(allProducts.map(p => p.cepa))];
         } else {
             cepasDisponibles = ['Todos', ...new Set(allProducts.filter(p => p.tipo === fTipo).map(p => p.cepa))];
         }
-
         document.getElementById('filtros-tipo').innerHTML = tipos.map(t => 
             `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
-        
         document.getElementById('filtros-cepa').innerHTML = cepasDisponibles.map(c => 
             `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa','${c}')">${c}</button>`).join('');
     }
 
     function setFiltro(cat, val) {
-        if(cat === 'tipo') {
-            fTipo = val;
-            fCepa = 'Todos'; // Resetear cepa al cambiar de tipo
-        } else {
-            fCepa = val;
-        }
+        if(cat === 'tipo') { fTipo = val; fCepa = 'Todos'; } else { fCepa = val; }
         renderFiltros();
         renderProducts();
+    }
+
+    // Función para manejar el + y - en la interfaz
+    function updateQty(btn, delta) {
+        const input = btn.parentElement.querySelector('input');
+        let val = parseInt(input.value) + delta;
+        if (val < 1) val = 1;
+        input.value = val;
     }
 
     function renderProducts() {
@@ -143,7 +149,7 @@
             (fCepa === 'Todos' || p.cepa === fCepa)
         );
         
-        filtered.forEach(p => {
+        filtered.forEach((p, index) => {
             grid.innerHTML += `
                 <div class="producto">
                     <img src="${p.img}">
@@ -153,25 +159,52 @@
                     </div>
                     <span class="nombre">${p.name}</span>
                     <span class="precio">$${p.price}</span>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}')">Añadir</button>
+                    <div class="controles-compra">
+                        <div class="selector-cantidad">
+                            <button class="btn-qty" onclick="updateQty(this, -1)">-</button>
+                            <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
+                            <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
+                        </div>
+                        <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', 'qty-${index}')">Añadir</button>
+                    </div>
                 </div>`;
         });
     }
 
-    function addItem(n, p) {
-        cart.push({n, p});
+    function addItem(name, price, qtyId) {
+        const qty = parseInt(document.getElementById(qtyId).value);
+        
+        // Buscamos si el producto ya está en el carrito
+        const existingItem = cart.find(item => item.n === name);
+        
+        if (existingItem) {
+            existingItem.q += qty; // Si ya está, sumamos la cantidad
+        } else {
+            cart.push({ n: name, p: price, q: qty }); // Si es nuevo, lo agregamos
+        }
+
+        // Resetear el selector a 1 después de añadir
+        document.getElementById(qtyId).value = 1;
+
+        // Actualizar barra de WhatsApp
+        const totalItems = cart.reduce((acc, item) => acc + item.q, 0);
         document.getElementById('cart-bar').style.display = 'block';
-        document.getElementById('count').innerText = cart.length;
+        document.getElementById('count').innerText = totalItems;
     }
 
     function sendWpp() {
         let msg = "¡Hola Monje Negro! 🍷 Pedido:%0A%0A";
-        let tot = 0;
+        let totalGeneral = 0;
+
         cart.forEach(i => {
-            msg += `• ${i.n} ($${i.p})%0A`;
-            tot += parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+            const precioLimpio = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+            const subtotal = precioLimpio * i.q;
+            totalGeneral += subtotal;
+            
+            msg += `• ${i.q}x ${i.n} ($${i.p} c/u)%0A`;
         });
-        msg += `%0A*TOTAL: $${tot.toLocaleString('es-AR')}*`;
+
+        msg += `%0A*TOTAL: $${totalGeneral.toLocaleString('es-AR')}*`;
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
     fetchProducts();
