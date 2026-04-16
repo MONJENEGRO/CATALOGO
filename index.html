@@ -23,7 +23,7 @@
         /* Filtros Sticky */
         .filtros-area { background: #000; padding: 10px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
         .filtro-label { font-size: 0.7em; color: #666; text-transform: uppercase; margin: 8px 0; display: block; letter-spacing: 1px; font-weight: bold; }
-        .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
         .filtro-grupo::-webkit-scrollbar { display: none; }
         
         .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
@@ -31,7 +31,7 @@
 
         /* Grid de Productos */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; animation: fadeIn 0.4s; }
+        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .producto img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
@@ -39,7 +39,7 @@
         .etiquetas-producto { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
         .tag { font-size: 0.55em; background: #000; color: var(--rojo); padding: 3px 7px; border-radius: 4px; text-transform: uppercase; border: 1px solid #333; font-weight: bold; }
         
-        .nombre { font-weight: bold; font-size: 0.95em; height: 38px; overflow: hidden; margin-bottom: 8px; line-height: 1.2; color: #fff; }
+        .nombre { font-weight: bold; font-size: 0.95em; height: 38px; overflow: hidden; margin-bottom: 8px; line-height: 1.2; }
         .precio { color: #fff; font-size: 1.2em; font-weight: bold; margin-bottom: 12px; }
         .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.75em; margin-top: auto; }
 
@@ -59,4 +59,122 @@
         <span class="filtro-label">1. Tipo de Bebida</span>
         <div id="filtros-tipo" class="filtro-grupo"></div>
         
-        <span class="
+        <span class="filtro-label" id="label-cepa">2. Variedad / Cepa</span>
+        <div id="filtros-cepa" class="filtro-grupo"></div>
+    </div>
+</div>
+
+<div class="container">
+    <div id="loading" style="text-align: center; color: #ed1c24; padding-top: 50px;">Abriendo la cava...</div>
+    <div id="catalogo-grid" class="grid"></div>
+</div>
+
+<a href="#" id="cart-bar" onclick="sendWpp()">
+    🛒 VER PEDIDO POR WHATSAPP (<span id="count">0</span>)
+</a>
+
+<script>
+    const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
+    const WHATSAPP_NUMBER = "5493512345678"; 
+
+    let allProducts = [];
+    let cart = [];
+    let fTipo = 'Todos';
+    let fCepa = 'Todos';
+
+    async function fetchProducts() {
+        try {
+            const res = await fetch(EXCEL_URL);
+            const text = await res.text();
+            const rows = text.split('\n').slice(1);
+            
+            allProducts = rows.map(r => {
+                const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (c.length < 2) return null;
+                return {
+                    name: c[0]?.replace(/"/g, '').trim(),
+                    price: c[1]?.replace(/"/g, '').trim(),
+                    img: c[3]?.replace(/"/g, '').trim() || 'https://via.placeholder.com/200x250?text=Vino',
+                    tipo: c[4]?.replace(/"/g, '').trim() || 'Otros',
+                    cepa: c[5]?.replace(/"/g, '').trim() || 'Otros'
+                };
+            }).filter(p => p && p.name !== "");
+
+            renderFiltros();
+            renderProducts();
+            document.getElementById('loading').style.display = 'none';
+        } catch (e) { console.error(e); }
+    }
+
+    function renderFiltros() {
+        const tipos = ['Todos', ...new Set(allProducts.map(p => p.tipo))];
+        
+        // Filtramos las cepas que pertenecen al TIPO seleccionado
+        let cepasDisponibles = [];
+        if (fTipo === 'Todos') {
+            cepasDisponibles = ['Todos', ...new Set(allProducts.map(p => p.cepa))];
+        } else {
+            cepasDisponibles = ['Todos', ...new Set(allProducts.filter(p => p.tipo === fTipo).map(p => p.cepa))];
+        }
+
+        document.getElementById('filtros-tipo').innerHTML = tipos.map(t => 
+            `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
+        
+        document.getElementById('filtros-cepa').innerHTML = cepasDisponibles.map(c => 
+            `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa','${c}')">${c}</button>`).join('');
+    }
+
+    function setFiltro(cat, val) {
+        if(cat === 'tipo') {
+            fTipo = val;
+            fCepa = 'Todos'; // Resetear cepa al cambiar de tipo
+        } else {
+            fCepa = val;
+        }
+        renderFiltros();
+        renderProducts();
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById('catalogo-grid');
+        grid.innerHTML = '';
+        const filtered = allProducts.filter(p => 
+            (fTipo === 'Todos' || p.tipo === fTipo) && 
+            (fCepa === 'Todos' || p.cepa === fCepa)
+        );
+        
+        filtered.forEach(p => {
+            grid.innerHTML += `
+                <div class="producto">
+                    <img src="${p.img}">
+                    <div class="etiquetas-producto">
+                        <span class="tag">${p.tipo}</span>
+                        <span class="tag">${p.cepa}</span>
+                    </div>
+                    <span class="nombre">${p.name}</span>
+                    <span class="precio">$${p.price}</span>
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}')">Añadir</button>
+                </div>`;
+        });
+    }
+
+    function addItem(n, p) {
+        cart.push({n, p});
+        document.getElementById('cart-bar').style.display = 'block';
+        document.getElementById('count').innerText = cart.length;
+    }
+
+    function sendWpp() {
+        let msg = "¡Hola Monje Negro! 🍷 Pedido:%0A%0A";
+        let tot = 0;
+        cart.forEach(i => {
+            msg += `• ${i.n} ($${i.p})%0A`;
+            tot += parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+        });
+        msg += `%0A*TOTAL: $${tot.toLocaleString('es-AR')}*`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+    }
+    fetchProducts();
+</script>
+</body>
+</html>
