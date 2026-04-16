@@ -5,15 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monje Negro - Catálogo</title>
     <style>
-        /* CARGA DE FUENTES CON TUS NOMBRES EXACTOS */
-        @font-face {
-            font-family: 'AM Tripoli';
-            src: url('AMTripoli-Regular.ttf');
-        }
-        @font-face {
-            font-family: 'Monley';
-            src: url('MonleyRegular.Ttf');
-        }
+        /* CARGA DE FUENTES */
+        @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); }
+        @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); }
 
         :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; }
         
@@ -21,29 +15,14 @@
         
         header { background: black; padding: 30px 20px; text-align: center; border-bottom: 3px solid var(--rojo); }
         
-        /* DISEÑO DE TÍTULOS */
-        .brand { 
-            color: var(--rojo); 
-            font-family: 'AM Tripoli', sans-serif; 
-            font-size: 3.5em; 
-            margin: 0; 
-            text-transform: uppercase; 
-            line-height: 1;
-        }
-        .sub { 
-            color: white; 
-            font-family: 'Monley', cursive; 
-            font-size: 1.8em; 
-            margin-top: -5px;
-            display: block;
-            text-transform: lowercase; /* Monley suele quedar mejor en minúsculas */
-        }
+        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; margin: 0; text-transform: uppercase; line-height: 1; }
+        .sub { color: white; font-family: 'Monley', cursive; font-size: 1.8em; margin-top: -5px; display: block; text-transform: lowercase; }
 
         .container { padding: 15px; max-width: 1000px; margin: auto; }
 
         /* Filtros Sticky */
         .filtros-area { background: #000; padding: 10px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        .filtro-label { font-size: 0.7em; color: #666; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 1px; font-weight: bold; }
+        .filtro-label { font-size: 0.7em; color: #666; text-transform: uppercase; margin: 8px 0; display: block; letter-spacing: 1px; font-weight: bold; }
         .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
         .filtro-grupo::-webkit-scrollbar { display: none; }
         
@@ -52,11 +31,13 @@
 
         /* Grid de Productos */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
+        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .producto img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
         
         .etiquetas-producto { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
-        .tag { font-size: 0.6em; background: #000; color: var(--rojo); padding: 3px 7px; border-radius: 4px; text-transform: uppercase; border: 1px solid #333; font-weight: bold; }
+        .tag { font-size: 0.55em; background: #000; color: var(--rojo); padding: 3px 7px; border-radius: 4px; text-transform: uppercase; border: 1px solid #333; font-weight: bold; }
         
         .nombre { font-weight: bold; font-size: 0.95em; height: 38px; overflow: hidden; margin-bottom: 8px; line-height: 1.2; }
         .precio { color: #fff; font-size: 1.2em; font-weight: bold; margin-bottom: 12px; }
@@ -75,15 +56,16 @@
 
 <div class="filtros-area">
     <div class="container">
-        <span class="filtro-label">1. Seleccioná el Tipo</span>
+        <span class="filtro-label">1. Tipo de Bebida</span>
         <div id="filtros-tipo" class="filtro-grupo"></div>
-        <span class="filtro-label">2. Buscá la Cepa</span>
+        
+        <span class="filtro-label" id="label-cepa">2. Variedad / Cepa</span>
         <div id="filtros-cepa" class="filtro-grupo"></div>
     </div>
 </div>
 
 <div class="container">
-    <div id="loading" style="text-align: center; color: #ed1c24; padding-top: 50px;">Consultando la cava...</div>
+    <div id="loading" style="text-align: center; color: #ed1c24; padding-top: 50px;">Abriendo la cava...</div>
     <div id="catalogo-grid" class="grid"></div>
 </div>
 
@@ -93,7 +75,7 @@
 
 <script>
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
-    const WHATSAPP_NUMBER = "5493517874303"; // <--- CAMBIÁ ESTO POR TU CELULAR
+    const WHATSAPP_NUMBER = "5493517874303"; 
 
     let allProducts = [];
     let cart = [];
@@ -112,7 +94,7 @@
                 return {
                     name: c[0]?.replace(/"/g, '').trim(),
                     price: c[1]?.replace(/"/g, '').trim(),
-                    img: c[3]?.replace(/"/g, '').trim() || 'https://via.placeholder.com/200x250?text=Monje+Negro',
+                    img: c[3]?.replace(/"/g, '').trim() || 'https://via.placeholder.com/200x250?text=Vino',
                     tipo: c[4]?.replace(/"/g, '').trim() || 'Otros',
                     cepa: c[5]?.replace(/"/g, '').trim() || 'Otros'
                 };
@@ -126,13 +108,29 @@
 
     function renderFiltros() {
         const tipos = ['Todos', ...new Set(allProducts.map(p => p.tipo))];
-        const cepas = ['Todos', ...new Set(allProducts.map(p => p.cepa))];
-        document.getElementById('filtros-tipo').innerHTML = tipos.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
-        document.getElementById('filtros-cepa').innerHTML = cepas.map(c => `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa','${c}')">${c}</button>`).join('');
+        
+        // Filtramos las cepas que pertenecen al TIPO seleccionado
+        let cepasDisponibles = [];
+        if (fTipo === 'Todos') {
+            cepasDisponibles = ['Todos', ...new Set(allProducts.map(p => p.cepa))];
+        } else {
+            cepasDisponibles = ['Todos', ...new Set(allProducts.filter(p => p.tipo === fTipo).map(p => p.cepa))];
+        }
+
+        document.getElementById('filtros-tipo').innerHTML = tipos.map(t => 
+            `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
+        
+        document.getElementById('filtros-cepa').innerHTML = cepasDisponibles.map(c => 
+            `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa','${c}')">${c}</button>`).join('');
     }
 
     function setFiltro(cat, val) {
-        if(cat === 'tipo') fTipo = val; else fCepa = val;
+        if(cat === 'tipo') {
+            fTipo = val;
+            fCepa = 'Todos'; // Resetear cepa al cambiar de tipo
+        } else {
+            fCepa = val;
+        }
         renderFiltros();
         renderProducts();
     }
@@ -140,9 +138,23 @@
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
         grid.innerHTML = '';
-        const filtered = allProducts.filter(p => (fTipo === 'Todos' || p.tipo === fTipo) && (fCepa === 'Todos' || p.cepa === fCepa));
+        const filtered = allProducts.filter(p => 
+            (fTipo === 'Todos' || p.tipo === fTipo) && 
+            (fCepa === 'Todos' || p.cepa === fCepa)
+        );
+        
         filtered.forEach(p => {
-            grid.innerHTML += `<div class="producto"><img src="${p.img}"><div class="etiquetas-producto"><span class="tag">${p.tipo}</span><span class="tag">${p.cepa}</span></div><span class="nombre">${p.name}</span><span class="precio">$${p.price}</span><button class="btn-add" onclick="addItem('${p.name}', '${p.price}')">Añadir</button></div>`;
+            grid.innerHTML += `
+                <div class="producto">
+                    <img src="${p.img}">
+                    <div class="etiquetas-producto">
+                        <span class="tag">${p.tipo}</span>
+                        <span class="tag">${p.cepa}</span>
+                    </div>
+                    <span class="nombre">${p.name}</span>
+                    <span class="precio">$${p.price}</span>
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}')">Añadir</button>
+                </div>`;
         });
     }
 
@@ -153,9 +165,12 @@
     }
 
     function sendWpp() {
-        let msg = "¡Hola Monje Negro! 🍷 Pedido:%0A";
+        let msg = "¡Hola Monje Negro! 🍷 Pedido:%0A%0A";
         let tot = 0;
-        cart.forEach(i => { msg += `- ${i.n} ($${i.p})%0A`; tot += parseFloat(i.p.replace(/\./g, '')) || 0; });
+        cart.forEach(i => {
+            msg += `• ${i.n} ($${i.p})%0A`;
+            tot += parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+        });
         msg += `%0A*TOTAL: $${tot.toLocaleString('es-AR')}*`;
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
