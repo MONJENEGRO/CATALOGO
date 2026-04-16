@@ -8,8 +8,8 @@
         @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); }
         @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); }
 
-        :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; }
-        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding-bottom: 120px; }
+        :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; --verde-wpp: #25d366; }
+        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding-bottom: 140px; }
         
         header { background: black; padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--rojo); }
         .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; margin: 0; text-transform: uppercase; line-height: 1; }
@@ -17,24 +17,11 @@
 
         .container { padding: 15px; max-width: 1000px; margin: auto; }
 
-        /* Área de búsqueda y filtros */
         .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
         
-        /* Estilos del Buscador */
-        .search-container { margin-bottom: 15px; position: relative; }
-        #buscador {
-            width: 100%;
-            padding: 12px 15px;
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: white;
-            font-size: 1em;
-            outline: none;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 10px rgba(237, 28, 36, 0.2); }
+        .search-container { margin-bottom: 15px; }
+        #buscador { width: 100%; padding: 12px 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; font-size: 1em; outline: none; box-sizing: border-box; }
+        #buscador:focus { border-color: var(--rojo); }
 
         .filtro-label { font-size: 0.7em; color: #666; text-transform: uppercase; margin: 8px 0 5px 0; display: block; letter-spacing: 1px; font-weight: bold; }
         .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
@@ -43,7 +30,6 @@
         .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
         .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
 
-        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
         .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
         .producto img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 12px; }
@@ -57,7 +43,10 @@
 
         .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.75em; }
 
-        #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: #25d366; color: white; padding: 16px; text-align: center; font-weight: bold; text-decoration: none; border-radius: 12px; display: none; z-index: 100; box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
+        /* BARRA DE CARRITO MEJORADA */
+        #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--verde-wpp); color: white; padding: 15px; text-align: center; font-weight: bold; text-decoration: none; border-radius: 15px; display: none; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .promo-aviso { display: block; font-size: 0.75em; background: rgba(0,0,0,0.2); margin-top: 5px; padding: 4px; border-radius: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .total-tachado { text-decoration: line-through; opacity: 0.7; font-size: 0.9em; margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -70,26 +59,27 @@
 <div class="filtros-area">
     <div class="container">
         <div class="search-container">
-            <input type="text" id="buscador" placeholder="Buscar producto (ej: Malbec, Rutini...)" oninput="handleSearch()">
+            <input type="text" id="buscador" placeholder="¿Qué buscás hoy?..." oninput="handleSearch()">
         </div>
-
-        <span class="filtro-label">1. Categoría</span>
+        <span class="filtro-label">Categorías</span>
         <div id="filtros-tipo" class="filtro-grupo"></div>
-        
         <div id="seccion-cepas" style="display:none;">
-            <span class="filtro-label">2. Variedad / Cepa</span>
+            <span class="filtro-label">Variedad</span>
             <div id="filtros-cepa" class="filtro-grupo"></div>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <div id="loading" style="text-align: center; color: #ed1c24; padding-top: 50px;">Abriendo la cava...</div>
+    <div id="loading" style="text-align: center; color: var(--rojo); padding-top: 50px;">Abriendo la cava...</div>
     <div id="catalogo-grid" class="grid"></div>
 </div>
 
 <a href="#" id="cart-bar" onclick="sendWpp()">
-    🛒 VER PEDIDO POR WHATSAPP (<span id="count">0</span>)
+    <div id="cart-content">
+        🛒 PEDIR (<span id="count">0</span>) - <span id="total-price">$0</span>
+    </div>
+    <span id="promo-tag" class="promo-aviso" style="display:none;">🎉 ¡15% OFF APLICADO POR 6+ VINOS!</span>
 </a>
 
 <script>
@@ -97,12 +87,7 @@
     const WHATSAPP_NUMBER = "5493512345678"; 
 
     const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
-    const CEPAS = {
-        "Vino Tinto": ["Todos", "Malbec", "Cabernet Franc", "Merlot", "Syrah", "Tempranillo", "Cabernet Sauvignon", "Pinot Noir", "Blend"],
-        "Vino Blanco": ["Todos", "Dulce", "Sauvignon Blanc", "Torrontes", "Chardonnay", "Semillon"],
-        "Espumante": ["Todos", "Extra Brut", "Brut Nature", "Rose", "Dulce"],
-        "Vino Rosado": ["Todos", "Malbec", "Syrah", "Blend"]
-    };
+    const CATEGORIAS_PROMO = ["Vino Tinto", "Vino Blanco", "Vino Rosado", "Espumante"];
 
     let allProducts = [];
     let cart = [];
@@ -110,31 +95,19 @@
     let fCepa = 'Todos';
     let searchTerm = '';
 
-    const normalizar = (texto) => {
-        return texto.toString().toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .trim();
-    };
+    const normalizar = (t) => t.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
     async function fetchProducts() {
         try {
             const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
             const text = await res.text();
             const rows = text.split('\n').slice(1);
-            
             allProducts = rows.map(r => {
                 const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (c.length < 5) return null;
                 const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-                return {
-                    name: clean(c[0]), 
-                    price: clean(c[1]), 
-                    img: clean(c[3]) || 'https://via.placeholder.com/200',
-                    tipo: clean(c[4]), 
-                    cepa: clean(c[5])
-                };
+                return { name: clean(c[0]), price: clean(c[1]), img: clean(c[3]) || 'https://via.placeholder.com/200', tipo: clean(c[4]), cepa: clean(c[5]) };
             }).filter(p => p && p.name !== "");
-
             renderFiltros();
             renderProducts();
             document.getElementById('loading').style.display = 'none';
@@ -142,30 +115,12 @@
     }
 
     function renderFiltros() {
-        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => 
-            `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
-        
-        const seccionCepas = document.getElementById('seccion-cepas');
-        if (CEPAS[fTipo]) {
-            seccionCepas.style.display = "block";
-            document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c => 
-                `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa','${c}')">${c}</button>`).join('');
-        } else {
-            seccionCepas.style.display = "none";
-        }
+        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('${t}')">${t}</button>`).join('');
     }
 
-    function handleSearch() {
-        searchTerm = normalizar(document.getElementById('buscador').value);
-        renderProducts();
-    }
+    function handleSearch() { searchTerm = normalizar(document.getElementById('buscador').value); renderProducts(); }
 
-    function setFiltro(cat, val) {
-        if(cat === 'tipo') { fTipo = val; fCepa = 'Todos'; }
-        else { fCepa = val; }
-        renderFiltros();
-        renderProducts();
-    }
+    function setFiltro(val) { fTipo = val; renderFiltros(); renderProducts(); }
 
     function updateQty(btn, delta) {
         const input = btn.parentElement.querySelector('input');
@@ -177,53 +132,89 @@
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
         grid.innerHTML = '';
-
         const filtered = allProducts.filter(p => {
-            const matchTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
-            const matchCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
-            const matchSearch = searchTerm === '' || normalizar(p.name).includes(searchTerm);
-            return matchTipo && matchCepa && matchSearch;
+            const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
+            const mSearch = searchTerm === '' || normalizar(p.name).includes(searchTerm);
+            return mTipo && mSearch;
         });
-
-        if (filtered.length === 0) {
-            grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:40px; color:#666;">No se encontraron productos.</p>`;
-        }
-
         filtered.forEach((p, index) => {
-            grid.innerHTML += `
-                <div class="producto">
-                    <img src="${p.img}">
-                    <span class="nombre">${p.name}</span>
-                    <span class="precio">$${p.price}</span>
-                    <div class="selector-cantidad">
-                        <button class="btn-qty" onclick="updateQty(this, -1)">-</button>
-                        <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
-                        <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
-                    </div>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', 'qty-${index}')">Añadir</button>
-                </div>`;
+            grid.innerHTML += `<div class="producto">
+                <img src="${p.img}">
+                <span class="nombre">${p.name}</span>
+                <span class="precio">$${p.price}</span>
+                <div class="selector-cantidad">
+                    <button class="btn-qty" onclick="updateQty(this, -1)">-</button>
+                    <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
+                    <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
+                </div>
+                <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', 'qty-${index}')">Añadir</button>
+            </div>`;
         });
     }
 
-    function addItem(n, p, id) {
+    function addItem(n, p, t, id) {
         const qty = parseInt(document.getElementById(id).value);
         const item = cart.find(i => i.n === n);
-        if (item) item.q += qty; else cart.push({n, p, q: qty});
-        document.getElementById(id).value = 1;
-        const total = cart.reduce((acc, i) => acc + i.q, 0);
-        document.getElementById('cart-bar').style.display = 'block';
-        document.getElementById('count').innerText = total;
+        if (item) item.q += qty; else cart.push({n, p, t, q: qty});
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const totalItems = cart.reduce((acc, i) => acc + i.q, 0);
+        // Contar solo productos que califican para promo
+        const itemsPromo = cart.filter(i => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t)))
+                               .reduce((acc, i) => acc + i.q, 0);
+        
+        let subtotal = 0;
+        cart.forEach(i => {
+            const precio = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+            subtotal += (precio * i.q);
+        });
+
+        const cartBar = document.getElementById('cart-bar');
+        const promoTag = document.getElementById('promo-tag');
+        const priceDisplay = document.getElementById('total-price');
+
+        if (totalItems > 0) {
+            cartBar.style.display = 'block';
+            document.getElementById('count').innerText = totalItems;
+            
+            if (itemsPromo >= 6) {
+                const descuento = subtotal * 0.15;
+                const totalConDescuento = subtotal - descuento;
+                priceDisplay.innerHTML = `<span class="total-tachado">$${subtotal.toLocaleString('es-AR')}</span> $${totalConDescuento.toLocaleString('es-AR')}`;
+                promoTag.style.display = 'block';
+                cartBar.style.background = "#d4af37"; // Cambia a color dorado/especial
+            } else {
+                priceDisplay.innerText = `$${subtotal.toLocaleString('es-AR')}`;
+                promoTag.style.display = 'none';
+                cartBar.style.background = "var(--verde-wpp)";
+            }
+        }
     }
 
     function sendWpp() {
+        let itemsPromo = cart.filter(i => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t)))
+                             .reduce((acc, i) => acc + i.q, 0);
+        
         let msg = "¡Hola Monje Negro! 🍷 Pedido de catálogo:%0A%0A";
-        let tot = 0;
+        let subtotal = 0;
         cart.forEach(i => {
             const precio = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
-            tot += (precio * i.q);
-            msg += `• ${i.q}x ${i.n} ($${i.p} c/u)%0A`;
+            subtotal += (precio * i.q);
+            msg += `• ${i.q}x ${i.n} ($${i.p})%0A`;
         });
-        msg += `%0A*TOTAL ESTIMADO: $${tot.toLocaleString('es-AR')}*`;
+
+        if (itemsPromo >= 6) {
+            const desc = subtotal * 0.15;
+            msg += `%0A*Subtotal:* $${subtotal.toLocaleString('es-AR')}`;
+            msg += `%0A*Descuento Promo (15%):* -$${desc.toLocaleString('es-AR')}`;
+            msg += `%0A*TOTAL FINAL: $${(subtotal - desc).toLocaleString('es-AR')}*`;
+            msg += `%0A%0A_Aplica promo 6+ unidades en vinos_`;
+        } else {
+            msg += `%0A*TOTAL: $${subtotal.toLocaleString('es-AR')}*`;
+        }
+
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
     fetchProducts();
