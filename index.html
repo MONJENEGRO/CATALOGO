@@ -76,10 +76,8 @@
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
     const WHATSAPP_NUMBER = "5493512345678"; 
 
-    // ORDEN DE CATEGORÍAS SOLICITADO
     const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
     
-    // LISTAS DE CEPAS SEGÚN CATEGORÍA
     const CEPAS = {
         "Vino Tinto": ["Todos", "Malbec", "Cabernet Franc", "Merlot", "Syrah", "Tempranillo", "Cabernet Sauvignon", "Pinot Noir", "Blend"],
         "Vino Blanco": ["Todos", "Dulce", "Sauvignon Blanc", "Torrontes", "Chardonnay", "Semillon"],
@@ -114,17 +112,14 @@
             renderFiltros();
             renderProducts();
             document.getElementById('loading').style.display = 'none';
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error al cargar:", e); }
     }
 
     function renderFiltros() {
-        // Renderizar botones de categorías principales
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => 
             `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo','${t}')">${t}</button>`).join('');
         
-        // Mostrar u ocultar el filtro de cepas según la categoría
         const seccionCepas = document.getElementById('seccion-cepas');
-        
         if (CEPAS[fTipo]) {
             seccionCepas.style.display = "block";
             document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c => 
@@ -151,10 +146,17 @@
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
         grid.innerHTML = '';
-        const filtered = allProducts.filter(p => 
-            (fTipo === 'Todos' || p.tipo === fTipo) && 
-            (fCepa === 'Todos' || p.cepa === fCepa)
-        );
+
+        // FILTRO MEJORADO: Ignora mayúsculas y espacios extra
+        const filtered = allProducts.filter(p => {
+            const matchTipo = fTipo === 'Todos' || p.tipo.toLowerCase().trim() === fTipo.toLowerCase().trim();
+            const matchCepa = fCepa === 'Todos' || p.cepa.toLowerCase().trim() === fCepa.toLowerCase().trim();
+            return matchTipo && matchCepa;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #666; margin-top: 40px;">No hay productos en esta categoría.</p>`;
+        }
 
         filtered.forEach((p, index) => {
             grid.innerHTML += `
