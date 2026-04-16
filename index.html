@@ -9,44 +9,42 @@
         @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); }
 
         :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; --verde-wpp: #25d366; }
-        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding-bottom: 140px; }
+        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 100px; }
         
         header { background: black; padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--rojo); }
-        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; margin: 0; text-transform: uppercase; line-height: 1; }
-        .sub { color: white; font-family: 'Monley', cursive; font-size: 1.8em; margin-top: -5px; display: block; text-transform: lowercase; }
+        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; margin: 0; text-transform: uppercase; }
+        .sub { color: white; font-family: 'Monley', cursive; font-size: 1.8em; margin-top: -5px; display: block; }
 
         .container { padding: 15px; max-width: 1000px; margin: auto; }
 
+        /* Buscador y Filtros */
         .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        
-        .search-container { margin-bottom: 15px; }
-        #buscador { width: 100%; padding: 12px 15px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; font-size: 1em; outline: none; box-sizing: border-box; }
-        #buscador:focus { border-color: var(--rojo); }
-
-        .filtro-label { font-size: 0.7em; color: #666; text-transform: uppercase; margin: 8px 0 5px 0; display: block; letter-spacing: 1px; font-weight: bold; }
+        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
         .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .filtro-grupo::-webkit-scrollbar { display: none; }
-        
-        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
+        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
         .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
 
+        /* Grid de Productos */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
-        .producto img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 12px; }
-        
-        .nombre { font-weight: bold; font-size: 0.95em; min-height: 38px; margin-bottom: 8px; line-height: 1.2; }
-        .precio { color: #fff; font-size: 1.2em; font-weight: bold; margin-bottom: 12px; }
+        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
+        .producto img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; }
+        .nombre { font-weight: bold; font-size: 0.9em; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; }
+        .precio { color: #fff; font-size: 1.1em; font-weight: bold; display: block; margin-bottom: 10px; }
+        .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.7em; }
 
-        .selector-cantidad { display: flex; align-items: center; justify-content: center; background: #000; border-radius: 6px; border: 1px solid #333; margin-bottom: 8px; }
-        .btn-qty { background: #222; color: white; border: none; padding: 8px 12px; cursor: pointer; width: 40px; font-weight: bold; }
-        .input-qty { background: transparent; color: white; border: none; width: 40px; text-align: center; font-weight: bold; }
+        /* Barra Flotante */
+        #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--verde-wpp); color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 15px; cursor: pointer; display: none; z-index: 99; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
 
-        .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.75em; }
-
-        /* BARRA DE CARRITO MEJORADA */
-        #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--verde-wpp); color: white; padding: 15px; text-align: center; font-weight: bold; text-decoration: none; border-radius: 15px; display: none; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .promo-aviso { display: block; font-size: 0.75em; background: rgba(0,0,0,0.2); margin-top: 5px; padding: 4px; border-radius: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .total-tachado { text-decoration: line-through; opacity: 0.7; font-size: 0.9em; margin-right: 5px; }
+        /* MODAL DEL CARRITO */
+        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: #1a1a1a; max-width: 500px; margin: auto; border-radius: 15px; padding: 20px; max-height: 80vh; overflow-y: auto; border: 1px solid var(--rojo); }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; font-size: 0.9em; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.2em; cursor: pointer; margin-left: 15px; font-weight: bold; }
+        .modal-footer { margin-top: 20px; text-align: center; }
+        .btn-send { background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; font-size: 1em; cursor: pointer; }
+        .btn-close { color: #aaa; background: none; border: none; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+        .promo-text { color: #d4af37; font-size: 0.8em; margin-top: 10px; display: block; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -58,29 +56,33 @@
 
 <div class="filtros-area">
     <div class="container">
-        <div class="search-container">
-            <input type="text" id="buscador" placeholder="¿Qué buscás hoy?..." oninput="handleSearch()">
-        </div>
-        <span class="filtro-label">Categorías</span>
+        <input type="text" id="buscador" placeholder="Buscar vino..." oninput="renderProducts()">
         <div id="filtros-tipo" class="filtro-grupo"></div>
-        <div id="seccion-cepas" style="display:none;">
-            <span class="filtro-label">Variedad</span>
-            <div id="filtros-cepa" class="filtro-grupo"></div>
-        </div>
     </div>
 </div>
 
 <div class="container">
-    <div id="loading" style="text-align: center; color: var(--rojo); padding-top: 50px;">Abriendo la cava...</div>
+    <div id="loading" style="text-align: center; padding-top: 50px;">Cargando cava...</div>
     <div id="catalogo-grid" class="grid"></div>
 </div>
 
-<a href="#" id="cart-bar" onclick="sendWpp()">
-    <div id="cart-content">
-        🛒 PEDIR (<span id="count">0</span>) - <span id="total-price">$0</span>
+<div id="cart-bar" onclick="toggleModal(true)">
+    🛒 VER MI PEDIDO (<span id="count">0</span>)
+</div>
+
+<div id="cart-modal">
+    <div class="modal-content">
+        <h2 style="color:var(--rojo); margin-top:0;">Mi Pedido</h2>
+        <div id="cart-list">
+            </div>
+        <div class="modal-footer">
+            <div id="total-details" style="text-align: right; margin-bottom: 15px;">
+                </div>
+            <button class="btn-send" onclick="sendWpp()">ENVIAR PEDIDO POR WHATSAPP</button>
+            <button class="btn-close" onclick="toggleModal(false)">Seguir comprando</button>
+        </div>
     </div>
-    <span id="promo-tag" class="promo-aviso" style="display:none;">🎉 ¡15% OFF APLICADO POR 6+ VINOS!</span>
-</a>
+</div>
 
 <script>
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
@@ -92,10 +94,6 @@
     let allProducts = [];
     let cart = [];
     let fTipo = 'Todos';
-    let fCepa = 'Todos';
-    let searchTerm = '';
-
-    const normalizar = (t) => t.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
     async function fetchProducts() {
         try {
@@ -118,105 +116,117 @@
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('${t}')">${t}</button>`).join('');
     }
 
-    function handleSearch() { searchTerm = normalizar(document.getElementById('buscador').value); renderProducts(); }
-
     function setFiltro(val) { fTipo = val; renderFiltros(); renderProducts(); }
-
-    function updateQty(btn, delta) {
-        const input = btn.parentElement.querySelector('input');
-        let val = parseInt(input.value) + delta;
-        if (val < 1) val = 1;
-        input.value = val;
-    }
 
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
+        const search = document.getElementById('buscador').value.toLowerCase();
         grid.innerHTML = '';
         const filtered = allProducts.filter(p => {
-            const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
-            const mSearch = searchTerm === '' || normalizar(p.name).includes(searchTerm);
+            const mTipo = fTipo === 'Todos' || p.tipo.toLowerCase() === fTipo.toLowerCase();
+            const mSearch = p.name.toLowerCase().includes(search);
             return mTipo && mSearch;
         });
         filtered.forEach((p, index) => {
-            grid.innerHTML += `<div class="producto">
-                <img src="${p.img}">
-                <span class="nombre">${p.name}</span>
-                <span class="precio">$${p.price}</span>
-                <div class="selector-cantidad">
-                    <button class="btn-qty" onclick="updateQty(this, -1)">-</button>
-                    <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
-                    <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
-                </div>
-                <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', 'qty-${index}')">Añadir</button>
-            </div>`;
+            grid.innerHTML += `
+                <div class="producto">
+                    <img src="${p.img}">
+                    <span class="nombre">${p.name}</span>
+                    <span class="precio">$${p.price}</span>
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}')">Añadir al pedido</button>
+                </div>`;
         });
     }
 
-    function addItem(n, p, t, id) {
-        const qty = parseInt(document.getElementById(id).value);
+    function addItem(n, p, t) {
         const item = cart.find(i => i.n === n);
-        if (item) item.q += qty; else cart.push({n, p, t, q: qty});
+        if (item) item.q += 1; else cart.push({n, p, t, q: 1});
         updateCartUI();
     }
 
+    function removeItem(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+        if (cart.length === 0) toggleModal(false);
+    }
+
+    function toggleModal(show) {
+        document.getElementById('cart-modal').style.display = show ? 'flex' : 'none';
+        if(show) renderCartModal();
+    }
+
     function updateCartUI() {
-        const totalItems = cart.reduce((acc, i) => acc + i.q, 0);
-        // Contar solo productos que califican para promo
-        const itemsPromo = cart.filter(i => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t)))
-                               .reduce((acc, i) => acc + i.q, 0);
+        const count = cart.reduce((acc, i) => acc + i.q, 0);
+        document.getElementById('cart-bar').style.display = count > 0 ? 'block' : 'none';
+        document.getElementById('count').innerText = count;
+    }
+
+    function renderCartModal() {
+        const list = document.getElementById('cart-list');
+        const details = document.getElementById('total-details');
+        list.innerHTML = '';
         
         let subtotal = 0;
-        cart.forEach(i => {
-            const precio = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (precio * i.q);
+        let itemsVino = 0;
+
+        cart.forEach((item, index) => {
+            const precioNum = parseFloat(item.p.replace(/\./g, '').replace(',', '.')) || 0;
+            subtotal += (precioNum * item.q);
+            if (CATEGORIAS_PROMO.includes(item.t)) itemsVino += item.q;
+
+            list.innerHTML += `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <strong>${item.q}x ${item.n}</strong><br>
+                        <small>$${item.p} c/u</small>
+                    </div>
+                    <span>$${(precioNum * item.q).toLocaleString('es-AR')}</span>
+                    <button class="cart-remove" onclick="removeItem(${index})">✕</button>
+                </div>`;
         });
 
-        const cartBar = document.getElementById('cart-bar');
-        const promoTag = document.getElementById('promo-tag');
-        const priceDisplay = document.getElementById('total-price');
+        let totalFinal = subtotal;
+        let htmlDetails = `<div>Subtotal: $${subtotal.toLocaleString('es-AR')}</div>`;
 
-        if (totalItems > 0) {
-            cartBar.style.display = 'block';
-            document.getElementById('count').innerText = totalItems;
-            
-            if (itemsPromo >= 6) {
-                const descuento = subtotal * 0.15;
-                const totalConDescuento = subtotal - descuento;
-                priceDisplay.innerHTML = `<span class="total-tachado">$${subtotal.toLocaleString('es-AR')}</span> $${totalConDescuento.toLocaleString('es-AR')}`;
-                promoTag.style.display = 'block';
-                cartBar.style.background = "#d4af37"; // Cambia a color dorado/especial
-            } else {
-                priceDisplay.innerText = `$${subtotal.toLocaleString('es-AR')}`;
-                promoTag.style.display = 'none';
-                cartBar.style.background = "var(--verde-wpp)";
+        if (itemsVino >= 6) {
+            const desc = subtotal * 0.15;
+            totalFinal = subtotal - desc;
+            htmlDetails += `
+                <div style="color: #d4af37; font-weight:bold;">Descuento 15% OFF: -$${desc.toLocaleString('es-AR')}</div>
+                <div style="font-size:1.2em; font-weight:bold; margin-top:5px;">TOTAL: $${totalFinal.toLocaleString('es-AR')}</div>`;
+        } else {
+            htmlDetails += `<div style="font-size:1.2em; font-weight:bold; margin-top:5px;">TOTAL: $${totalFinal.toLocaleString('es-AR')}</div>`;
+            if (itemsVino > 0) {
+                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vinos. ¡Con 6 tenés 15% OFF!</small>`;
             }
         }
+        details.innerHTML = htmlDetails;
     }
 
     function sendWpp() {
-        let itemsPromo = cart.filter(i => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t)))
-                             .reduce((acc, i) => acc + i.q, 0);
-        
-        let msg = "¡Hola Monje Negro! 🍷 Pedido de catálogo:%0A%0A";
         let subtotal = 0;
+        let itemsVino = 0;
+        let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
+        
         cart.forEach(i => {
-            const precio = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (precio * i.q);
+            const pNum = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
+            subtotal += (pNum * i.q);
+            if (CATEGORIAS_PROMO.includes(i.t)) itemsVino += i.q;
             msg += `• ${i.q}x ${i.n} ($${i.p})%0A`;
         });
 
-        if (itemsPromo >= 6) {
+        if (itemsVino >= 6) {
             const desc = subtotal * 0.15;
             msg += `%0A*Subtotal:* $${subtotal.toLocaleString('es-AR')}`;
-            msg += `%0A*Descuento Promo (15%):* -$${desc.toLocaleString('es-AR')}`;
-            msg += `%0A*TOTAL FINAL: $${(subtotal - desc).toLocaleString('es-AR')}*`;
-            msg += `%0A%0A_Aplica promo 6+ unidades en vinos_`;
+            msg += `%0A*Descuento (15%):* -$${desc.toLocaleString('es-AR')}`;
+            msg += `%0A*TOTAL: $${(subtotal - desc).toLocaleString('es-AR')}*`;
         } else {
             msg += `%0A*TOTAL: $${subtotal.toLocaleString('es-AR')}*`;
         }
 
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
+
     fetchProducts();
 </script>
 </body>
