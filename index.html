@@ -19,10 +19,12 @@
 
         /* Buscador y Filtros */
         .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; outline: none; }
-        #buscador:focus { border-color: var(--rojo); }
+        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 8px rgba(237, 28, 36, 0.3); }
+        
         .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; }
+        .filtro-grupo::-webkit-scrollbar { display: none; }
+        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
         .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
 
         /* Grid de Productos */
@@ -61,8 +63,13 @@
 
 <div class="filtros-area">
     <div class="container">
-        <input type="text" id="buscador" placeholder="Buscar por nombre o bodega..." oninput="renderProducts()">
+        <input type="text" id="buscador" placeholder="Buscar bebidas..." oninput="renderProducts()">
+        
         <div id="filtros-tipo" class="filtro-grupo"></div>
+        
+        <div id="seccion-cepas" style="display:none; margin-top: 10px;">
+            <div id="filtros-cepa" class="filtro-grupo"></div>
+        </div>
     </div>
 </div>
 
@@ -92,34 +99,78 @@
     const WHATSAPP_NUMBER = "5493512345678"; 
 
     const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
+    const CEPAS = {
+        "Vino Tinto": ["Todos", "Malbec", "Cabernet Franc", "Merlot", "Syrah", "Tempranillo", "Cabernet Sauvignon", "Pinot Noir", "Blend"],
+        "Vino Blanco": ["Todos", "Dulce", "Sauvignon Blanc", "Torrontes", "Chardonnay", "Semillon"],
+        "Espumante": ["Todos", "Extra Brut", "Brut Nature", "Rose", "Dulce"],
+        "Vino Rosado": ["Todos", "Malbec", "Syrah", "Blend"]
+    };
     const CATEGORIAS_PROMO = ["Vino Tinto", "Vino Blanco", "Vino Rosado", "Espumante"];
 
     let allProducts = [];
     let cart = [];
     let fTipo = 'Todos';
+    let fCepa = 'Todos'; // Variable para guardar la subcategoría actual
+
+    // Función a prueba de errores
+    const normalizar = (texto) => {
+        if (!texto) return "";
+        return texto.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    };
 
     async function fetchProducts() {
         try {
             const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
             const text = await res.text();
             const rows = text.split('\n').slice(1);
+            
             allProducts = rows.map(r => {
                 const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (c.length < 5) return null;
                 const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-                return { name: clean(c[0]), price: clean(c[1]), img: clean(c[3]) || 'https://via.placeholder.com/200', tipo: clean(c[4]) };
+                return { 
+                    name: clean(c[0]), 
+                    price: clean(c[1]), 
+                    img: clean(c[3]) || 'https://via.placeholder.com/200', 
+                    tipo: clean(c[4]),
+                    cepa: clean(c[5]) // Tomamos la columna F (Cepas) del Excel
+                };
             }).filter(p => p && p.name !== "");
+
             renderFiltros();
             renderProducts();
             document.getElementById('loading').style.display = 'none';
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('loading').innerText = "Error al cargar los productos. Por favor, recargá la página.";
+        }
     }
 
     function renderFiltros() {
-        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('${t}')">${t}</button>`).join('');
+        // Renderiza Botones Principales
+        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
+        
+        // Renderiza Botones Secundarios (Cepas) si corresponde
+        const seccionCepas = document.getElementById('seccion-cepas');
+        if (CEPAS[fTipo]) {
+            seccionCepas.style.display = "block";
+            document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c => 
+                `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa', '${c}')">${c}</button>`).join('');
+        } else {
+            seccionCepas.style.display = "none";
+        }
     }
 
-    function setFiltro(val) { fTipo = val; renderFiltros(); renderProducts(); }
+    function setFiltro(cat, val) { 
+        if (cat === 'tipo') {
+            fTipo = val;
+            fCepa = 'Todos'; // Si cambia el tipo principal, se resetea la cepa
+        } else {
+            fCepa = val;
+        }
+        renderFiltros(); 
+        renderProducts(); 
+    }
 
     function updateQty(btn, delta) {
         const input = btn.parentElement.querySelector('input');
@@ -130,13 +181,20 @@
 
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
-        const search = document.getElementById('buscador').value.toLowerCase();
+        const search = normalizar(document.getElementById('buscador').value);
         grid.innerHTML = '';
+        
         const filtered = allProducts.filter(p => {
-            const mTipo = fTipo === 'Todos' || p.tipo.toLowerCase() === fTipo.toLowerCase();
-            const mSearch = p.name.toLowerCase().includes(search);
-            return mTipo && mSearch;
+            const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
+            const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
+            const mSearch = search === '' || normalizar(p.name).includes(search);
+            return mTipo && mCepa && mSearch; // Ahora exige que coincidan tipo Y cepa
         });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No se encontraron productos.</p>`;
+        }
+
         filtered.forEach((p, index) => {
             grid.innerHTML += `
                 <div class="producto">
@@ -158,8 +216,7 @@
         const item = cart.find(i => i.n === n);
         if (item) item.q += qty; else cart.push({n, p, t, q: qty});
         
-        // Reset cantidad del selector a 1 después de añadir
-        document.getElementById(qtyId).value = 1;
+        document.getElementById(qtyId).value = 1; // Resetea a 1 después de añadir
         updateCartUI();
     }
 
@@ -191,7 +248,7 @@
         cart.forEach((item, index) => {
             const precioNum = parseFloat(item.p.replace(/\./g, '').replace(',', '.')) || 0;
             subtotal += (precioNum * item.q);
-            if (CATEGORIAS_PROMO.some(cat => cat.toLowerCase() === item.t.toLowerCase())) itemsVino += item.q;
+            if (CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(item.t))) itemsVino += item.q;
 
             list.innerHTML += `
                 <div class="cart-item">
@@ -227,7 +284,7 @@
         cart.forEach(i => {
             const pNum = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
             subtotal += (pNum * i.q);
-            if (CATEGORIAS_PROMO.some(cat => cat.toLowerCase() === i.t.toLowerCase())) itemsVino += i.q;
+            if (CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t))) itemsVino += i.q;
             msg += `• ${i.q}x ${i.n} ($${i.p} c/u)%0A`;
         });
 
