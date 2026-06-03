@@ -19,21 +19,16 @@
 
         /* Buscador y Filtros */
         .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; outline: none; transition: 0.3s; }
         #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 8px rgba(237, 28, 36, 0.3); }
         
-        /* Controles con Flechas */
-        .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 5px; }
-        .scroll-btn { background: transparent; border: none; color: var(--rojo); font-size: 1.5em; cursor: pointer; padding: 0 5px; transition: 0.2s; user-select: none; }
-        .scroll-btn:active { transform: scale(0.8); }
-        
-        .filtro-grupo { flex-grow: 1; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; margin: 0 5px; }
+        .filtro-grupo { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
         .filtro-grupo::-webkit-scrollbar { display: none; }
         .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
         .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
 
         /* Grid de Productos */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
         .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
         .producto img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; }
         .nombre { font-weight: bold; font-size: 0.9em; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; line-height: 1.2; }
@@ -78,18 +73,10 @@
     <div class="container">
         <input type="text" id="buscador" placeholder="Buscar bebidas..." oninput="renderProducts()">
         
-        <div class="scroll-wrapper">
-            <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
-            <div id="filtros-tipo" class="filtro-grupo"></div>
-            <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
-        </div>
+        <div id="filtros-tipo" class="filtro-grupo"></div>
         
         <div id="seccion-cepas" style="display:none; margin-top: 10px;">
-            <div class="scroll-wrapper">
-                <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
-                <div id="filtros-cepa" class="filtro-grupo"></div>
-                <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
-            </div>
+            <div id="filtros-cepa" class="filtro-grupo"></div>
         </div>
     </div>
 </div>
@@ -119,23 +106,14 @@
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
     const WHATSAPP_NUMBER = "5493512345678"; 
 
-    // LISTA DE CATEGORÍAS PRINCIPALES
-    const TIPOS = ["Todos", "APERITIVOS", "CERVEZAS", "COMIDA", "DESTILADOS", "ENCENDEDORES", "ENERGIZANTES", "ESPUMANTES", "GASEOSAS", "HABANO", "HIELO", "JUGOS", "LICOR", "PROMOS", "REGALERIA", "SACACORCHOS", "SIDRA", "SODA", "TABACO", "VASOS", "VINOS BLANCOS", "VINOS ROSADOS", "VINOS TINTOS", "WHISKY"];
-    
-    // LISTA DE SUBCATEGORÍAS
+    const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
     const CEPAS = {
-        "APERITIVOS": ["Todos", "FERNET", "VERMUT"],
-        "CERVEZAS": ["Todos", "BOTELLA", "LATA", "LATON", "PORRON"],
-        "COMIDA": ["Todos", "ALFAJORES", "CONITOS", "MANI", "NUEZ CONFITADA", "QUESOS", "SALAMES", "SNACKS"],
-        "DESTILADOS": ["Todos", "GIN", "RON", "VODKA"],
-        "ESPUMANTES": ["Todos", "APERITIEF", "BLANC DE BLANCAS", "BLANC DE NOIRS", "BRUT", "BRUT NATURE", "BRUT ROSE", "DELICE", "DEMI SEC", "DULCE", "DULCE NATURAL", "EXTRA BRUT", "NARANJO", "ROSE", "ROSE EXTRA BRUT", "SPRITZ", "ZERO"],
-        "TABACO": ["Todos", "CEDAS", "FILTROS"],
-        "VINOS BLANCOS": ["Todos", "CHARDONNAY", "CHENIN DULCE", "DULCE", "SAUVIGNON BLANC", "SEMILLON", "TORRONTES", "TRIFECTA", "VIOGNIER"],
-        "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
+        "Vino Tinto": ["Todos", "Malbec", "Cabernet Franc", "Merlot", "Syrah", "Tempranillo", "Cabernet Sauvignon", "Pinot Noir", "Blend"],
+        "Vino Blanco": ["Todos", "Dulce", "Sauvignon Blanc", "Torrontes", "Chardonnay", "Semillon"],
+        "Espumante": ["Todos", "Extra Brut", "Brut Nature", "Rose", "Dulce"],
+        "Vino Rosado": ["Todos", "Malbec", "Syrah", "Blend"]
     };
-    
-    // CATEGORÍAS QUE ENTRAN EN LA PROMO DEL 15%
-    const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
+    const CATEGORIAS_PROMO = ["Vino Tinto", "Vino Blanco", "Vino Rosado", "Espumante"];
 
     let allProducts = [];
     let cart = [];
@@ -146,11 +124,6 @@
         if (!texto) return "";
         return texto.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     };
-
-    // Función para deslizar el menú con las flechitas
-    function scrollMenu(id, px) {
-        document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
-    }
 
     async function fetchProducts() {
         try {
@@ -224,7 +197,7 @@
         });
 
         if (filtered.length === 0) {
-            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No se encontraron productos para esta categoría.<br><small>Verificá que en la Columna E diga exactamente "${fTipo}"</small></p>`;
+            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No se encontraron productos.</p>`;
         }
 
         filtered.forEach((p, index) => {
@@ -252,10 +225,11 @@
         updateCartUI();
     }
 
+    // NUEVA FUNCIÓN: Modificar cantidad directamente desde el carrito
     function updateCartItemQty(index, delta) {
         cart[index].q += delta;
         if (cart[index].q < 1) {
-            cart.splice(index, 1); 
+            cart.splice(index, 1); // Si baja a cero, lo elimina
         }
         updateCartUI();
         if (cart.length === 0) {
@@ -322,7 +296,7 @@
         } else {
             htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color: #fff;">TOTAL: $${subtotal.toLocaleString('es-AR')}</div>`;
             if (itemsVino > 0) {
-                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} bebidas con promo. ¡Sumá ${6 - itemsVino} más para el 15% OFF!</small>`;
+                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vinos. ¡Sumá ${6 - itemsVino} más para el 15% OFF!</small>`;
             }
         }
         details.innerHTML = htmlDetails;
