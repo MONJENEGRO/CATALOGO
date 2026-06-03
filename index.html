@@ -106,14 +106,23 @@
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
     const WHATSAPP_NUMBER = "5493512345678"; 
 
-    const TIPOS = ["Todos", "Ofertas", "Vino Tinto", "Vino Blanco", "Espumante", "Vino Rosado", "Otras Bebidas"];
+    // LISTA DE CATEGORÍAS PRINCIPALES
+    const TIPOS = ["Todos", "APERITIVOS", "CERVEZAS", "COMIDA", "DESTILADOS", "ENCENDEDORES", "ENERGIZANTES", "ESPUMANTES", "GASEOSAS", "HABANO", "HIELO", "JUGOS", "LICOR", "PROMOS", "REGALERIA", "SACACORCHOS", "SIDRA", "SODA", "TABACO", "VASOS", "VINOS BLANCOS", "VINOS ROSADOS", "VINOS TINTOS", "WHISKY"];
+    
+    // LISTA DE SUBCATEGORÍAS
     const CEPAS = {
-        "Vino Tinto": ["Todos", "Malbec", "Cabernet Franc", "Merlot", "Syrah", "Tempranillo", "Cabernet Sauvignon", "Pinot Noir", "Blend"],
-        "Vino Blanco": ["Todos", "Dulce", "Sauvignon Blanc", "Torrontes", "Chardonnay", "Semillon"],
-        "Espumante": ["Todos", "Extra Brut", "Brut Nature", "Rose", "Dulce"],
-        "Vino Rosado": ["Todos", "Malbec", "Syrah", "Blend"]
+        "APERITIVOS": ["Todos", "FERNET", "VERMUT"],
+        "CERVEZAS": ["Todos", "BOTELLA", "LATA", "LATON", "PORRON"],
+        "COMIDA": ["Todos", "ALFAJORES", "CONITOS", "MANI", "NUEZ CONFITADA", "QUESOS", "SALAMES", "SNACKS"],
+        "DESTILADOS": ["Todos", "GIN", "RON", "VODKA"],
+        "ESPUMANTES": ["Todos", "APERITIEF", "BLANC DE BLANCAS", "BLANC DE NOIRS", "BRUT", "BRUT NATURE", "BRUT ROSE", "DELICE", "DEMI SEC", "DULCE", "DULCE NATURAL", "EXTRA BRUT", "NARANJO", "ROSE", "ROSE EXTRA BRUT", "SPRITZ", "ZERO"],
+        "TABACO": ["Todos", "CEDAS", "FILTROS"],
+        "VINOS BLANCOS": ["Todos", "CHARDONNAY", "CHENIN DULCE", "DULCE", "SAUVIGNON BLANC", "SEMILLON", "TORRONTES", "TRIFECTA", "VIOGNIER"],
+        "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
     };
-    const CATEGORIAS_PROMO = ["Vino Tinto", "Vino Blanco", "Vino Rosado", "Espumante"];
+    
+    // CATEGORÍAS QUE ENTRAN EN LA PROMO DEL 15% (Actualizado a mayúsculas)
+    const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
 
     let allProducts = [];
     let cart = [];
@@ -296,7 +305,7 @@
         } else {
             htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color: #fff;">TOTAL: $${subtotal.toLocaleString('es-AR')}</div>`;
             if (itemsVino > 0) {
-                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vinos. ¡Sumá ${6 - itemsVino} más para el 15% OFF!</small>`;
+                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} bebidas con promo. ¡Sumá ${6 - itemsVino} más para el 15% OFF!</small>`;
             }
         }
         details.innerHTML = htmlDetails;
