@@ -46,9 +46,17 @@
         /* MODAL DEL CARRITO */
         #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; box-sizing: border-box; align-items: center; justify-content: center; }
         .modal-content { background: #1a1a1a; width: 100%; max-width: 500px; border-radius: 15px; padding: 20px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--rojo); position: relative; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; font-size: 0.9em; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 12px 0; font-size: 0.9em; gap: 10px; }
         .cart-item-info { flex-grow: 1; }
-        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.2em; cursor: pointer; margin-left: 15px; font-weight: bold; }
+        
+        /* Controles de Cantidad en Carrito */
+        .cart-qty-controls { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 4px; }
+        .cart-qty-btn { background: #222; color: white; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 1em; }
+        .cart-qty-val { width: 25px; text-align: center; font-weight: bold; color: white; font-size: 0.9em; }
+        
+        .cart-item-total { font-weight: bold; min-width: 70px; text-align: right; }
+        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.2em; cursor: pointer; font-weight: bold; padding: 0 5px; }
+        
         .modal-footer { margin-top: 20px; text-align: center; }
         .btn-send { background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; font-size: 1em; cursor: pointer; }
         .btn-close { color: #aaa; background: none; border: none; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 0.9em; }
@@ -110,9 +118,8 @@
     let allProducts = [];
     let cart = [];
     let fTipo = 'Todos';
-    let fCepa = 'Todos'; // Variable para guardar la subcategoría actual
+    let fCepa = 'Todos'; 
 
-    // Función a prueba de errores
     const normalizar = (texto) => {
         if (!texto) return "";
         return texto.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -133,7 +140,7 @@
                     price: clean(c[1]), 
                     img: clean(c[3]) || 'https://via.placeholder.com/200', 
                     tipo: clean(c[4]),
-                    cepa: clean(c[5]) // Tomamos la columna F (Cepas) del Excel
+                    cepa: clean(c[5]) 
                 };
             }).filter(p => p && p.name !== "");
 
@@ -147,10 +154,8 @@
     }
 
     function renderFiltros() {
-        // Renderiza Botones Principales
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
         
-        // Renderiza Botones Secundarios (Cepas) si corresponde
         const seccionCepas = document.getElementById('seccion-cepas');
         if (CEPAS[fTipo]) {
             seccionCepas.style.display = "block";
@@ -164,7 +169,7 @@
     function setFiltro(cat, val) { 
         if (cat === 'tipo') {
             fTipo = val;
-            fCepa = 'Todos'; // Si cambia el tipo principal, se resetea la cepa
+            fCepa = 'Todos'; 
         } else {
             fCepa = val;
         }
@@ -188,7 +193,7 @@
             const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
             const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
             const mSearch = search === '' || normalizar(p.name).includes(search);
-            return mTipo && mCepa && mSearch; // Ahora exige que coincidan tipo Y cepa
+            return mTipo && mCepa && mSearch; 
         });
 
         if (filtered.length === 0) {
@@ -216,8 +221,22 @@
         const item = cart.find(i => i.n === n);
         if (item) item.q += qty; else cart.push({n, p, t, q: qty});
         
-        document.getElementById(qtyId).value = 1; // Resetea a 1 después de añadir
+        document.getElementById(qtyId).value = 1; 
         updateCartUI();
+    }
+
+    // NUEVA FUNCIÓN: Modificar cantidad directamente desde el carrito
+    function updateCartItemQty(index, delta) {
+        cart[index].q += delta;
+        if (cart[index].q < 1) {
+            cart.splice(index, 1); // Si baja a cero, lo elimina
+        }
+        updateCartUI();
+        if (cart.length === 0) {
+            toggleModal(false);
+        } else {
+            renderCartModal();
+        }
     }
 
     function removeItem(index) {
@@ -253,10 +272,17 @@
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
-                        <strong>${item.q}x ${item.n}</strong><br>
+                        <strong>${item.n}</strong><br>
                         <small>$${item.p} c/u</small>
                     </div>
-                    <span>$${(precioNum * item.q).toLocaleString('es-AR')}</span>
+                    
+                    <div class="cart-qty-controls">
+                        <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
+                        <span class="cart-qty-val">${item.q}</span>
+                        <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
+                    </div>
+
+                    <span class="cart-item-total">$${(precioNum * item.q).toLocaleString('es-AR')}</span>
                     <button class="cart-remove" onclick="removeItem(${index})">✕</button>
                 </div>`;
         });
