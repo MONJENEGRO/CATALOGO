@@ -21,7 +21,7 @@
         .ok { color:#25d366; font-weight:bold; }
         .err { color:#ed1c24; font-weight:bold; }
         label { display:block; margin-bottom:6px; }
-        input[type=text] { width:100%; background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:6px; box-sizing:border-box; }
+        input[type=text], select { width:100%; background:#000; border:1px solid #333; color:#fff; padding:8px; border-radius:6px; box-sizing:border-box; }
         .aviso { background:#2a1a00; border:1px solid #d4af37; color:#f0d98a; padding:10px 14px; border-radius:8px; font-size:.9em; }
     </style>
 </head>
@@ -36,6 +36,28 @@
         <label class="muted" for="siteUrl">URL pública del sitio:</label>
         <input type="text" id="siteUrl" value="https://monjenegro.github.io/CATALOGO/">
         <p class="muted" style="margin-top:8px;">Marca: <code id="brandShow"></code> &middot; Moneda: <code>ARS</code></p>
+
+        <hr style="border-color:#333; margin:16px 0;">
+        <strong>Zona de entrega</strong> <span class="muted">(Meta la pide para catálogos con reparto local)</span>
+        <p class="muted">Definí tu local y hasta dónde repartís. Para sacar la latitud y longitud: abrí Google Maps, hacé clic derecho (o mantené apretado en el celu) sobre tu local y tocá los dos números que aparecen arriba para copiarlos.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:140px;">
+                <label class="muted" for="lat">Latitud:</label>
+                <input type="text" id="lat" placeholder="-31.4201">
+            </div>
+            <div style="flex:1; min-width:140px;">
+                <label class="muted" for="lng">Longitud:</label>
+                <input type="text" id="lng" placeholder="-64.1888">
+            </div>
+            <div style="width:80px;">
+                <label class="muted" for="radio">Radio:</label>
+                <input type="text" id="radio" value="15">
+            </div>
+            <div style="width:80px;">
+                <label class="muted" for="unidad">Unidad:</label>
+                <select id="unidad"><option value="km" selected>km</option><option value="mi">mi</option></select>
+            </div>
+        </div>
     </div>
 
     <div class="card">
@@ -80,6 +102,17 @@
     // Genera un id estable a partir del nombre
     const slug = (s) => { const x = normalizar(s).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 90); return x || 'item'; };
 
+    // Palabras menores que van en minuscula (salvo al principio) y numeros romanos que quedan en MAYUSCULA
+    const MINOR = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'o', 'u', 'con', 'sin', 'a', 'al']);
+    const ROMAN = new Set(['ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv']);
+    // Pasa un texto TODO EN MAYUSCULA a "Mayuscula Inicial" (Meta no acepta titulos en mayuscula sostenida)
+    const titleCase = (s) => (s || '').toLowerCase().split(/\s+/).map((w, i) => {
+        if (!w) return w;
+        if (ROMAN.has(w)) return w.toUpperCase();
+        if (i > 0 && MINOR.has(w)) return w;
+        return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+
     function siteBase() { return document.getElementById('siteUrl').value.trim().replace(/\/+$/, ''); }
 
     function imgUrl(img) {
@@ -112,10 +145,17 @@
                 };
             }).filter(p => p && p.name !== '' && p.stock !== '0'); // mismo criterio que el catálogo
 
-            const headers = ['id', 'title', 'description', 'availability', 'condition', 'price', 'link', 'image_link', 'brand', 'quantity_to_sell_on_facebook'];
+            const headers = ['id', 'title', 'description', 'availability', 'condition', 'price', 'link', 'image_link', 'brand', 'quantity_to_sell_on_facebook', 'availability_circle_origin', 'availability_circle_radius', 'availability_circle_radius_unit'];
             const seen = {};
             const lines = [headers.join(',')];
             const preview = [];
+
+            // Zona de entrega (radio alrededor del local). Si no hay ubicacion, esas columnas quedan vacias.
+            const lat = document.getElementById('lat').value.trim();
+            const lng = document.getElementById('lng').value.trim();
+            const origin = (lat && lng) ? (lat + ',' + lng) : '';
+            const radio = origin ? document.getElementById('radio').value.trim() : '';
+            const unidad = origin ? document.getElementById('unidad').value : '';
 
             productos.forEach(p => {
                 let id = slug(p.name);
@@ -129,7 +169,7 @@
 
                 const row = {
                     id: id,
-                    title: p.name.slice(0, 200),
+                    title: titleCase(p.name).slice(0, 200),
                     description: desc.slice(0, 9999),
                     availability: 'in stock',
                     condition: 'new',
@@ -139,12 +179,13 @@
                     brand: BRAND,
                     qty: qty
                 };
-                lines.push([row.id, row.title, row.description, row.availability, row.condition, row.price, row.link, row.image_link, row.brand, row.qty].map(esc).join(','));
+                lines.push([row.id, row.title, row.description, row.availability, row.condition, row.price, row.link, row.image_link, row.brand, row.qty, origin, radio, unidad].map(esc).join(','));
                 preview.push(row);
             });
 
             csvData = lines.join('\r\n');
-            st.innerHTML = '<span class="ok">✅ ' + productos.length + ' productos listos.</span>';
+            st.innerHTML = '<span class="ok">✅ ' + productos.length + ' productos listos.</span>'
+                + (origin ? '' : ' <span class="err">⚠️ Falta la ubicación (latitud/longitud) para la zona de entrega.</span>');
             document.getElementById('actions').style.display = productos.length ? 'block' : 'none';
             renderPreview(preview);
         } catch (e) {
