@@ -134,8 +134,11 @@
         "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
     };
     
-    // CATEGORÍAS QUE ENTRAN EN LA PROMO DEL 15%
+    // CATEGORÍAS QUE CUENTAN PARA EL PRECIO MAYORISTA (al juntar 6+ unidades)
     const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
+    // A partir de cuántos vinos se activa el precio mayorista y qué margen se aplica sobre el costo
+    const VINOS_PARA_MAYORISTA = 6;
+    const MARGEN_MAYORISTA = 1.25; // costo + 25%
 
     let allProducts = [];
     let cart = [];
@@ -146,6 +149,42 @@
         if (!texto) return "";
         return texto.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     };
+
+    // Convierte un precio en texto (ej. "5.000" o "5,5") a n\u00famero
+    const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
+
+    // True si el producto es vino/espumante (cuenta para el precio mayorista)
+    const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
+
+    // Precio unitario efectivo. Con 6+ vinos, cada vino pasa a precio mayorista (costo + 25%).
+    // Si el vino no tiene costo cargado, mantiene su precio de lista (nunca queda en 0).
+    function precioUnitario(item, mayorista) {
+        const regular = parseNum(item.p);
+        if (mayorista && esVino(item.t)) {
+            const costo = parseNum(item.c);
+            if (costo > 0) {
+                const may = Math.round(costo * MARGEN_MAYORISTA);
+                // El mayorista nunca puede ser mayor al precio de lista
+                return regular > 0 ? Math.min(regular, may) : may;
+            }
+        }
+        return regular;
+    }
+
+    // Calcula el resumen del carrito una sola vez (lo usan el modal y el env\u00edo por WhatsApp)
+    function calcularResumen() {
+        const itemsVino = cart.reduce((acc, i) => acc + (esVino(i.t) ? i.q : 0), 0);
+        const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
+        let total = 0;
+        const lineas = cart.map(item => {
+            const regular = parseNum(item.p);
+            const pu = precioUnitario(item, mayorista);
+            const lineTotal = pu * item.q;
+            total += lineTotal;
+            return { item, regular, pu, lineTotal, esVinoItem: esVino(item.t) };
+        });
+        return { itemsVino, mayorista, total, lineas };
+    }
 
     // Función para deslizar el menú con las flechitas
     function scrollMenu(id, px) {
@@ -169,7 +208,8 @@
                     img: clean(c[3]) || 'https://via.placeholder.com/200', 
                     tipo: clean(c[4]),
                     cepa: clean(c[5]),
-                    stock: clean(c[6]) // LEYENDO LA COLUMNA G (Stock)
+                    stock: clean(c[6]), // LEYENDO LA COLUMNA G (Stock)
+                    costo: clean(c[7]) // LEYENDO LA COLUMNA H (Costo - para precio mayorista, NO se muestra al cliente)
                 };
             }).filter(p => p && p.name !== "" && p.stock !== "0"); // OCULTA SI EL STOCK ES "0"
 
@@ -240,17 +280,17 @@
                         <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
                         <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
                     </div>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', 'qty-${index}')">Añadir</button>
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', 'qty-${index}')">Añadir</button>
                 </div>`;
         });
     }
 
-    function addItem(n, p, t, qtyId) {
+    function addItem(n, p, t, c, qtyId) {
         const qty = parseInt(document.getElementById(qtyId).value);
         const item = cart.find(i => i.n === n);
-        if (item) item.q += qty; else cart.push({n, p, t, q: qty});
-        
-        document.getElementById(qtyId).value = 1; 
+        if (item) item.q += qty; else cart.push({n, p, t, c, q: qty});
+
+        document.getElementById(qtyId).value = 1;
         updateCartUI();
     }
 
@@ -288,68 +328,63 @@
         const list = document.getElementById('cart-list');
         const details = document.getElementById('total-details');
         list.innerHTML = '';
-        
-        let subtotal = 0;
-        let itemsVino = 0;
 
-        cart.forEach((item, index) => {
-            const precioNum = parseFloat(item.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (precioNum * item.q);
-            if (CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(item.t))) itemsVino += item.q;
+        const { itemsVino, mayorista, total, lineas } = calcularResumen();
+
+        lineas.forEach((ln, index) => {
+            const { item, regular, pu, lineTotal, esVinoItem } = ln;
+            const aplicado = mayorista && esVinoItem && pu < regular;
+            const precioCu = aplicado
+                ? `<s style="color:#777;">$${item.p}</s> <span style="color:#d4af37;">$${pu.toLocaleString('es-AR')}</span> c/u`
+                : `$${item.p} c/u`;
 
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <strong>${item.n}</strong><br>
-                        <small>$${item.p} c/u</small>
+                        <small>${precioCu}</small>
                     </div>
-                    
+
                     <div class="cart-qty-controls">
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
                         <span class="cart-qty-val">${item.q}</span>
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
                     </div>
 
-                    <span class="cart-item-total">$${(precioNum * item.q).toLocaleString('es-AR')}</span>
+                    <span class="cart-item-total">$${lineTotal.toLocaleString('es-AR')}</span>
                     <button class="cart-remove" onclick="removeItem(${index})">✕</button>
                 </div>`;
         });
 
-        let htmlDetails = `<div>Subtotal: $${subtotal.toLocaleString('es-AR')}</div>`;
-        if (itemsVino >= 6) {
-            const desc = subtotal * 0.15;
-            htmlDetails += `
-                <div style="color: #d4af37; font-weight:bold;">Descuento Promo (15% OFF): -$${desc.toLocaleString('es-AR')}</div>
-                <div style="font-size:1.3em; font-weight:bold; margin-top:5px; color: #fff;">TOTAL: $${(subtotal - desc).toLocaleString('es-AR')}</div>`;
+        let htmlDetails = '';
+        if (mayorista) {
+            const totalRegular = lineas.reduce((a, ln) => a + ln.regular * ln.item.q, 0);
+            const ahorro = totalRegular - total;
+            htmlDetails += `<div style="color:#d4af37; font-weight:bold;">🍷 ¡PRECIO MAYORISTA ACTIVADO!</div>`;
+            if (ahorro > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Ahorrás $${ahorro.toLocaleString('es-AR')}</div>`;
+            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${total.toLocaleString('es-AR')}</div>`;
         } else {
-            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color: #fff;">TOTAL: $${subtotal.toLocaleString('es-AR')}</div>`;
+            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${total.toLocaleString('es-AR')}</div>`;
             if (itemsVino > 0) {
-                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} bebidas con promo. ¡Sumá ${6 - itemsVino} más para el 15% OFF!</small>`;
+                const faltan = VINOS_PARA_MAYORISTA - itemsVino;
+                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vino(s). ¡Sumá ${faltan} más y accedé al PRECIO MAYORISTA! 🍷</small>`;
             }
         }
         details.innerHTML = htmlDetails;
     }
 
     function sendWpp() {
-        let subtotal = 0;
-        let itemsVino = 0;
+        const { mayorista, total, lineas } = calcularResumen();
         let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
-        
-        cart.forEach(i => {
-            const pNum = parseFloat(i.p.replace(/\./g, '').replace(',', '.')) || 0;
-            subtotal += (pNum * i.q);
-            if (CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(i.t))) itemsVino += i.q;
-            msg += `• ${i.q}x ${i.n} ($${i.p} c/u)%0A`;
+
+        lineas.forEach(ln => {
+            msg += `• ${ln.item.q}x ${ln.item.n} ($${ln.pu.toLocaleString('es-AR')} c/u)%0A`;
         });
 
-        if (itemsVino >= 6) {
-            const desc = subtotal * 0.15;
-            msg += `%0A*Subtotal:* $${subtotal.toLocaleString('es-AR')}`;
-            msg += `%0A*Descuento (15%):* -$${desc.toLocaleString('es-AR')}`;
-            msg += `%0A*TOTAL FINAL: $${(subtotal - desc).toLocaleString('es-AR')}*`;
-        } else {
-            msg += `%0A*TOTAL FINAL: $${subtotal.toLocaleString('es-AR')}*`;
+        if (mayorista) {
+            msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`;
         }
+        msg += `%0A*TOTAL FINAL: $${total.toLocaleString('es-AR')}*`;
 
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
