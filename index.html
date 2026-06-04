@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monje Negro - Catálogo</title>
     <style>
-        @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); }
-        @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); }
+        @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
+        @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); font-display: swap; }
 
         :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; --verde-wpp: #25d366; }
         body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 100px; }
@@ -256,23 +256,24 @@
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
         const search = normalizar(document.getElementById('buscador').value);
-        grid.innerHTML = '';
-        
+
         const filtered = allProducts.filter(p => {
             const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
             const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
             const mSearch = search === '' || normalizar(p.name).includes(search);
-            return mTipo && mCepa && mSearch; 
+            return mTipo && mCepa && mSearch;
         });
 
         if (filtered.length === 0) {
             grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No se encontraron productos para esta categoría.<br><small>Verificá que en la Columna E diga exactamente "${fTipo}"</small></p>`;
+            return;
         }
 
-        filtered.forEach((p, index) => {
-            grid.innerHTML += `
+        // Se arma todo el HTML de una sola vez y se inserta en un unico paso (mucho mas rapido en el celu).
+        // loading="lazy" hace que cada foto se baje recien cuando esta por verse en pantalla.
+        grid.innerHTML = filtered.map((p, index) => `
                 <div class="producto">
-                    <img src="${p.img}">
+                    <img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}">
                     <span class="nombre">${p.name}</span>
                     <span class="precio">$${p.price}</span>
                     <div class="selector-cantidad">
@@ -281,8 +282,7 @@
                         <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
                     </div>
                     <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', 'qty-${index}')">Añadir</button>
-                </div>`;
-        });
+                </div>`).join('');
     }
 
     function addItem(n, p, t, c, qtyId) {
