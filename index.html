@@ -162,14 +162,16 @@
                 const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (c.length < 5) return null;
                 const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
+                
                 return { 
                     name: clean(c[0]), 
                     price: clean(c[1]), 
                     img: clean(c[3]) || 'https://via.placeholder.com/200', 
                     tipo: clean(c[4]),
-                    cepa: clean(c[5]) 
+                    cepa: clean(c[5]),
+                    stock: clean(c[6]) // LEYENDO LA COLUMNA G (Stock)
                 };
-            }).filter(p => p && p.name !== "");
+            }).filter(p => p && p.name !== "" && p.stock !== "0"); // OCULTA SI EL STOCK ES "0"
 
             renderFiltros();
             renderProducts();
