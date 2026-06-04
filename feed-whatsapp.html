@@ -39,7 +39,7 @@
 
         <hr style="border-color:#333; margin:16px 0;">
         <strong>Zona de entrega</strong> <span class="muted">(Meta la pide para catálogos con reparto local)</span>
-        <p class="muted">Definí tu local y hasta dónde repartís. Para sacar la latitud y longitud: abrí Google Maps, hacé clic derecho (o mantené apretado en el celu) sobre tu local y tocá los dos números que aparecen arriba para copiarlos.</p>
+        <p class="muted">Definí tu local y hasta dónde repartís. Para sacar las coordenadas: abrí Google Maps, hacé clic derecho (o mantené apretado en el celu) sobre tu local; aparecen dos números, el <strong>primero es la latitud</strong> y el <strong>segundo la longitud</strong>. Poné cada uno en su casillero — la página ya los ordena como los pide Meta (longitud,latitud).</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <div style="flex:1; min-width:140px;">
                 <label class="muted" for="lat">Latitud:</label>
@@ -153,7 +153,7 @@
             // Zona de entrega (radio alrededor del local). Si no hay ubicacion, esas columnas quedan vacias.
             const lat = document.getElementById('lat').value.trim();
             const lng = document.getElementById('lng').value.trim();
-            const origin = (lat && lng) ? (lat + ',' + lng) : '';
+            const origin = (lat && lng) ? (lng + ',' + lat) : ''; // Meta pide el orden longitud,latitud
             const radio = origin ? document.getElementById('radio').value.trim() : '';
             const unidad = origin ? document.getElementById('unidad').value : '';
 
