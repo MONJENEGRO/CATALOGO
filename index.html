@@ -30,8 +30,25 @@
         .sub { color: #fff; font-family: 'Monley', cursive; font-size: 1.7em; margin-top: 2px; display: block; }
         .tagline { color: var(--muted); font-size: 0.72em; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
 
-        /* Buscador y filtros (pegados arriba) */
-        .filtros-area { background: rgba(10,10,12,.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 14px 0 10px; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--linea); }
+        /* Barra superior pegajosa (menú + filtros) */
+        .topbar { position: sticky; top: 0; z-index: 30; }
+
+        /* Menú de navegación */
+        .mainnav { background: #000; border-bottom: 1px solid var(--linea); position: relative; }
+        .nav-inner { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; justify-content: center; }
+        .nav-inner::-webkit-scrollbar { display: none; }
+        .nav-item { background: none; border: none; color: #fff; font-size: 0.78em; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 14px 13px; cursor: pointer; white-space: nowrap; transition: .2s; border-bottom: 2px solid transparent; }
+        .nav-item:hover { color: var(--gold); }
+        .nav-item.open { color: var(--gold); border-bottom-color: var(--rojo); }
+        .nav-panel { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 40; background: #0e0e11; border-bottom: 1px solid var(--linea); max-height: 62vh; overflow-y: auto; box-shadow: 0 14px 30px rgba(0,0,0,.55); }
+        .nav-panel.show { display: block; }
+        .nav-panel-inner { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; max-width: 1100px; margin: auto; }
+        .nav-opt { background: #15151a; border: 1px solid var(--linea); color: #ddd; padding: 8px 14px; border-radius: 999px; font-size: 0.82em; cursor: pointer; transition: .2s; }
+        .nav-opt:hover { border-color: var(--gold); color: #fff; background: #1d1d22; }
+        .nav-empty { color: var(--muted); font-size: .85em; padding: 6px; }
+
+        /* Buscador y filtros */
+        .filtros-area { background: rgba(10,10,12,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 14px 0 10px; border-bottom: 1px solid var(--linea); }
         .search-wrap { position: relative; margin-bottom: 14px; }
         .search-ico { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: .45; pointer-events: none; }
         #buscador { width: 100%; padding: 13px 16px 13px 42px; background: #101013; border: 1px solid var(--linea); border-radius: 10px; color: #fff; outline: none; transition: .25s; font-size: 0.95em; }
@@ -53,7 +70,7 @@
         #orden { background: #101013; color: #ddd; border: 1px solid var(--linea); border-radius: 8px; padding: 8px 10px; font-size: 0.8em; outline: none; cursor: pointer; }
 
         /* Grilla de productos */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 18px; scroll-margin-top: 200px; }
         .producto { background: linear-gradient(180deg, var(--card-a), var(--card-b)); border: 1px solid var(--linea); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, border-color .2s, box-shadow .2s; }
         .producto:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.45); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
         .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
@@ -79,12 +96,14 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Footer */
-        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; }
+        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; scroll-margin-top: 120px; }
         .footer-inner { display: flex; flex-wrap: wrap; gap: 26px; }
         .f-col { flex: 1; min-width: 200px; }
         .f-brand { font-family: 'AM Tripoli', sans-serif; color: var(--rojo); font-size: 1.5em; letter-spacing: 1px; }
         .f-col h4 { color: #fff; font-size: 0.95em; margin: 0 0 8px; letter-spacing: .5px; }
         .f-col p { color: var(--muted); font-size: 0.85em; line-height: 1.6; margin: 6px 0 0; }
+        .f-link { color: var(--verde-wpp); text-decoration: none; }
+        .f-link:hover { text-decoration: underline; }
         .footer-bottom { text-align: center; color: #5a5a62; font-size: 0.75em; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--linea); }
 
         /* Barra flotante del carrito */
@@ -123,35 +142,49 @@
     <div class="tagline">Vinos · Espumantes · Destilados · Cervezas</div>
 </header>
 
-<div class="filtros-area">
-    <div class="container">
-        <div class="search-wrap">
-            <span class="search-ico">🔍</span>
-            <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="renderProducts()">
+<div class="topbar">
+    <nav class="mainnav">
+        <div class="nav-inner container">
+            <button class="nav-item" onclick="toggleNav('prod', this)">Productos ▾</button>
+            <button class="nav-item" onclick="toggleNav('bod', this)">Bodegas ▾</button>
+            <button class="nav-item" onclick="toggleNav('mar', this)">Marcas ▾</button>
+            <button class="nav-item" onclick="toggleNav('var', this)">Varietales ▾</button>
+            <button class="nav-item" onclick="comoComprar()">Cómo comprar</button>
+            <button class="nav-item" onclick="contacto()">Contacto</button>
         </div>
+        <div id="nav-panel" class="nav-panel"></div>
+    </nav>
 
-        <div class="scroll-wrapper">
-            <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
-            <div id="filtros-tipo" class="filtro-grupo"></div>
-            <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
-        </div>
-
-        <div id="seccion-cepas" style="display:none; margin-top: 8px;">
-            <div class="scroll-wrapper">
-                <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
-                <div id="filtros-cepa" class="filtro-grupo"></div>
-                <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
+    <div class="filtros-area">
+        <div class="container">
+            <div class="search-wrap">
+                <span class="search-ico">🔍</span>
+                <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="renderProducts()">
             </div>
-        </div>
 
-        <div class="toolbar">
-            <span class="result-count" id="result-count"></span>
-            <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
-                <option value="destacados">Ordenar: Destacados</option>
-                <option value="precio-asc">Precio: menor a mayor</option>
-                <option value="precio-desc">Precio: mayor a menor</option>
-                <option value="az">Nombre: A-Z</option>
-            </select>
+            <div class="scroll-wrapper">
+                <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
+                <div id="filtros-tipo" class="filtro-grupo"></div>
+                <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
+            </div>
+
+            <div id="seccion-cepas" style="display:none; margin-top: 8px;">
+                <div class="scroll-wrapper">
+                    <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
+                    <div id="filtros-cepa" class="filtro-grupo"></div>
+                    <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <span class="result-count" id="result-count"></span>
+                <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
+                    <option value="destacados">Ordenar: Destacados</option>
+                    <option value="precio-asc">Precio: menor a mayor</option>
+                    <option value="precio-desc">Precio: mayor a menor</option>
+                    <option value="az">Nombre: A-Z</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>
@@ -161,7 +194,7 @@
     <div id="catalogo-grid" class="grid"></div>
 </div>
 
-<footer>
+<footer id="footer">
     <div class="footer-inner container">
         <div class="f-col">
             <div class="f-brand">MONJE NEGRO</div>
@@ -174,6 +207,12 @@
         <div class="f-col">
             <h4>Beneficio</h4>
             <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades.</p>
+        </div>
+        <div class="f-col">
+            <h4>Contacto</h4>
+            <p>📱 <a class="f-link" id="wpp-link" href="#" target="_blank" rel="noopener">Escribinos por WhatsApp</a><br>
+               📍 Córdoba, Argentina<br>
+               🕘 Coordinamos la entrega por WhatsApp.</p>
         </div>
     </div>
     <div class="footer-bottom">© 2026 Monje Negro · Botillería</div>
@@ -273,6 +312,70 @@
         document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
     }
 
+    // ---- Menú de navegación (Productos / Bodegas / Marcas / Varietales) ----
+    const hesc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const uniqSorted = (arr) => [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+
+    // Varietales: todas las cepas cargadas en la planilla
+    const varietalesList = () => uniqSorted(allProducts.map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'));
+
+    // Bodega/Marca: se deduce de las primeras palabras del nombre del producto
+    const BRAND_PRE = new Set(['EL', 'LA', 'LOS', 'LAS', 'DON', 'DONA', 'FINCA', 'BODEGA', 'BODEGAS', 'SANTA', 'SAN', 'CASA', 'ALTA', 'GRAN', 'VINA', 'DOMAINE', 'CHACRA', 'VALLE', 'LUIGI']);
+    function brandOf(name) {
+        const w = (name || '').trim().split(/\s+/);
+        let b = w[0] || '';
+        if (w[1] && BRAND_PRE.has(normalizar(b).toUpperCase())) b = w[0] + ' ' + w[1];
+        return b;
+    }
+    const brandList = (wines) => uniqSorted(allProducts.filter(p => wines ? esVino(p.tipo) : !esVino(p.tipo)).map(p => brandOf(p.name)));
+
+    function buildNavOptions(key) {
+        if (key === 'prod') return TIPOS.filter(t => t !== 'Todos').map(t => ({ kind: 'tipo', val: t, label: t }));
+        if (key === 'var') return varietalesList().map(v => ({ kind: 'cepa', val: v, label: v }));
+        if (key === 'bod') return brandList(true).map(b => ({ kind: 'marca', val: b, label: b }));
+        if (key === 'mar') return brandList(false).map(b => ({ kind: 'marca', val: b, label: b }));
+        return [];
+    }
+
+    let navOpen = null;
+    function toggleNav(key, btn) {
+        const panel = document.getElementById('nav-panel');
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
+        if (navOpen === key) { navOpen = null; panel.classList.remove('show'); return; }
+        navOpen = key;
+        btn.classList.add('open');
+        const items = buildNavOptions(key);
+        panel.innerHTML = '<div class="nav-panel-inner">' +
+            (items.length
+                ? items.map(it => `<button class="nav-opt" data-kind="${it.kind}" data-val="${hesc(it.val)}">${hesc(it.label)}</button>`).join('')
+                : '<span class="nav-empty">No hay opciones para mostrar.</span>') +
+            '</div>';
+        panel.classList.add('show');
+    }
+
+    function closeNav() {
+        navOpen = null;
+        const panel = document.getElementById('nav-panel');
+        if (panel) panel.classList.remove('show');
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
+    }
+
+    // Aplica la opción elegida en el menú: filtra y baja al catálogo
+    function navTo(kind, val) {
+        const buscador = document.getElementById('buscador');
+        buscador.value = '';
+        if (kind === 'tipo') { fTipo = val; fCepa = 'Todos'; }
+        else if (kind === 'cepa') { fTipo = 'Todos'; fCepa = val; }
+        else if (kind === 'marca') { fTipo = 'Todos'; fCepa = 'Todos'; buscador.value = val; }
+        closeNav();
+        renderFiltros();
+        renderProducts();
+        document.getElementById('catalogo-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function comoComprar() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
+    function contacto() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
+
     async function fetchProducts() {
         try {
             const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
@@ -337,7 +440,8 @@
 
     function renderProducts() {
         const grid = document.getElementById('catalogo-grid');
-        const search = normalizar(document.getElementById('buscador').value);
+        const searchVal = document.getElementById('buscador').value.trim();
+        const search = normalizar(searchVal);
 
         let filtered = allProducts.filter(p => {
             const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
@@ -352,8 +456,13 @@
         else if (orden === 'precio-desc') filtered.sort((a, b) => parseNum(b.price) - parseNum(a.price));
         else if (orden === 'az') filtered.sort((a, b) => a.name.localeCompare(b.name, 'es'));
 
+        // Contexto del filtro activo + cantidad
+        let ctx = '';
+        if (searchVal) ctx = '“' + searchVal + '” · ';
+        else if (fCepa !== 'Todos') ctx = fCepa + ' · ';
+        else if (fTipo !== 'Todos') ctx = fTipo + ' · ';
         document.getElementById('result-count').textContent =
-            filtered.length + (filtered.length === 1 ? ' producto' : ' productos');
+            ctx + filtered.length + (filtered.length === 1 ? ' producto' : ' productos');
 
         if (filtered.length === 0) {
             grid.innerHTML = `<div class="vacio">No encontramos productos para tu búsqueda.<br><small>Probá con otra categoría o nombre.</small></div>`;
@@ -484,6 +593,16 @@
 
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
+
+    // Listeners del menú: aplicar opción y cerrar al tocar fuera
+    document.getElementById('nav-panel').addEventListener('click', (e) => {
+        const b = e.target.closest('.nav-opt');
+        if (b) navTo(b.dataset.kind, b.dataset.val);
+    });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.mainnav')) closeNav(); });
+
+    const wl = document.getElementById('wpp-link');
+    if (wl) wl.href = 'https://wa.me/' + WHATSAPP_NUMBER;
 
     fetchProducts();
 </script>
