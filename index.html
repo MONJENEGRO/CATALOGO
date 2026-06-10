@@ -3,125 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monje Negro - Catálogo</title>
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Monje Negro — Botillería. Vinos, espumantes, destilados, cervezas y más. Pedí por WhatsApp y te lo acercamos.">
+    <title>Monje Negro - Botillería</title>
     <style>
         @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
         @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); font-display: swap; }
 
-        :root { --rojo: #ed1c24; --negro: #0a0a0a; --gris: #1a1a1a; --verde-wpp: #25d366; }
-        body { background-color: var(--negro); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 100px; }
-        
-        header { background: black; padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--rojo); }
-        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; margin: 0; text-transform: uppercase; }
-        .sub { color: white; font-family: 'Monley', cursive; font-size: 1.8em; margin-top: -5px; display: block; }
+        :root {
+            --rojo: #ed1c24; --rojo-osc: #c9151c;
+            --negro: #0a0a0b; --panel: #0e0e11; --card-a: #17171c; --card-b: #111114;
+            --linea: #28282f; --gold: #d4af37; --verde-wpp: #25d366;
+            --texto: #f3f3f4; --muted: #9a9aa3;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { background: var(--negro); color: var(--texto); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 90px; -webkit-font-smoothing: antialiased; }
+        .container { padding: 0 16px; max-width: 1100px; margin: auto; }
 
-        .container { padding: 15px; max-width: 1000px; margin: auto; }
+        /* Barra de promo */
+        .promobar { background: #000; color: var(--gold); text-align: center; font-size: 0.72em; letter-spacing: 1.4px; text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid #1b1b20; }
 
-        /* Buscador y Filtros */
-        .filtros-area { background: #000; padding: 15px 0; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-        #buscador { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 8px rgba(237, 28, 36, 0.3); }
-        
-        /* Controles con Flechas */
-        .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 5px; }
-        .scroll-btn { background: transparent; border: none; color: var(--rojo); font-size: 1.5em; cursor: pointer; padding: 0 5px; transition: 0.2s; user-select: none; }
+        /* Encabezado */
+        header { background: radial-gradient(120% 120% at 50% -30%, #240608 0%, #000 62%); padding: 30px 20px 24px; text-align: center; border-bottom: 1px solid var(--linea); position: relative; }
+        header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--rojo), var(--gold), var(--rojo), transparent); opacity: .65; }
+        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.4em; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 24px rgba(237,28,36,.25); }
+        .sub { color: #fff; font-family: 'Monley', cursive; font-size: 1.7em; margin-top: 2px; display: block; }
+        .tagline { color: var(--muted); font-size: 0.72em; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+
+        /* Buscador y filtros (pegados arriba) */
+        .filtros-area { background: rgba(10,10,12,.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 14px 0 10px; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--linea); }
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-ico { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: .45; pointer-events: none; }
+        #buscador { width: 100%; padding: 13px 16px 13px 42px; background: #101013; border: 1px solid var(--linea); border-radius: 10px; color: #fff; outline: none; transition: .25s; font-size: 0.95em; }
+        #buscador::placeholder { color: #6c6c75; }
+        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(237,28,36,.15); }
+
+        .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 4px; }
+        .scroll-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3em; cursor: pointer; padding: 0 5px; transition: .2s; user-select: none; }
+        .scroll-btn:hover { color: var(--gold); }
         .scroll-btn:active { transform: scale(0.8); }
-        
-        .filtro-grupo { flex-grow: 1; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; margin: 0 5px; }
+        .filtro-grupo { flex-grow: 1; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; margin: 0 4px; padding: 2px 0; }
         .filtro-grupo::-webkit-scrollbar { display: none; }
-        .btn-filtro { background: #222; color: #aaa; border: 1px solid #333; padding: 8px 16px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 0.85em; transition: 0.3s; }
-        .btn-filtro.active { background: var(--rojo); color: white; border-color: var(--rojo); font-weight: bold; }
+        .btn-filtro { background: #15151a; color: #c7c7cf; border: 1px solid var(--linea); padding: 8px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-size: 0.82em; letter-spacing: .3px; transition: .2s; }
+        .btn-filtro:hover { border-color: #555; color: #fff; }
+        .btn-filtro.active { background: var(--rojo); color: #fff; border-color: var(--rojo); font-weight: 700; box-shadow: 0 2px 12px rgba(237,28,36,.35); }
 
-        /* Grid de Productos */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 15px; }
-        .producto { background: var(--gris); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; }
-        .producto img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; }
-        .nombre { font-weight: bold; font-size: 0.9em; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; line-height: 1.2; }
-        .precio { color: #fff; font-size: 1.1em; font-weight: bold; display: block; margin-bottom: 10px; }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+        .result-count { color: var(--muted); font-size: 0.8em; letter-spacing: .4px; }
+        #orden { background: #101013; color: #ddd; border: 1px solid var(--linea); border-radius: 8px; padding: 8px 10px; font-size: 0.8em; outline: none; cursor: pointer; }
 
-        /* Controles de Cantidad en Catálogo */
-        .selector-cantidad { display: flex; align-items: center; justify-content: center; background: #000; border-radius: 6px; border: 1px solid #333; margin-bottom: 8px; }
-        .btn-qty { background: #222; color: white; border: none; padding: 8px 12px; cursor: pointer; width: 40px; font-weight: bold; }
-        .input-qty { background: transparent; color: white; border: none; width: 40px; text-align: center; font-weight: bold; outline: none; }
-        .btn-add { background: var(--rojo); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; font-size: 0.7em; }
+        /* Grilla de productos */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 18px; }
+        .producto { background: linear-gradient(180deg, var(--card-a), var(--card-b)); border: 1px solid var(--linea); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, border-color .2s, box-shadow .2s; }
+        .producto:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.45); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+        .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
+        .producto img { max-width: 100%; max-height: 170px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.55)); }
+        .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: .5px; }
 
-        /* Barra Flotante */
-        #cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--verde-wpp); color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 15px; cursor: pointer; display: none; z-index: 99; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .selector-cantidad { display: flex; align-items: center; justify-content: space-between; background: #0c0c0f; border: 1px solid var(--linea); border-radius: 9px; margin-bottom: 9px; overflow: hidden; }
+        .btn-qty { background: transparent; color: #fff; border: none; padding: 9px 0; cursor: pointer; width: 38px; font-size: 1.1em; font-weight: bold; transition: .15s; }
+        .btn-qty:hover { background: #1d1d22; color: var(--gold); }
+        .input-qty { background: transparent; color: #fff; border: none; width: 40px; text-align: center; font-weight: bold; outline: none; font-size: 0.95em; -moz-appearance: textfield; }
+        .input-qty::-webkit-outer-spin-button, .input-qty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .btn-add { background: var(--rojo); color: #fff; border: none; padding: 11px; border-radius: 9px; cursor: pointer; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 0.72em; letter-spacing: 1px; transition: .2s; }
+        .btn-add:hover { background: var(--rojo-osc); box-shadow: 0 4px 14px rgba(237,28,36,.4); }
+        .btn-add:active { transform: scale(0.97); }
 
-        /* MODAL DEL CARRITO */
-        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; box-sizing: border-box; align-items: center; justify-content: center; }
-        .modal-content { background: #1a1a1a; width: 100%; max-width: 500px; border-radius: 15px; padding: 20px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--rojo); position: relative; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 12px 0; font-size: 0.9em; gap: 10px; }
+        .vacio { grid-column: 1/-1; text-align: center; color: var(--muted); padding: 50px 20px; line-height: 1.6; }
+
+        /* Cargando */
+        .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
+        .spinner { width: 34px; height: 34px; border: 3px solid #2a2a30; border-top-color: var(--rojo); border-radius: 50%; margin: 0 auto 14px; animation: spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Footer */
+        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; }
+        .footer-inner { display: flex; flex-wrap: wrap; gap: 26px; }
+        .f-col { flex: 1; min-width: 200px; }
+        .f-brand { font-family: 'AM Tripoli', sans-serif; color: var(--rojo); font-size: 1.5em; letter-spacing: 1px; }
+        .f-col h4 { color: #fff; font-size: 0.95em; margin: 0 0 8px; letter-spacing: .5px; }
+        .f-col p { color: var(--muted); font-size: 0.85em; line-height: 1.6; margin: 6px 0 0; }
+        .footer-bottom { text-align: center; color: #5a5a62; font-size: 0.75em; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--linea); }
+
+        /* Barra flotante del carrito */
+        #cart-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 430px; background: linear-gradient(180deg, #28d56c, #1faa53); color: #fff; padding: 15px 20px; display: none; align-items: center; justify-content: space-between; gap: 10px; border-radius: 14px; cursor: pointer; font-weight: 700; z-index: 99; box-shadow: 0 10px 30px rgba(0,0,0,.55); }
+        .cart-bar-count { background: rgba(0,0,0,.18); padding: 4px 12px; border-radius: 999px; font-size: 0.85em; }
+
+        /* Modal del carrito */
+        #cart-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; padding: 16px; align-items: flex-end; justify-content: center; }
+        @media (min-width: 600px) { #cart-modal { align-items: center; } }
+        .modal-content { background: #141418; width: 100%; max-width: 520px; border-radius: 18px; padding: 22px; max-height: 86vh; overflow-y: auto; border: 1px solid var(--linea); border-top: 3px solid var(--rojo); position: relative; }
+        .modal-x { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-size: 1.2em; cursor: pointer; padding: 4px; line-height: 1; }
+        .modal-x:hover { color: #fff; }
+        .modal-title { color: #fff; margin: 0 0 16px; font-size: 1.3em; padding-right: 30px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--linea); padding: 12px 0; font-size: 0.9em; gap: 10px; }
         .cart-item-info { flex-grow: 1; }
-        
-        /* Controles de Cantidad en Carrito */
-        .cart-qty-controls { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 4px; }
-        .cart-qty-btn { background: #222; color: white; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 1em; }
-        .cart-qty-val { width: 25px; text-align: center; font-weight: bold; color: white; font-size: 0.9em; }
-        
+        .cart-qty-controls { display: flex; align-items: center; background: #000; border: 1px solid var(--linea); border-radius: 6px; }
+        .cart-qty-btn { background: #1a1a1f; color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 1em; }
+        .cart-qty-btn:hover { color: var(--gold); }
+        .cart-qty-val { width: 28px; text-align: center; font-weight: bold; color: #fff; font-size: 0.9em; }
         .cart-item-total { font-weight: bold; min-width: 70px; text-align: right; }
-        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.2em; cursor: pointer; font-weight: bold; padding: 0 5px; }
-        
-        .modal-footer { margin-top: 20px; text-align: center; }
-        .btn-send { background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: bold; font-size: 1em; cursor: pointer; }
-        .btn-close { color: #aaa; background: none; border: none; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 0.9em; }
+        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.1em; cursor: pointer; font-weight: bold; padding: 0 5px; }
+        .modal-footer { margin-top: 20px; }
+        .btn-send { background: linear-gradient(180deg, #28d56c, #1faa53); color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; font-size: 1em; cursor: pointer; transition: .2s; }
+        .btn-send:hover { filter: brightness(1.08); }
+        .btn-close { color: var(--muted); background: none; border: none; margin-top: 14px; cursor: pointer; font-size: 0.88em; width: 100%; }
+        .btn-close:hover { color: #fff; }
     </style>
 </head>
 <body>
 
+<div class="promobar">🍷 Pedí por WhatsApp y te lo acercamos · Precio mayorista en vinos llevando 6 o más</div>
+
 <header>
     <h1 class="brand">MONJE NEGRO</h1>
-    <span class="sub">botilleria</span>
+    <span class="sub">botillería</span>
+    <div class="tagline">Vinos · Espumantes · Destilados · Cervezas</div>
 </header>
 
 <div class="filtros-area">
     <div class="container">
-        <input type="text" id="buscador" placeholder="Buscar bebidas..." oninput="renderProducts()">
-        
+        <div class="search-wrap">
+            <span class="search-ico">🔍</span>
+            <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="renderProducts()">
+        </div>
+
         <div class="scroll-wrapper">
             <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
             <div id="filtros-tipo" class="filtro-grupo"></div>
             <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
         </div>
-        
-        <div id="seccion-cepas" style="display:none; margin-top: 10px;">
+
+        <div id="seccion-cepas" style="display:none; margin-top: 8px;">
             <div class="scroll-wrapper">
                 <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
                 <div id="filtros-cepa" class="filtro-grupo"></div>
                 <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
             </div>
         </div>
+
+        <div class="toolbar">
+            <span class="result-count" id="result-count"></span>
+            <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
+                <option value="destacados">Ordenar: Destacados</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+                <option value="az">Nombre: A-Z</option>
+            </select>
+        </div>
     </div>
 </div>
 
 <div class="container">
-    <div id="loading" style="text-align: center; padding-top: 50px; color: var(--rojo);">Preparando la cava...</div>
+    <div id="loading" class="loading"><div class="spinner"></div>Preparando la cava…</div>
     <div id="catalogo-grid" class="grid"></div>
 </div>
 
+<footer>
+    <div class="footer-inner container">
+        <div class="f-col">
+            <div class="f-brand">MONJE NEGRO</div>
+            <p>Botillería. Vinos, espumantes, destilados, cervezas y más.</p>
+        </div>
+        <div class="f-col">
+            <h4>Cómo comprar</h4>
+            <p>Elegí tus productos, tocá <strong>Ver mi pedido</strong> y enviá el carrito por WhatsApp. Te lo preparamos al toque.</p>
+        </div>
+        <div class="f-col">
+            <h4>Beneficio</h4>
+            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades.</p>
+        </div>
+    </div>
+    <div class="footer-bottom">© 2026 Monje Negro · Botillería</div>
+</footer>
+
 <div id="cart-bar" onclick="toggleModal(true)">
-    🛒 VER MI PEDIDO (<span id="count">0</span>)
+    <span>🛒 Ver mi pedido</span>
+    <span class="cart-bar-count"><span id="count">0</span> ítems</span>
 </div>
 
 <div id="cart-modal">
     <div class="modal-content">
-        <h2 style="color:var(--rojo); margin-top:0; border-bottom: 1px solid var(--rojo); padding-bottom: 10px;">Resumen del Pedido</h2>
+        <button class="modal-x" onclick="toggleModal(false)">✕</button>
+        <h2 class="modal-title">Tu pedido</h2>
         <div id="cart-list"></div>
         <div class="modal-footer">
-            <div id="total-details" style="text-align: right; margin-bottom: 15px; line-height: 1.4;"></div>
-            <button class="btn-send" onclick="sendWpp()">ENVIAR PEDIDO POR WHATSAPP</button>
-            <button class="btn-close" onclick="toggleModal(false)">Añadir más productos</button>
+            <div id="total-details" style="text-align: right; margin-bottom: 15px; line-height: 1.5;"></div>
+            <button class="btn-send" onclick="sendWpp()">Enviar pedido por WhatsApp</button>
+            <button class="btn-close" onclick="toggleModal(false)">Seguir comprando</button>
         </div>
     </div>
 </div>
 
 <script>
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
-    const WHATSAPP_NUMBER = "5493512345678"; 
+    const WHATSAPP_NUMBER = "5493512345678";
 
     // LISTA DE CATEGORÍAS PRINCIPALES
     const TIPOS = ["Todos", "PROMOS", "VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "APERITIVOS", "DESTILADOS", "COMIDA", "WHISKY", "ESPUMANTES", "CERVEZAS", "LICOR", "SIDRA", "ENERGIZANTES", "GASEOSAS", "JUGOS", "SODA", "HIELO", "TABACO", "HABANO", "ENCENDEDORES", "VASOS", "SACACORCHOS", "REGALERIA"];
-    
+
     // LISTA DE SUBCATEGORÍAS
     const CEPAS = {
         "APERITIVOS": ["Todos", "FERNET", "VERMUT"],
@@ -133,7 +215,7 @@
         "VINOS BLANCOS": ["Todos", "CHARDONNAY", "CHENIN DULCE", "DULCE", "SAUVIGNON BLANC", "SEMILLON", "TORRONTES", "TRIFECTA", "VIOGNIER"],
         "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
     };
-    
+
     // CATEGORÍAS QUE CUENTAN PARA EL PRECIO MAYORISTA (al juntar 6+ unidades)
     const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
     // A partir de cuántos vinos se activa el precio mayorista y qué margen se aplica sobre el costo
@@ -143,14 +225,14 @@
     let allProducts = [];
     let cart = [];
     let fTipo = 'Todos';
-    let fCepa = 'Todos'; 
+    let fCepa = 'Todos';
 
     const normalizar = (texto) => {
         if (!texto) return "";
-        return texto.toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        return texto.toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
     };
 
-    // Convierte un precio en texto (ej. "5.000" o "5,5") a n\u00famero
+    // Convierte un precio en texto (ej. "5.000" o "5,5") a número
     const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
 
     // True si el producto es vino/espumante (cuenta para el precio mayorista)
@@ -171,7 +253,7 @@
         return regular;
     }
 
-    // Calcula el resumen del carrito una sola vez (lo usan el modal y el env\u00edo por WhatsApp)
+    // Calcula el resumen del carrito una sola vez (lo usan el modal y el envío por WhatsApp)
     function calcularResumen() {
         const itemsVino = cart.reduce((acc, i) => acc + (esVino(i.t) ? i.q : 0), 0);
         const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
@@ -196,16 +278,16 @@
             const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
             const text = await res.text();
             const rows = text.split('\n').slice(1);
-            
+
             allProducts = rows.map(r => {
                 const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (c.length < 5) return null;
                 const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-                
-                return { 
-                    name: clean(c[0]), 
-                    price: clean(c[1]), 
-                    img: clean(c[3]) || 'https://via.placeholder.com/200', 
+
+                return {
+                    name: clean(c[0]),
+                    price: clean(c[1]),
+                    img: clean(c[3]) || 'https://via.placeholder.com/200',
                     tipo: clean(c[4]),
                     cepa: clean(c[5]),
                     stock: clean(c[6]), // LEYENDO LA COLUMNA G (Stock)
@@ -216,34 +298,34 @@
             renderFiltros();
             renderProducts();
             document.getElementById('loading').style.display = 'none';
-        } catch (e) { 
+        } catch (e) {
             console.error(e);
-            document.getElementById('loading').innerText = "Error al cargar los productos. Por favor, recargá la página.";
+            document.getElementById('loading').innerHTML = "Error al cargar los productos. Por favor, recargá la página.";
         }
     }
 
     function renderFiltros() {
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
-        
+
         const seccionCepas = document.getElementById('seccion-cepas');
         if (CEPAS[fTipo]) {
             seccionCepas.style.display = "block";
-            document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c => 
+            document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c =>
                 `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa', '${c}')">${c}</button>`).join('');
         } else {
             seccionCepas.style.display = "none";
         }
     }
 
-    function setFiltro(cat, val) { 
+    function setFiltro(cat, val) {
         if (cat === 'tipo') {
             fTipo = val;
-            fCepa = 'Todos'; 
+            fCepa = 'Todos';
         } else {
             fCepa = val;
         }
-        renderFiltros(); 
-        renderProducts(); 
+        renderFiltros();
+        renderProducts();
     }
 
     function updateQty(btn, delta) {
@@ -257,32 +339,46 @@
         const grid = document.getElementById('catalogo-grid');
         const search = normalizar(document.getElementById('buscador').value);
 
-        const filtered = allProducts.filter(p => {
+        let filtered = allProducts.filter(p => {
             const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
             const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
             const mSearch = search === '' || normalizar(p.name).includes(search);
             return mTipo && mCepa && mSearch;
         });
 
+        // Orden elegido en el menú
+        const orden = document.getElementById('orden').value;
+        if (orden === 'precio-asc') filtered.sort((a, b) => parseNum(a.price) - parseNum(b.price));
+        else if (orden === 'precio-desc') filtered.sort((a, b) => parseNum(b.price) - parseNum(a.price));
+        else if (orden === 'az') filtered.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+        document.getElementById('result-count').textContent =
+            filtered.length + (filtered.length === 1 ? ' producto' : ' productos');
+
         if (filtered.length === 0) {
-            grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No se encontraron productos para esta categoría.<br><small>Verificá que en la Columna E diga exactamente "${fTipo}"</small></p>`;
+            grid.innerHTML = `<div class="vacio">No encontramos productos para tu búsqueda.<br><small>Probá con otra categoría o nombre.</small></div>`;
             return;
         }
 
-        // Se arma todo el HTML de una sola vez y se inserta en un unico paso (mucho mas rapido en el celu).
-        // loading="lazy" hace que cada foto se baje recien cuando esta por verse en pantalla.
-        grid.innerHTML = filtered.map((p, index) => `
+        // Se arma todo el HTML de una sola vez y se inserta en un único paso (mucho más rápido en el celu).
+        // loading="lazy" hace que cada foto se baje recién cuando está por verse en pantalla.
+        grid.innerHTML = filtered.map((p, index) => {
+            const tagRaw = (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
+            const tag = tagRaw ? `<span class="tag">${tagRaw}</span>` : '';
+            return `
                 <div class="producto">
-                    <img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}">
+                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}"></div>
+                    ${tag}
                     <span class="nombre">${p.name}</span>
                     <span class="precio">$${p.price}</span>
                     <div class="selector-cantidad">
-                        <button class="btn-qty" onclick="updateQty(this, -1)">-</button>
+                        <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
                         <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
                         <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
                     </div>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', 'qty-${index}')">Añadir</button>
-                </div>`).join('');
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', 'qty-${index}')">Añadir al pedido</button>
+                </div>`;
+        }).join('');
     }
 
     function addItem(n, p, t, c, qtyId) {
@@ -297,7 +393,7 @@
     function updateCartItemQty(index, delta) {
         cart[index].q += delta;
         if (cart[index].q < 1) {
-            cart.splice(index, 1); 
+            cart.splice(index, 1);
         }
         updateCartUI();
         if (cart.length === 0) {
@@ -315,12 +411,12 @@
 
     function toggleModal(show) {
         document.getElementById('cart-modal').style.display = show ? 'flex' : 'none';
-        if(show) renderCartModal();
+        if (show) renderCartModal();
     }
 
     function updateCartUI() {
         const count = cart.reduce((acc, i) => acc + i.q, 0);
-        document.getElementById('cart-bar').style.display = count > 0 ? 'block' : 'none';
+        document.getElementById('cart-bar').style.display = count > 0 ? 'flex' : 'none';
         document.getElementById('count').innerText = count;
     }
 
