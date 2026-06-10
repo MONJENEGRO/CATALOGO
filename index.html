@@ -20,24 +20,19 @@
         body { background: var(--negro); color: var(--texto); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 90px; -webkit-font-smoothing: antialiased; }
         .container { padding: 0 16px; max-width: 1100px; margin: auto; }
 
-        /* Barra de promo */
         .promobar { background: #000; color: var(--gold); text-align: center; font-size: 0.72em; letter-spacing: 1.4px; text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid #1b1b20; }
 
-        /* Encabezado */
-        header { background: radial-gradient(120% 120% at 50% -30%, #240608 0%, #000 62%); padding: 30px 20px 24px; text-align: center; border-bottom: 1px solid var(--linea); position: relative; }
+        header { background: radial-gradient(120% 120% at 50% -30%, #240608 0%, #000 62%); padding: 26px 20px 20px; text-align: center; border-bottom: 1px solid var(--linea); position: relative; }
         header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--rojo), var(--gold), var(--rojo), transparent); opacity: .65; }
-        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.4em; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 24px rgba(237,28,36,.25); }
-        .sub { color: #fff; font-family: 'Monley', cursive; font-size: 1.7em; margin-top: 2px; display: block; }
-        .tagline { color: var(--muted); font-size: 0.72em; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 24px rgba(237,28,36,.25); cursor: pointer; }
+        .sub { color: #fff; font-family: 'Monley', cursive; font-size: 1.6em; margin-top: 2px; display: block; }
+        .tagline { color: var(--muted); font-size: 0.72em; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
 
-        /* Barra superior pegajosa (menú + filtros) */
         .topbar { position: sticky; top: 0; z-index: 30; }
-
-        /* Menú de navegación */
         .mainnav { background: #000; border-bottom: 1px solid var(--linea); position: relative; }
         .nav-inner { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; justify-content: center; }
         .nav-inner::-webkit-scrollbar { display: none; }
-        .nav-item { background: none; border: none; color: #fff; font-size: 0.78em; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 14px 13px; cursor: pointer; white-space: nowrap; transition: .2s; border-bottom: 2px solid transparent; }
+        .nav-item { background: none; border: none; color: #fff; font-size: 0.78em; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 14px 12px; cursor: pointer; white-space: nowrap; transition: .2s; border-bottom: 2px solid transparent; }
         .nav-item:hover { color: var(--gold); }
         .nav-item.open { color: var(--gold); border-bottom-color: var(--rojo); }
         .nav-panel { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 40; background: #0e0e11; border-bottom: 1px solid var(--linea); max-height: 62vh; overflow-y: auto; box-shadow: 0 14px 30px rgba(0,0,0,.55); }
@@ -47,14 +42,53 @@
         .nav-opt:hover { border-color: var(--gold); color: #fff; background: #1d1d22; }
         .nav-empty { color: var(--muted); font-size: .85em; padding: 6px; }
 
-        /* Buscador y filtros */
-        .filtros-area { background: rgba(10,10,12,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 14px 0 10px; border-bottom: 1px solid var(--linea); }
-        .search-wrap { position: relative; margin-bottom: 14px; }
+        .filtros-area { background: rgba(10,10,12,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; border-bottom: 1px solid var(--linea); }
+        .search-wrap { position: relative; }
         .search-ico { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: .45; pointer-events: none; }
-        #buscador { width: 100%; padding: 13px 16px 13px 42px; background: #101013; border: 1px solid var(--linea); border-radius: 10px; color: #fff; outline: none; transition: .25s; font-size: 0.95em; }
+        #buscador { width: 100%; padding: 12px 16px 12px 42px; background: #101013; border: 1px solid var(--linea); border-radius: 10px; color: #fff; outline: none; transition: .25s; font-size: 0.95em; }
         #buscador::placeholder { color: #6c6c75; }
         #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(237,28,36,.15); }
 
+        /* ---- Portada / Home ---- */
+        .hero { position: relative; }
+        .hero-window { overflow: hidden; }
+        .hero-track { display: flex; transition: transform .5s ease; }
+        .hero-slide { min-width: 100%; min-height: 270px; padding: 50px 30px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .slide1 { background: radial-gradient(130% 150% at 18% 0%, #2c0a0e, #0a0a0b 68%); }
+        .slide2 { background: radial-gradient(130% 150% at 82% 0%, #2b220b, #0a0a0b 68%); }
+        .slide3 { background: radial-gradient(130% 150% at 50% 0%, #0a1c15, #0a0a0b 68%); }
+        .hero-content h2 { font-size: 2.1em; margin: 0 0 10px; color: #fff; letter-spacing: 1px; }
+        .hero-content p { color: #d8d8de; margin: 0 0 20px; font-size: 1em; max-width: 460px; }
+        .hero-btn { background: var(--rojo); color: #fff; border: none; padding: 13px 30px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: .82em; cursor: pointer; transition: .2s; }
+        .hero-btn:hover { background: var(--rojo-osc); box-shadow: 0 6px 18px rgba(237,28,36,.4); }
+        .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.4); border: 1px solid var(--linea); color: #fff; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2em; cursor: pointer; z-index: 2; transition: .2s; }
+        .hero-arrow.left { left: 10px; } .hero-arrow.right { right: 10px; }
+        .hero-arrow:hover { background: var(--rojo); border-color: var(--rojo); }
+        .hero-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
+        .hero-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: rgba(255,255,255,.35); cursor: pointer; padding: 0; }
+        .hero-dot.active { background: var(--gold); }
+
+        .bloque { margin: 28px 0; }
+        .bloque-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
+        .bloque h2 { font-size: 1.3em; margin: 0; color: #fff; letter-spacing: .5px; }
+        .ver-mas { background: none; border: none; color: var(--gold); cursor: pointer; font-size: .82em; white-space: nowrap; }
+        .ver-mas:hover { text-decoration: underline; }
+
+        .ofertas { display: block; width: 100%; text-align: left; margin: 6px 0 4px; cursor: pointer; border: 1px solid rgba(237,28,36,.4); border-radius: 16px; background: linear-gradient(100deg, #1c0a0c, #0e0e11 70%); overflow: hidden; }
+        .ofertas-inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; gap: 12px; }
+        .ofertas-kicker { color: var(--gold); font-size: .72em; letter-spacing: 2px; text-transform: uppercase; }
+        .ofertas h3 { margin: 6px 0 0; color: #fff; font-size: 1.35em; }
+        .ofertas-cta { color: #fff; font-weight: 700; background: var(--rojo); padding: 10px 18px; border-radius: 10px; white-space: nowrap; font-size: .9em; }
+
+        .bodegas-row { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; scroll-behavior: smooth; }
+        .bodegas-row::-webkit-scrollbar { display: none; }
+        .bodega-item { flex: 0 0 auto; width: 92px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .bodega-circle { width: 74px; height: 74px; border-radius: 50%; border: 1px solid var(--linea); background: linear-gradient(180deg, #16161b, #0f0f12); display: flex; align-items: center; justify-content: center; font-family: 'AM Tripoli', sans-serif; font-size: 1.5em; color: var(--gold); transition: .2s; }
+        .bodega-item:hover .bodega-circle { border-color: var(--gold); transform: translateY(-3px); }
+        .bodega-name { font-size: 0.72em; color: var(--muted); text-align: center; line-height: 1.2; }
+
+        /* ---- Catálogo ---- */
+        .catalog-tools { padding-top: 16px; }
         .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 4px; }
         .scroll-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3em; cursor: pointer; padding: 0 5px; transition: .2s; user-select: none; }
         .scroll-btn:hover { color: var(--gold); }
@@ -64,13 +98,11 @@
         .btn-filtro { background: #15151a; color: #c7c7cf; border: 1px solid var(--linea); padding: 8px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-size: 0.82em; letter-spacing: .3px; transition: .2s; }
         .btn-filtro:hover { border-color: #555; color: #fff; }
         .btn-filtro.active { background: var(--rojo); color: #fff; border-color: var(--rojo); font-weight: 700; box-shadow: 0 2px 12px rgba(237,28,36,.35); }
-
         .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
         .result-count { color: var(--muted); font-size: 0.8em; letter-spacing: .4px; }
         #orden { background: #101013; color: #ddd; border: 1px solid var(--linea); border-radius: 8px; padding: 8px 10px; font-size: 0.8em; outline: none; cursor: pointer; }
 
-        /* Grilla de productos */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 18px; scroll-margin-top: 200px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 16px; }
         .producto { background: linear-gradient(180deg, var(--card-a), var(--card-b)); border: 1px solid var(--linea); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, border-color .2s, box-shadow .2s; }
         .producto:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.45); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
         .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
@@ -78,7 +110,6 @@
         .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: .5px; }
-
         .selector-cantidad { display: flex; align-items: center; justify-content: space-between; background: #0c0c0f; border: 1px solid var(--linea); border-radius: 9px; margin-bottom: 9px; overflow: hidden; }
         .btn-qty { background: transparent; color: #fff; border: none; padding: 9px 0; cursor: pointer; width: 38px; font-size: 1.1em; font-weight: bold; transition: .15s; }
         .btn-qty:hover { background: #1d1d22; color: var(--gold); }
@@ -87,16 +118,13 @@
         .btn-add { background: var(--rojo); color: #fff; border: none; padding: 11px; border-radius: 9px; cursor: pointer; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 0.72em; letter-spacing: 1px; transition: .2s; }
         .btn-add:hover { background: var(--rojo-osc); box-shadow: 0 4px 14px rgba(237,28,36,.4); }
         .btn-add:active { transform: scale(0.97); }
-
         .vacio { grid-column: 1/-1; text-align: center; color: var(--muted); padding: 50px 20px; line-height: 1.6; }
 
-        /* Cargando */
         .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
         .spinner { width: 34px; height: 34px; border: 3px solid #2a2a30; border-top-color: var(--rojo); border-radius: 50%; margin: 0 auto 14px; animation: spin .8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Footer */
-        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; scroll-margin-top: 120px; }
+        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; scroll-margin-top: 110px; }
         .footer-inner { display: flex; flex-wrap: wrap; gap: 26px; }
         .f-col { flex: 1; min-width: 200px; }
         .f-brand { font-family: 'AM Tripoli', sans-serif; color: var(--rojo); font-size: 1.5em; letter-spacing: 1px; }
@@ -106,11 +134,9 @@
         .f-link:hover { text-decoration: underline; }
         .footer-bottom { text-align: center; color: #5a5a62; font-size: 0.75em; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--linea); }
 
-        /* Barra flotante del carrito */
         #cart-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 430px; background: linear-gradient(180deg, #28d56c, #1faa53); color: #fff; padding: 15px 20px; display: none; align-items: center; justify-content: space-between; gap: 10px; border-radius: 14px; cursor: pointer; font-weight: 700; z-index: 99; box-shadow: 0 10px 30px rgba(0,0,0,.55); }
         .cart-bar-count { background: rgba(0,0,0,.18); padding: 4px 12px; border-radius: 999px; font-size: 0.85em; }
 
-        /* Modal del carrito */
         #cart-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; padding: 16px; align-items: flex-end; justify-content: center; }
         @media (min-width: 600px) { #cart-modal { align-items: center; } }
         .modal-content { background: #141418; width: 100%; max-width: 520px; border-radius: 18px; padding: 22px; max-height: 86vh; overflow-y: auto; border: 1px solid var(--linea); border-top: 3px solid var(--rojo); position: relative; }
@@ -137,7 +163,7 @@
 <div class="promobar">🍷 Pedí por WhatsApp y te lo acercamos · Precio mayorista en vinos llevando 6 o más</div>
 
 <header>
-    <h1 class="brand">MONJE NEGRO</h1>
+    <h1 class="brand" onclick="showHome()">MONJE NEGRO</h1>
     <span class="sub">botillería</span>
     <div class="tagline">Vinos · Espumantes · Destilados · Cervezas</div>
 </header>
@@ -145,6 +171,7 @@
 <div class="topbar">
     <nav class="mainnav">
         <div class="nav-inner container">
+            <button class="nav-item" onclick="showHome()">Inicio</button>
             <button class="nav-item" onclick="toggleNav('prod', this)">Productos ▾</button>
             <button class="nav-item" onclick="toggleNav('bod', this)">Bodegas ▾</button>
             <button class="nav-item" onclick="toggleNav('mar', this)">Marcas ▾</button>
@@ -159,15 +186,85 @@
         <div class="container">
             <div class="search-wrap">
                 <span class="search-ico">🔍</span>
-                <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="renderProducts()">
+                <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="onSearch()">
             </div>
+        </div>
+    </div>
+</div>
 
+<div id="loading" class="loading"><div class="spinner"></div>Preparando la cava…</div>
+
+<!-- PORTADA -->
+<div id="home-view" style="display:none;">
+    <section class="hero">
+        <button class="hero-arrow left" onclick="heroMove(-1)">‹</button>
+        <div class="hero-window">
+            <div class="hero-track" id="hero-track">
+                <div class="hero-slide slide1">
+                    <div class="hero-content">
+                        <h2>¿Fan del vino?</h2>
+                        <p>Encontrá tu próxima botella entre nuestras etiquetas seleccionadas.</p>
+                        <button class="hero-btn" onclick="navTo('tipo','VINOS TINTOS')">Ver vinos</button>
+                    </div>
+                </div>
+                <div class="hero-slide slide2">
+                    <div class="hero-content">
+                        <h2>Precio Mayorista 🍷</h2>
+                        <p>Llevando 6 vinos o más, el precio baja solo. Ideal para juntadas.</p>
+                        <button class="hero-btn" onclick="navTo('tipo','VINOS TINTOS')">Aprovechar</button>
+                    </div>
+                </div>
+                <div class="hero-slide slide3">
+                    <div class="hero-content">
+                        <h2>Pedí por WhatsApp</h2>
+                        <p>Armás tu pedido en segundos y te lo acercamos.</p>
+                        <button class="hero-btn" onclick="comoComprar()">Cómo comprar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="hero-arrow right" onclick="heroMove(1)">›</button>
+        <div class="hero-dots" id="hero-dots"></div>
+    </section>
+
+    <div class="container">
+        <section class="bloque">
+            <div class="bloque-head">
+                <h2>Destacados</h2>
+                <button class="ver-mas" onclick="navTo('tipo','Todos')">Ver todo →</button>
+            </div>
+            <div id="destacados" class="grid"></div>
+        </section>
+
+        <button class="ofertas" onclick="navTo('tipo','PROMOS')">
+            <div class="ofertas-inner">
+                <div>
+                    <span class="ofertas-kicker">🔥 Hot Sale</span>
+                    <h3>Vinos con descuento</h3>
+                </div>
+                <span class="ofertas-cta">Ver ofertas →</span>
+            </div>
+        </button>
+
+        <section class="bloque">
+            <div class="bloque-head">
+                <h2>Bodegas que más trabajamos</h2>
+                <button class="ver-mas" onclick="toggleNav('bod', document.querySelectorAll('.nav-item')[2])">Ver todas →</button>
+            </div>
+            <div id="bodegas-row" class="bodegas-row"></div>
+        </section>
+    </div>
+</div>
+
+<!-- CATÁLOGO -->
+<div id="catalogo-view" style="display:none;">
+    <div class="container">
+        <div class="catalog-tools">
             <div class="scroll-wrapper">
                 <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
                 <div id="filtros-tipo" class="filtro-grupo"></div>
                 <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
             </div>
-
             <div id="seccion-cepas" style="display:none; margin-top: 8px;">
                 <div class="scroll-wrapper">
                     <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
@@ -175,7 +272,6 @@
                     <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
                 </div>
             </div>
-
             <div class="toolbar">
                 <span class="result-count" id="result-count"></span>
                 <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
@@ -186,12 +282,8 @@
                 </select>
             </div>
         </div>
+        <div id="catalogo-grid" class="grid"></div>
     </div>
-</div>
-
-<div class="container">
-    <div id="loading" class="loading"><div class="spinner"></div>Preparando la cava…</div>
-    <div id="catalogo-grid" class="grid"></div>
 </div>
 
 <footer id="footer">
@@ -240,10 +332,8 @@
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
     const WHATSAPP_NUMBER = "5493512345678";
 
-    // LISTA DE CATEGORÍAS PRINCIPALES
     const TIPOS = ["Todos", "PROMOS", "VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "APERITIVOS", "DESTILADOS", "COMIDA", "WHISKY", "ESPUMANTES", "CERVEZAS", "LICOR", "SIDRA", "ENERGIZANTES", "GASEOSAS", "JUGOS", "SODA", "HIELO", "TABACO", "HABANO", "ENCENDEDORES", "VASOS", "SACACORCHOS", "REGALERIA"];
 
-    // LISTA DE SUBCATEGORÍAS
     const CEPAS = {
         "APERITIVOS": ["Todos", "FERNET", "VERMUT"],
         "CERVEZAS": ["Todos", "BOTELLA", "LATA", "LATON", "PORRON"],
@@ -255,11 +345,9 @@
         "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
     };
 
-    // CATEGORÍAS QUE CUENTAN PARA EL PRECIO MAYORISTA (al juntar 6+ unidades)
     const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
-    // A partir de cuántos vinos se activa el precio mayorista y qué margen se aplica sobre el costo
     const VINOS_PARA_MAYORISTA = 6;
-    const MARGEN_MAYORISTA = 1.25; // costo + 25%
+    const MARGEN_MAYORISTA = 1.25;
 
     let allProducts = [];
     let cart = [];
@@ -270,29 +358,21 @@
         if (!texto) return "";
         return texto.toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
     };
-
-    // Convierte un precio en texto (ej. "5.000" o "5,5") a número
     const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
-
-    // True si el producto es vino/espumante (cuenta para el precio mayorista)
     const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
 
-    // Precio unitario efectivo. Con 6+ vinos, cada vino pasa a precio mayorista (costo + 25%).
-    // Si el vino no tiene costo cargado, mantiene su precio de lista (nunca queda en 0).
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
         if (mayorista && esVino(item.t)) {
             const costo = parseNum(item.c);
             if (costo > 0) {
                 const may = Math.round(costo * MARGEN_MAYORISTA);
-                // El mayorista nunca puede ser mayor al precio de lista
                 return regular > 0 ? Math.min(regular, may) : may;
             }
         }
         return regular;
     }
 
-    // Calcula el resumen del carrito una sola vez (lo usan el modal y el envío por WhatsApp)
     function calcularResumen() {
         const itemsVino = cart.reduce((acc, i) => acc + (esVino(i.t) ? i.q : 0), 0);
         const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
@@ -307,19 +387,47 @@
         return { itemsVino, mayorista, total, lineas };
     }
 
-    // Función para deslizar el menú con las flechitas
     function scrollMenu(id, px) {
         document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
     }
 
-    // ---- Menú de navegación (Productos / Bodegas / Marcas / Varietales) ----
+    // ---- Vistas: portada / catálogo ----
+    let mode = 'home';
+    function showHome() {
+        mode = 'home';
+        document.getElementById('home-view').style.display = 'block';
+        document.getElementById('catalogo-view').style.display = 'none';
+        closeNav();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function showCatalogo() {
+        mode = 'catalogo';
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('catalogo-view').style.display = 'block';
+    }
+
+    // ---- Carrusel del hero ----
+    const HERO_N = 3;
+    let heroI = 0, heroTimer = null;
+    function heroRender() {
+        const t = document.getElementById('hero-track');
+        if (t) t.style.transform = 'translateX(-' + (heroI * 100) + '%)';
+        document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroI));
+    }
+    function heroMove(d) { heroI = (heroI + d + HERO_N) % HERO_N; heroRender(); resetHeroTimer(); }
+    function heroGo(i) { heroI = i; heroRender(); resetHeroTimer(); }
+    function resetHeroTimer() { clearInterval(heroTimer); heroTimer = setInterval(() => heroMove(1), 6000); }
+    function initHero() {
+        const dots = document.getElementById('hero-dots');
+        if (dots) dots.innerHTML = Array.from({ length: HERO_N }, (_, i) => `<button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="heroGo(${i})"></button>`).join('');
+        resetHeroTimer();
+    }
+
+    // ---- Menú de navegación ----
     const hesc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const uniqSorted = (arr) => [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-
-    // Varietales: todas las cepas cargadas en la planilla
     const varietalesList = () => uniqSorted(allProducts.map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'));
 
-    // Bodega/Marca: se deduce de las primeras palabras del nombre del producto
     const BRAND_PRE = new Set(['EL', 'LA', 'LOS', 'LAS', 'DON', 'DONA', 'FINCA', 'BODEGA', 'BODEGAS', 'SANTA', 'SAN', 'CASA', 'ALTA', 'GRAN', 'VINA', 'DOMAINE', 'CHACRA', 'VALLE', 'LUIGI']);
     function brandOf(name) {
         const w = (name || '').trim().split(/\s+/);
@@ -329,8 +437,20 @@
     }
     const brandList = (wines) => uniqSorted(allProducts.filter(p => wines ? esVino(p.tipo) : !esVino(p.tipo)).map(p => brandOf(p.name)));
 
+    // Bodegas más frecuentes (las que "más trabajamos")
+    function topBodegas(n) {
+        const counts = {};
+        allProducts.filter(p => esVino(p.tipo)).forEach(p => { const b = brandOf(p.name); if (b) counts[b] = (counts[b] || 0) + 1; });
+        return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
+    }
+    function iniciales(b) {
+        const w = b.trim().split(/\s+/);
+        if (w.length >= 2) return (w[0][0] + w[1][0]).toUpperCase();
+        return b.slice(0, 2).toUpperCase();
+    }
+
     function buildNavOptions(key) {
-        if (key === 'prod') return TIPOS.filter(t => t !== 'Todos').map(t => ({ kind: 'tipo', val: t, label: t }));
+        if (key === 'prod') return [{ kind: 'tipo', val: 'Todos', label: 'Ver todo' }].concat(TIPOS.filter(t => t !== 'Todos').map(t => ({ kind: 'tipo', val: t, label: t })));
         if (key === 'var') return varietalesList().map(v => ({ kind: 'cepa', val: v, label: v }));
         if (key === 'bod') return brandList(true).map(b => ({ kind: 'marca', val: b, label: b }));
         if (key === 'mar') return brandList(false).map(b => ({ kind: 'marca', val: b, label: b }));
@@ -343,7 +463,7 @@
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
         if (navOpen === key) { navOpen = null; panel.classList.remove('show'); return; }
         navOpen = key;
-        btn.classList.add('open');
+        if (btn) btn.classList.add('open');
         const items = buildNavOptions(key);
         panel.innerHTML = '<div class="nav-panel-inner">' +
             (items.length
@@ -352,7 +472,6 @@
             '</div>';
         panel.classList.add('show');
     }
-
     function closeNav() {
         navOpen = null;
         const panel = document.getElementById('nav-panel');
@@ -360,7 +479,7 @@
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
     }
 
-    // Aplica la opción elegida en el menú: filtra y baja al catálogo
+    // Aplica la opción elegida: pasa al catálogo, filtra y sube al inicio
     function navTo(kind, val) {
         const buscador = document.getElementById('buscador');
         buscador.value = '';
@@ -368,13 +487,40 @@
         else if (kind === 'cepa') { fTipo = 'Todos'; fCepa = val; }
         else if (kind === 'marca') { fTipo = 'Todos'; fCepa = 'Todos'; buscador.value = val; }
         closeNav();
+        showCatalogo();
         renderFiltros();
         renderProducts();
-        document.getElementById('catalogo-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function comoComprar() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
     function contacto() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
+
+    function onSearch() {
+        if (mode !== 'catalogo') showCatalogo();
+        renderProducts();
+    }
+
+    // ---- Mezcla aleatoria (para Destacados) ----
+    function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildHome() {
+        let pool = allProducts.filter(p => esVino(p.tipo));
+        if (pool.length < 8) pool = allProducts.slice();
+        const random = shuffle(pool.slice()).slice(0, 8);
+        document.getElementById('destacados').innerHTML = random.map((p, i) => productCard(p, 'qty-dest-' + i)).join('');
+
+        const tops = topBodegas(12);
+        document.getElementById('bodegas-row').innerHTML = tops.length
+            ? tops.map(b => `<button class="bodega-item" data-val="${hesc(b)}"><span class="bodega-circle">${hesc(iniciales(b))}</span><span class="bodega-name">${hesc(b)}</span></button>`).join('')
+            : '<span class="nav-empty">—</span>';
+    }
 
     async function fetchProducts() {
         try {
@@ -386,21 +532,21 @@
                 const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (c.length < 5) return null;
                 const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-
                 return {
                     name: clean(c[0]),
                     price: clean(c[1]),
                     img: clean(c[3]) || 'https://via.placeholder.com/200',
                     tipo: clean(c[4]),
                     cepa: clean(c[5]),
-                    stock: clean(c[6]), // LEYENDO LA COLUMNA G (Stock)
-                    costo: clean(c[7]) // LEYENDO LA COLUMNA H (Costo - para precio mayorista, NO se muestra al cliente)
+                    stock: clean(c[6]),
+                    costo: clean(c[7])
                 };
-            }).filter(p => p && p.name !== "" && p.stock !== "0"); // OCULTA SI EL STOCK ES "0"
+            }).filter(p => p && p.name !== "" && p.stock !== "0");
 
             renderFiltros();
-            renderProducts();
+            buildHome();
             document.getElementById('loading').style.display = 'none';
+            showHome();
         } catch (e) {
             console.error(e);
             document.getElementById('loading').innerHTML = "Error al cargar los productos. Por favor, recargá la página.";
@@ -409,7 +555,6 @@
 
     function renderFiltros() {
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
-
         const seccionCepas = document.getElementById('seccion-cepas');
         if (CEPAS[fTipo]) {
             seccionCepas.style.display = "block";
@@ -421,12 +566,8 @@
     }
 
     function setFiltro(cat, val) {
-        if (cat === 'tipo') {
-            fTipo = val;
-            fCepa = 'Todos';
-        } else {
-            fCepa = val;
-        }
+        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; }
+        else { fCepa = val; }
         renderFiltros();
         renderProducts();
     }
@@ -436,6 +577,25 @@
         let val = parseInt(input.value) + delta;
         if (val < 1) val = 1;
         input.value = val;
+    }
+
+    // Tarjeta de producto reutilizable (qid debe ser único en la página)
+    function productCard(p, qid) {
+        const tagRaw = (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
+        const tag = tagRaw ? `<span class="tag">${tagRaw}</span>` : '';
+        return `
+                <div class="producto">
+                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}"></div>
+                    ${tag}
+                    <span class="nombre">${p.name}</span>
+                    <span class="precio">$${p.price}</span>
+                    <div class="selector-cantidad">
+                        <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
+                        <input type="number" class="input-qty" value="1" id="${qid}" readonly>
+                        <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', '${qid}')">Añadir al pedido</button>
+                </div>`;
     }
 
     function renderProducts() {
@@ -450,13 +610,11 @@
             return mTipo && mCepa && mSearch;
         });
 
-        // Orden elegido en el menú
         const orden = document.getElementById('orden').value;
         if (orden === 'precio-asc') filtered.sort((a, b) => parseNum(a.price) - parseNum(b.price));
         else if (orden === 'precio-desc') filtered.sort((a, b) => parseNum(b.price) - parseNum(a.price));
         else if (orden === 'az') filtered.sort((a, b) => a.name.localeCompare(b.name, 'es'));
 
-        // Contexto del filtro activo + cantidad
         let ctx = '';
         if (searchVal) ctx = '“' + searchVal + '” · ';
         else if (fCepa !== 'Todos') ctx = fCepa + ' · ';
@@ -468,48 +626,22 @@
             grid.innerHTML = `<div class="vacio">No encontramos productos para tu búsqueda.<br><small>Probá con otra categoría o nombre.</small></div>`;
             return;
         }
-
-        // Se arma todo el HTML de una sola vez y se inserta en un único paso (mucho más rápido en el celu).
-        // loading="lazy" hace que cada foto se baje recién cuando está por verse en pantalla.
-        grid.innerHTML = filtered.map((p, index) => {
-            const tagRaw = (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
-            const tag = tagRaw ? `<span class="tag">${tagRaw}</span>` : '';
-            return `
-                <div class="producto">
-                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}"></div>
-                    ${tag}
-                    <span class="nombre">${p.name}</span>
-                    <span class="precio">$${p.price}</span>
-                    <div class="selector-cantidad">
-                        <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
-                        <input type="number" class="input-qty" value="1" id="qty-${index}" readonly>
-                        <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
-                    </div>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', 'qty-${index}')">Añadir al pedido</button>
-                </div>`;
-        }).join('');
+        grid.innerHTML = filtered.map((p, index) => productCard(p, 'qty-' + index)).join('');
     }
 
     function addItem(n, p, t, c, qtyId) {
         const qty = parseInt(document.getElementById(qtyId).value);
         const item = cart.find(i => i.n === n);
         if (item) item.q += qty; else cart.push({n, p, t, c, q: qty});
-
         document.getElementById(qtyId).value = 1;
         updateCartUI();
     }
 
     function updateCartItemQty(index, delta) {
         cart[index].q += delta;
-        if (cart[index].q < 1) {
-            cart.splice(index, 1);
-        }
+        if (cart[index].q < 1) { cart.splice(index, 1); }
         updateCartUI();
-        if (cart.length === 0) {
-            toggleModal(false);
-        } else {
-            renderCartModal();
-        }
+        if (cart.length === 0) { toggleModal(false); } else { renderCartModal(); }
     }
 
     function removeItem(index) {
@@ -533,7 +665,6 @@
         const list = document.getElementById('cart-list');
         const details = document.getElementById('total-details');
         list.innerHTML = '';
-
         const { itemsVino, mayorista, total, lineas } = calcularResumen();
 
         lineas.forEach((ln, index) => {
@@ -542,20 +673,17 @@
             const precioCu = aplicado
                 ? `<s style="color:#777;">$${item.p}</s> <span style="color:#d4af37;">$${pu.toLocaleString('es-AR')}</span> c/u`
                 : `$${item.p} c/u`;
-
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <strong>${item.n}</strong><br>
                         <small>${precioCu}</small>
                     </div>
-
                     <div class="cart-qty-controls">
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
                         <span class="cart-qty-val">${item.q}</span>
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
                     </div>
-
                     <span class="cart-item-total">$${lineTotal.toLocaleString('es-AR')}</span>
                     <button class="cart-remove" onclick="removeItem(${index})">✕</button>
                 </div>`;
@@ -581,29 +709,29 @@
     function sendWpp() {
         const { mayorista, total, lineas } = calcularResumen();
         let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
-
         lineas.forEach(ln => {
             msg += `• ${ln.item.q}x ${ln.item.n} ($${ln.pu.toLocaleString('es-AR')} c/u)%0A`;
         });
-
-        if (mayorista) {
-            msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`;
-        }
+        if (mayorista) { msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`; }
         msg += `%0A*TOTAL FINAL: $${total.toLocaleString('es-AR')}*`;
-
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
 
-    // Listeners del menú: aplicar opción y cerrar al tocar fuera
+    // Listeners
     document.getElementById('nav-panel').addEventListener('click', (e) => {
         const b = e.target.closest('.nav-opt');
         if (b) navTo(b.dataset.kind, b.dataset.val);
+    });
+    document.getElementById('bodegas-row').addEventListener('click', (e) => {
+        const b = e.target.closest('.bodega-item');
+        if (b) navTo('marca', b.dataset.val);
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.mainnav')) closeNav(); });
 
     const wl = document.getElementById('wpp-link');
     if (wl) wl.href = 'https://wa.me/' + WHATSAPP_NUMBER;
 
+    initHero();
     fetchProducts();
 </script>
 </body>
