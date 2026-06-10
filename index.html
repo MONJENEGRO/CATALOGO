@@ -353,6 +353,7 @@
     let cart = [];
     let fTipo = 'Todos';
     let fCepa = 'Todos';
+    let fMarca = '';
 
     const normalizar = (texto) => {
         if (!texto) return "";
@@ -435,12 +436,14 @@
         if (w[1] && BRAND_PRE.has(normalizar(b).toUpperCase())) b = w[0] + ' ' + w[1];
         return b;
     }
-    const brandList = (wines) => uniqSorted(allProducts.filter(p => wines ? esVino(p.tipo) : !esVino(p.tipo)).map(p => brandOf(p.name)));
+    // Marca/Bodega: usa la columna I de la planilla; si está vacía, la deduce del nombre.
+    function marcaDe(p) { return (p.marca && p.marca.trim()) ? p.marca.trim() : brandOf(p.name); }
+    const brandList = (wines) => uniqSorted(allProducts.filter(p => wines ? esVino(p.tipo) : !esVino(p.tipo)).map(p => marcaDe(p)));
 
     // Bodegas más frecuentes (las que "más trabajamos")
     function topBodegas(n) {
         const counts = {};
-        allProducts.filter(p => esVino(p.tipo)).forEach(p => { const b = brandOf(p.name); if (b) counts[b] = (counts[b] || 0) + 1; });
+        allProducts.filter(p => esVino(p.tipo)).forEach(p => { const b = marcaDe(p); if (b) counts[b] = (counts[b] || 0) + 1; });
         return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
     }
     function iniciales(b) {
@@ -481,11 +484,11 @@
 
     // Aplica la opción elegida: pasa al catálogo, filtra y sube al inicio
     function navTo(kind, val) {
-        const buscador = document.getElementById('buscador');
-        buscador.value = '';
-        if (kind === 'tipo') { fTipo = val; fCepa = 'Todos'; }
-        else if (kind === 'cepa') { fTipo = 'Todos'; fCepa = val; }
-        else if (kind === 'marca') { fTipo = 'Todos'; fCepa = 'Todos'; buscador.value = val; }
+        document.getElementById('buscador').value = '';
+        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = '';
+        if (kind === 'tipo') fTipo = val;
+        else if (kind === 'cepa') fCepa = val;
+        else if (kind === 'marca') fMarca = val;
         closeNav();
         showCatalogo();
         renderFiltros();
@@ -497,6 +500,7 @@
     function contacto() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
 
     function onSearch() {
+        fMarca = '';
         if (mode !== 'catalogo') showCatalogo();
         renderProducts();
     }
@@ -539,7 +543,8 @@
                     tipo: clean(c[4]),
                     cepa: clean(c[5]),
                     stock: clean(c[6]),
-                    costo: clean(c[7])
+                    costo: clean(c[7]),
+                    marca: clean(c[8]) // COLUMNA I (Bodega/Marca cargada a mano en la planilla)
                 };
             }).filter(p => p && p.name !== "" && p.stock !== "0");
 
@@ -566,7 +571,7 @@
     }
 
     function setFiltro(cat, val) {
-        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; }
+        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fMarca = ''; }
         else { fCepa = val; }
         renderFiltros();
         renderProducts();
@@ -606,8 +611,9 @@
         let filtered = allProducts.filter(p => {
             const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
             const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
+            const mMarca = fMarca === '' || normalizar(marcaDe(p)) === normalizar(fMarca);
             const mSearch = search === '' || normalizar(p.name).includes(search);
-            return mTipo && mCepa && mSearch;
+            return mTipo && mCepa && mMarca && mSearch;
         });
 
         const orden = document.getElementById('orden').value;
@@ -617,6 +623,7 @@
 
         let ctx = '';
         if (searchVal) ctx = '“' + searchVal + '” · ';
+        else if (fMarca) ctx = fMarca + ' · ';
         else if (fCepa !== 'Todos') ctx = fCepa + ' · ';
         else if (fTipo !== 'Todos') ctx = fTipo + ' · ';
         document.getElementById('result-count').textContent =
