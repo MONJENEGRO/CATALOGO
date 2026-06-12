@@ -87,6 +87,28 @@
         .bodega-item:hover .bodega-circle { border-color: var(--gold); transform: translateY(-3px); }
         .bodega-name { font-size: 0.72em; color: var(--muted); text-align: center; line-height: 1.2; }
 
+        /* ---- Página Bodegas / Marcas ---- */
+        .idx-hero { background: radial-gradient(120% 130% at 50% -20%, #2a0a0e, #0a0a0b 70%); border-bottom: 1px solid var(--linea); padding: 34px 20px; text-align: center; }
+        .idx-hero h1 { font-family: 'AM Tripoli', sans-serif; color: #fff; font-size: 2.8em; letter-spacing: 5px; margin: 0; text-transform: uppercase; }
+        .idx-crumb { color: var(--muted); font-size: 0.8em; padding: 14px 0 4px; }
+        .idx-crumb a { color: var(--gold); cursor: pointer; }
+        .idx-layout { display: flex; gap: 24px; margin: 12px 0; align-items: flex-start; }
+        .idx-list { flex: 0 0 210px; max-height: 72vh; overflow-y: auto; border-right: 1px solid var(--linea); padding-right: 8px; }
+        .idx-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #c7c7cf; padding: 9px 12px; cursor: pointer; font-size: 0.9em; border-left: 2px solid transparent; border-radius: 6px; transition: .15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .idx-item:hover { color: #fff; background: #15151a; }
+        .idx-item.active { color: var(--gold); border-left-color: var(--rojo); background: #15151a; font-weight: 600; }
+        .idx-main { flex: 1; min-width: 0; }
+        .idx-main-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+        .idx-main-head h2 { margin: 0; color: #fff; font-size: 1.2em; }
+        @media (max-width: 767px) {
+            .idx-hero h1 { font-size: 2em; letter-spacing: 3px; }
+            .idx-layout { flex-direction: column; }
+            .idx-list { display: flex; flex-direction: row; gap: 8px; flex: none; width: 100%; max-height: none; overflow-x: auto; overflow-y: hidden; border-right: none; border-bottom: 1px solid var(--linea); padding: 0 0 10px; scrollbar-width: none; }
+            .idx-list::-webkit-scrollbar { display: none; }
+            .idx-item { width: auto; flex: 0 0 auto; border-left: none; border: 1px solid var(--linea); border-radius: 999px; }
+            .idx-item.active { border-color: var(--rojo); }
+        }
+
         /* ---- Catálogo ---- */
         .catalog-tools { padding-top: 16px; }
         .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 4px; }
@@ -173,8 +195,8 @@
         <div class="nav-inner container">
             <button class="nav-item" onclick="showHome()">Inicio</button>
             <button class="nav-item" onclick="toggleNav('prod', this)">Productos ▾</button>
-            <button class="nav-item" onclick="toggleNav('bod', this)">Bodegas ▾</button>
-            <button class="nav-item" onclick="toggleNav('mar', this)">Marcas ▾</button>
+            <button class="nav-item" onclick="showIndex(true)">Bodegas</button>
+            <button class="nav-item" onclick="showIndex(false)">Marcas</button>
             <button class="nav-item" onclick="toggleNav('var', this)">Varietales ▾</button>
             <button class="nav-item" onclick="comoComprar()">Cómo comprar</button>
             <button class="nav-item" onclick="contacto()">Contacto</button>
@@ -249,10 +271,28 @@
         <section class="bloque">
             <div class="bloque-head">
                 <h2>Bodegas que más trabajamos</h2>
-                <button class="ver-mas" onclick="toggleNav('bod', document.querySelectorAll('.nav-item')[2])">Ver todas →</button>
+                <button class="ver-mas" onclick="showIndex(true)">Ver todas →</button>
             </div>
             <div id="bodegas-row" class="bodegas-row"></div>
         </section>
+    </div>
+</div>
+
+<!-- BODEGAS / MARCAS -->
+<div id="index-view" style="display:none;">
+    <div class="idx-hero"><h1 id="idx-hero-title">BODEGAS</h1></div>
+    <div class="container">
+        <div class="idx-crumb"><a onclick="showHome()">Inicio</a> &rsaquo; <span id="idx-crumb">Bodegas</span></div>
+        <div class="idx-layout">
+            <aside class="idx-list" id="idx-list"></aside>
+            <div class="idx-main">
+                <div class="idx-main-head">
+                    <h2 id="idx-sel-title">Todas las bodegas</h2>
+                    <span class="result-count" id="idx-count"></span>
+                </div>
+                <div id="idx-grid" class="grid"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -394,17 +434,49 @@
 
     // ---- Vistas: portada / catálogo ----
     let mode = 'home';
+    function setView(v) {
+        document.getElementById('home-view').style.display = (v === 'home') ? 'block' : 'none';
+        document.getElementById('catalogo-view').style.display = (v === 'catalogo') ? 'block' : 'none';
+        document.getElementById('index-view').style.display = (v === 'index') ? 'block' : 'none';
+        mode = v;
+    }
     function showHome() {
-        mode = 'home';
-        document.getElementById('home-view').style.display = 'block';
-        document.getElementById('catalogo-view').style.display = 'none';
+        setView('home');
         closeNav();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     function showCatalogo() {
-        mode = 'catalogo';
-        document.getElementById('home-view').style.display = 'none';
-        document.getElementById('catalogo-view').style.display = 'block';
+        setView('catalogo');
+    }
+
+    // ---- Página de Bodegas / Marcas ----
+    let idxWines = true, idxSel = '__all__';
+    function showIndex(wines) {
+        idxWines = wines;
+        setView('index');
+        closeNav();
+        document.getElementById('idx-hero-title').textContent = wines ? 'BODEGAS' : 'MARCAS';
+        document.getElementById('idx-crumb').textContent = wines ? 'Bodegas' : 'Marcas';
+        buildIndexSidebar();
+        selectBodega('__all__');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function buildIndexSidebar() {
+        const list = idxWines ? brandList(true) : brandList(false);
+        document.getElementById('idx-list').innerHTML =
+            `<button class="idx-item active" data-val="__all__">${idxWines ? 'Todas las bodegas' : 'Todas las marcas'}</button>` +
+            list.map(b => `<button class="idx-item" data-val="${hesc(b)}">${hesc(b)}</button>`).join('');
+    }
+    function selectBodega(val) {
+        idxSel = val;
+        document.querySelectorAll('#idx-list .idx-item').forEach(b => b.classList.toggle('active', b.dataset.val === val));
+        const todos = idxWines ? 'Todas las bodegas' : 'Todas las marcas';
+        document.getElementById('idx-sel-title').textContent = (val === '__all__') ? todos : val;
+        const prods = allProducts.filter(p => (idxWines ? esVino(p.tipo) : !esVino(p.tipo)) && (val === '__all__' || normalizar(marcaDe(p)) === normalizar(val)));
+        prods.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+        document.getElementById('idx-count').textContent = prods.length + (prods.length === 1 ? ' producto' : ' productos');
+        const grid = document.getElementById('idx-grid');
+        grid.innerHTML = prods.length ? prods.map((p, i) => productCard(p, 'qty-bod-' + i)).join('') : '<div class="vacio">No hay productos en esta selección todavía.</div>';
     }
 
     // ---- Carrusel del hero ----
@@ -731,7 +803,11 @@
     });
     document.getElementById('bodegas-row').addEventListener('click', (e) => {
         const b = e.target.closest('.bodega-item');
-        if (b) navTo('marca', b.dataset.val);
+        if (b) { showIndex(true); selectBodega(b.dataset.val); }
+    });
+    document.getElementById('idx-list').addEventListener('click', (e) => {
+        const b = e.target.closest('.idx-item');
+        if (b) selectBodega(b.dataset.val);
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.mainnav')) closeNav(); });
 
