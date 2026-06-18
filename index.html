@@ -372,17 +372,12 @@
     const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
     const WHATSAPP_NUMBER = "5493512345678";
 
-    const TIPOS = ["Todos", "PROMOS", "VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "APERITIVOS", "DESTILADOS", "COMIDA", "WHISKY", "ESPUMANTES", "CERVEZAS", "LICOR", "SIDRA", "ENERGIZANTES", "GASEOSAS", "JUGOS", "SODA", "HIELO", "TABACO", "HABANO", "ENCENDEDORES", "VASOS", "SACACORCHOS", "REGALERIA"];
+    const TIPOS = ["Todos", "APERITIVOS", "CERVEZAS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
 
+    // Subcategorías: solo VINOS (por color) y ESPUMANTES (por tipo) tienen submenú.
     const CEPAS = {
-        "APERITIVOS": ["Todos", "FERNET", "VERMUT"],
-        "CERVEZAS": ["Todos", "BOTELLA", "LATA", "LATON", "PORRON"],
-        "COMIDA": ["Todos", "ALFAJORES", "CONITOS", "MANI", "NUEZ CONFITADA", "QUESOS", "SALAMES", "SNACKS"],
-        "DESTILADOS": ["Todos", "GIN", "RON", "VODKA"],
-        "ESPUMANTES": ["Todos", "APERITIEF", "BLANC DE BLANCAS", "BLANC DE NOIRS", "BRUT", "BRUT NATURE", "BRUT ROSE", "DELICE", "DEMI SEC", "DULCE", "DULCE NATURAL", "EXTRA BRUT", "NARANJO", "ROSE", "ROSE EXTRA BRUT", "SPRITZ", "ZERO"],
-        "TABACO": ["Todos", "CEDAS", "FILTROS"],
-        "VINOS BLANCOS": ["Todos", "CHARDONNAY", "CHENIN DULCE", "DULCE", "SAUVIGNON BLANC", "SEMILLON", "TORRONTES", "TRIFECTA", "VIOGNIER"],
-        "VINOS TINTOS": ["Todos", "ANCELLOTTA", "BLEND", "BONARDA", "CABERNET FRANC", "CABERNET FRANC - MALBEC", "CABERNET SAUVIGNON", "GRAN RESERVA MALBEC", "MALBEC", "MALBEC - MALBEC", "MALBEC ORGANICO", "MALBEC-CABERNET", "MERLOT", "PINOT NOIR", "SYRAH", "TANNAT"]
+        "VINOS": ["Todos", "TINTOS", "BLANCOS", "ROSADOS"],
+        "ESPUMANTES": ["Todos", "APERITIEF", "BLANC DE BLANCAS", "BLANC DE NOIRS", "BRUT", "BRUT NATURE", "BRUT ROSE", "DELICE", "DEMI SEC", "DULCE", "DULCE NATURAL", "EXTRA BRUT", "NARANJO", "ROSE", "ROSE EXTRA BRUT", "SPRITZ", "ZERO"]
     };
 
     const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
@@ -401,6 +396,23 @@
     };
     const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
     const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
+
+    // Un producto entra en una categoría por su Tipo o su Cepa (así "GIN" agarra los que tienen cepa GIN).
+    // VINOS agrupa tintos, blancos y rosados.
+    function matchCategoria(p, cat) {
+        if (cat === 'Todos') return true;
+        const c = normalizar(cat), t = normalizar(p.tipo), ce = normalizar(p.cepa);
+        if (c === 'vinos') return t.indexOf('vino') === 0;
+        if (c === 'licores') return [t, ce].some(x => x === 'licor' || x === 'licores');
+        if (c === 'vermouth') return [t, ce].some(x => x === 'vermouth' || x === 'vermut');
+        return t === c || ce === c;
+    }
+    // Subcategoría: en VINOS es el color (tinto/blanco/rosado); en el resto, la cepa.
+    function matchSub(p, cat, sub) {
+        if (sub === 'Todos') return true;
+        if (normalizar(cat) === 'vinos') return normalizar(p.tipo).indexOf(normalizar(sub)) >= 0;
+        return normalizar(p.cepa) === normalizar(sub);
+    }
 
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
@@ -681,8 +693,8 @@
         const search = normalizar(searchVal);
 
         let filtered = allProducts.filter(p => {
-            const mTipo = fTipo === 'Todos' || normalizar(p.tipo) === normalizar(fTipo);
-            const mCepa = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
+            const mTipo = matchCategoria(p, fTipo);
+            const mCepa = matchSub(p, fTipo, fCepa);
             const mMarca = fMarca === '' || normalizar(marcaDe(p)) === normalizar(fMarca);
             const mSearch = search === '' || normalizar(p.name).includes(search);
             return mTipo && mCepa && mMarca && mSearch;
