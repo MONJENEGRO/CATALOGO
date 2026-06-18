@@ -196,8 +196,6 @@
             <button class="nav-item" onclick="showHome()">Inicio</button>
             <button class="nav-item" onclick="toggleNav('prod', this)">Productos ▾</button>
             <button class="nav-item" onclick="showIndex(true)">Bodegas</button>
-            <button class="nav-item" onclick="showIndex(false)">Marcas</button>
-            <button class="nav-item" onclick="toggleNav('var', this)">Varietales ▾</button>
             <button class="nav-item" onclick="comoComprar()">Cómo comprar</button>
             <button class="nav-item" onclick="contacto()">Contacto</button>
         </div>
@@ -312,6 +310,13 @@
                     <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
                 </div>
             </div>
+            <div id="seccion-varietal" style="display:none; margin-top: 8px;">
+                <div class="scroll-wrapper">
+                    <button class="scroll-btn" onclick="scrollMenu('filtros-varietal', -200)">&#10094;</button>
+                    <div id="filtros-varietal" class="filtro-grupo"></div>
+                    <button class="scroll-btn" onclick="scrollMenu('filtros-varietal', 200)">&#10095;</button>
+                </div>
+            </div>
             <div class="toolbar">
                 <span class="result-count" id="result-count"></span>
                 <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
@@ -389,6 +394,7 @@
     let fTipo = 'Todos';
     let fCepa = 'Todos';
     let fMarca = '';
+    let fColor = 'Todos';
 
     const normalizar = (texto) => {
         if (!texto) return "";
@@ -407,10 +413,9 @@
         if (c === 'vermouth') return [t, ce].some(x => x === 'vermouth' || x === 'vermut');
         return t === c || ce === c;
     }
-    // Subcategoría: en VINOS es el color (tinto/blanco/rosado); en el resto, la cepa.
+    // Subcategoría (no-vinos): la cepa del producto.
     function matchSub(p, cat, sub) {
         if (sub === 'Todos') return true;
-        if (normalizar(cat) === 'vinos') return normalizar(p.tipo).indexOf(normalizar(sub)) >= 0;
         return normalizar(p.cepa) === normalizar(sub);
     }
 
@@ -569,7 +574,7 @@
     // Aplica la opción elegida: pasa al catálogo, filtra y sube al inicio
     function navTo(kind, val) {
         document.getElementById('buscador').value = '';
-        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = '';
+        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = ''; fColor = 'Todos';
         if (kind === 'tipo') fTipo = val;
         else if (kind === 'cepa') fCepa = val;
         else if (kind === 'marca') fMarca = val;
@@ -643,20 +648,50 @@
     }
 
     function renderFiltros() {
+        // Nivel 1: categorías
         document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
-        const seccionCepas = document.getElementById('seccion-cepas');
-        if (CEPAS[fTipo]) {
-            seccionCepas.style.display = "block";
+
+        const secCepas = document.getElementById('seccion-cepas');
+        const secVar = document.getElementById('seccion-varietal');
+
+        if (normalizar(fTipo) === 'vinos') {
+            // Nivel 2: color (Tintos / Blancos / Rosados)
+            secCepas.style.display = 'block';
+            const colores = [['Todos', 'Todos'], ['Tintos', 'TINTOS'], ['Blancos', 'BLANCOS'], ['Rosados', 'ROSADOS']];
+            document.getElementById('filtros-cepa').innerHTML = colores.map(([lab, val]) =>
+                `<button class="btn-filtro ${val===fColor?'active':''}" onclick="setColor('${val}')">${lab}</button>`).join('');
+            // Nivel 3: varietal (aparece al elegir un color)
+            const grapes = (fColor && fColor !== 'Todos')
+                ? uniqSorted(allProducts.filter(p => normalizar(p.tipo) === 'vinos ' + normalizar(fColor)).map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'))
+                : [];
+            if (grapes.length) {
+                secVar.style.display = 'block';
+                document.getElementById('filtros-varietal').innerHTML =
+                    `<button class="btn-filtro ${fCepa==='Todos'?'active':''}" data-cepa="Todos">Ver todos</button>` +
+                    grapes.map(g => `<button class="btn-filtro ${g===fCepa?'active':''}" data-cepa="${hesc(g)}">${hesc(g)}</button>`).join('');
+            } else {
+                secVar.style.display = 'none';
+            }
+        } else if (CEPAS[fTipo]) {
+            secCepas.style.display = 'block';
             document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c =>
                 `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa', '${c}')">${c}</button>`).join('');
+            secVar.style.display = 'none';
         } else {
-            seccionCepas.style.display = "none";
+            secCepas.style.display = 'none';
+            secVar.style.display = 'none';
         }
     }
 
     function setFiltro(cat, val) {
-        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fMarca = ''; }
+        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fColor = 'Todos'; fMarca = ''; }
         else { fCepa = val; }
+        renderFiltros();
+        renderProducts();
+    }
+    function setColor(val) {
+        fColor = val;
+        fCepa = 'Todos';
         renderFiltros();
         renderProducts();
     }
@@ -694,10 +729,17 @@
 
         let filtered = allProducts.filter(p => {
             const mTipo = matchCategoria(p, fTipo);
-            const mCepa = matchSub(p, fTipo, fCepa);
+            let mSub;
+            if (normalizar(fTipo) === 'vinos') {
+                const mColor = fColor === 'Todos' || normalizar(p.tipo) === 'vinos ' + normalizar(fColor);
+                const mVar = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
+                mSub = mColor && mVar;
+            } else {
+                mSub = matchSub(p, fTipo, fCepa);
+            }
             const mMarca = fMarca === '' || normalizar(marcaDe(p)) === normalizar(fMarca);
             const mSearch = search === '' || normalizar(p.name).includes(search);
-            return mTipo && mCepa && mMarca && mSearch;
+            return mTipo && mSub && mMarca && mSearch;
         });
 
         const orden = document.getElementById('orden').value;
@@ -708,6 +750,12 @@
         let ctx = '';
         if (searchVal) ctx = '“' + searchVal + '” · ';
         else if (fMarca) ctx = fMarca + ' · ';
+        else if (normalizar(fTipo) === 'vinos') {
+            const parts = ['VINOS'];
+            if (fColor && fColor !== 'Todos') parts.push(fColor);
+            if (fCepa && fCepa !== 'Todos') parts.push(fCepa);
+            ctx = parts.join(' · ') + ' · ';
+        }
         else if (fCepa !== 'Todos') ctx = fCepa + ' · ';
         else if (fTipo !== 'Todos') ctx = fTipo + ' · ';
         document.getElementById('result-count').textContent =
@@ -820,6 +868,10 @@
     document.getElementById('idx-list').addEventListener('click', (e) => {
         const b = e.target.closest('.idx-item');
         if (b) selectBodega(b.dataset.val);
+    });
+    document.getElementById('filtros-varietal').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-cepa]');
+        if (b) setFiltro('cepa', b.dataset.cepa);
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.mainnav')) closeNav(); });
 
