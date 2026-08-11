@@ -186,7 +186,7 @@
 </head>
 <body>
 
-<div class="promobar">🍷 Pedí por WhatsApp y te lo acercamos · Precio mayorista en vinos llevando 6 o más</div>
+<div class="promobar">🍷 Pedí por WhatsApp y te lo acercamos · Precio mayorista en vinos llevando 6 o más (los que están en oferta no suman)</div>
 
 <header>
     <h1 class="brand" onclick="showHome()">MONJE NEGRO</h1>
@@ -355,7 +355,7 @@
         </div>
         <div class="f-col">
             <h4>Beneficio</h4>
-            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades.</p>
+            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades. Los productos en oferta ya vienen con su descuento, así que no llevan precio mayorista.</p>
         </div>
         <div class="f-col">
             <h4>Contacto</h4>
@@ -902,6 +902,7 @@
             const totalRegular = lineas.reduce((a, ln) => a + ln.regular * ln.item.q, 0);
             const ahorro = totalRegular - total;
             htmlDetails += `<div style="color:#d4af37; font-weight:bold;">🍷 ¡PRECIO MAYORISTA ACTIVADO!</div>`;
+            if (lineas.some((ln) => esVino(ln.item.t) && parseNum(ln.item.m) <= 0)) htmlDetails += `<div style="color:#888; font-size:0.85em;">Los que están en oferta quedan a su precio de oferta.</div>`;
             if (ahorro > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Ahorrás $${ahorro.toLocaleString('es-AR')}</div>`;
             htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${total.toLocaleString('es-AR')}</div>`;
         } else {
