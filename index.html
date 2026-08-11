@@ -130,6 +130,10 @@
         .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
         .producto img { max-width: 100%; max-height: 170px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.55)); }
         .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .producto { position: relative; }
+        .promo-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--rojo); color: #fff; font-size: 0.58em; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.45); max-width: 78%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lleva { color: var(--gris); font-size: 0.72em; line-height: 1.3; margin: -4px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .ahorro { color: #4ade80; font-size: 0.72em; font-weight: 700; margin: -6px 0 10px; }
         .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: .5px; }
         .selector-cantidad { display: flex; align-items: center; justify-content: space-between; background: #0c0c0f; border: 1px solid var(--linea); border-radius: 9px; margin-bottom: 9px; overflow: hidden; }
@@ -248,6 +252,14 @@
     </section>
 
     <div class="container">
+        <section class="bloque" id="bloque-ofertas" style="display:none">
+            <div class="bloque-head">
+                <h2>🔥 Ofertas y combos</h2>
+                <button class="ver-mas" onclick="navTo('tipo','OFERTAS')">Ver todas →</button>
+            </div>
+            <div id="ofertas-grid" class="grid"></div>
+        </section>
+
         <section class="bloque">
             <div class="bloque-head">
                 <h2>Destacados</h2>
@@ -256,11 +268,11 @@
             <div id="destacados" class="grid"></div>
         </section>
 
-        <button class="ofertas" onclick="navTo('tipo','PROMOS')">
+        <button class="ofertas" onclick="navTo('tipo','OFERTAS')">
             <div class="ofertas-inner">
                 <div>
-                    <span class="ofertas-kicker">🔥 Hot Sale</span>
-                    <h3>Vinos con descuento</h3>
+                    <span class="ofertas-kicker">🔥 Promos vigentes</span>
+                    <h3 id="ofertas-banner-titulo">Ofertas y combos</h3>
                 </div>
                 <span class="ofertas-cta">Ver ofertas →</span>
             </div>
@@ -374,10 +386,22 @@
 </div>
 
 <script>
-    const EXCEL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv';
+    // Los datos salen del sistema de gestión: precios, stock, ofertas y combos
+    // se publican solos, sin tocar ninguna planilla.
+    const API_URL = 'https://sistema-monje.vercel.app/api/catalogo?formato=json';
     const WHATSAPP_NUMBER = "+54 9 3517874303";
 
-    const TIPOS = ["Todos", "APERITIVOS", "CERVEZAS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
+    // Imagen para los productos que todavía no tienen foto cargada: se muestran
+    // igual, con el logo, en vez de quedar afuera del catálogo.
+    const SIN_FOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
+           <rect width="200" height="260" fill="#121212"/>
+           <text x="100" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="34" fill="#d4af37">MN</text>
+           <text x="100" y="150" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#7a7a7a" letter-spacing="2">MONJE NEGRO</text>
+           <text x="100" y="176" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#555">foto en camino</text>
+         </svg>`);
+
+    const TIPOS = ["Todos", "OFERTAS", "APERITIVOS", "CERVEZAS", "COMBOS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
 
     // Subcategorías: solo VINOS (por color) y ESPUMANTES (por tipo) tienen submenú.
     const CEPAS = {
@@ -387,9 +411,9 @@
 
     const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
     const VINOS_PARA_MAYORISTA = 6;
-    const MARGEN_MAYORISTA = 1.25;
 
     let allProducts = [];
+    let ofertas = { productos: [], combos: [] };
     let cart = [];
     let fTipo = 'Todos';
     let fCepa = 'Todos';
@@ -401,6 +425,8 @@
         return texto.toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
     };
     const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
+    // Los precios se muestran sin centavos, como se cobran: $36.000
+    const precioTexto = (v) => Math.round(parseNum(v)).toLocaleString('es-AR');
     const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
 
     // Un producto entra en una categoría por su Tipo o su Cepa (así "GIN" agarra los que tienen cepa GIN).
@@ -408,6 +434,9 @@
     function matchCategoria(p, cat) {
         if (cat === 'Todos') return true;
         const c = normalizar(cat), t = normalizar(p.tipo), ce = normalizar(p.cepa);
+        // Ofertas: todo lo que tenga una promo vigente, incluidos los combos
+        if (c === 'ofertas') return !!p.promo;
+        if (c === 'combos') return t === 'combos';
         if (c === 'vinos') return t.indexOf('vino') === 0;
         if (c === 'licores') return [t, ce].some(x => x === 'licor' || x === 'licores');
         if (c === 'vermouth') return [t, ce].some(x => x === 'vermouth' || x === 'vermut');
@@ -422,11 +451,9 @@
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
         if (mayorista && esVino(item.t)) {
-            const costo = parseNum(item.c);
-            if (costo > 0) {
-                const may = Math.round(costo * MARGEN_MAYORISTA);
-                return regular > 0 ? Math.min(regular, may) : may;
-            }
+            // El precio mayorista lo publica el sistema (antes se calculaba con el costo)
+            const may = parseNum(item.m);
+            if (may > 0) return regular > 0 ? Math.min(regular, may) : may;
         }
         return regular;
     }
@@ -515,6 +542,8 @@
 
     // ---- Menú de navegación ----
     const hesc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    // Para meter un texto adentro de un onclick="...('aca')" sin que lo rompa un apóstrofo
+    const jesc = (s) => hesc(String(s === null || s === undefined ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
     const uniqSorted = (arr) => [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
     const varietalesList = () => uniqSorted(allProducts.map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'));
 
@@ -603,7 +632,41 @@
         return a;
     }
 
+    // Todo lo que está en oferta: productos con promo vigente + combos.
+    // Sale del mismo sistema, así que lo que cargás en Productos u Ofertas
+    // aparece acá solo.
+    function enOferta() {
+        return allProducts.filter(p => !!p.promo);
+    }
+
+    function buildOfertas() {
+        const lista = enOferta();
+        const bloque = document.getElementById('bloque-ofertas');
+        const banner = document.getElementById('ofertas-banner-titulo');
+        if (!lista.length) {
+            bloque.style.display = 'none';
+            if (banner) banner.textContent = 'Mirá todo el catálogo';
+            return;
+        }
+        bloque.style.display = '';
+        const combos = lista.filter(p => normalizar(p.tipo) === 'combos').length;
+        if (banner) {
+            banner.textContent = combos
+                ? `${lista.length} ofertas vigentes, con ${combos} combo${combos > 1 ? 's' : ''}`
+                : `${lista.length} ofertas vigentes`;
+        }
+        // Primero los combos, después el resto
+        const orden = lista.slice().sort((a, b) => {
+            const ca = normalizar(a.tipo) === 'combos' ? 0 : 1;
+            const cb = normalizar(b.tipo) === 'combos' ? 0 : 1;
+            return ca - cb || a.name.localeCompare(b.name, 'es');
+        });
+        document.getElementById('ofertas-grid').innerHTML =
+            orden.slice(0, 8).map((p, i) => productCard(p, 'qty-of-' + i)).join('');
+    }
+
     function buildHome() {
+        buildOfertas();
         let pool = allProducts.filter(p => esVino(p.tipo));
         if (pool.length < 8) pool = allProducts.slice();
         const random = shuffle(pool.slice()).slice(0, 8);
@@ -617,25 +680,24 @@
 
     async function fetchProducts() {
         try {
-            const res = await fetch(EXCEL_URL + '&t=' + new Date().getTime());
-            const text = await res.text();
-            const rows = text.split('\n').slice(1);
+            const res = await fetch(API_URL + '&t=' + new Date().getTime());
+            const data = await res.json();
+            const filas = Array.isArray(data) ? data : (data.productos || []);
+            const clean = (v) => (v === null || v === undefined) ? '' : String(v).trim();
 
-            allProducts = rows.map(r => {
-                const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (c.length < 5) return null;
-                const clean = (v) => v ? v.replace(/"/g, '').trim() : '';
-                return {
-                    name: clean(c[0]),
-                    price: clean(c[1]),
-                    img: clean(c[3]) || 'https://via.placeholder.com/200',
-                    tipo: clean(c[4]),
-                    cepa: clean(c[5]),
-                    stock: clean(c[6]),
-                    costo: clean(c[7]),
-                    marca: clean(c[8]) // COLUMNA I (Bodega/Marca cargada a mano en la planilla)
-                };
-            }).filter(p => p && p.name !== "" && p.stock !== "0");
+            allProducts = filas.map(f => ({
+                name: clean(f.NOMBRE),
+                price: clean(f.PRECIO),
+                img: clean(f.IMAGEN) || SIN_FOTO,
+                tipo: clean(f.TIPO),
+                cepa: clean(f.VARIETAL),
+                stock: clean(f.STOCK),
+                mayorista: clean(f.MAYORISTA),
+                marca: clean(f.Etiqueta),   // bodega / marca, como la carga el sistema
+                promo: clean(f.PROMO)       // ofertas vigentes: "2x1 + 10% OFF"
+            })).filter(p => p.name !== "" && Number(p.stock) > 0);
+
+            ofertas = (data && data.ofertas) ? data.ofertas : { productos: [], combos: [] };
 
             renderFiltros();
             buildHome();
@@ -705,20 +767,27 @@
 
     // Tarjeta de producto reutilizable (qid debe ser único en la página)
     function productCard(p, qid) {
-        const tagRaw = (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
-        const tag = tagRaw ? `<span class="tag">${tagRaw}</span>` : '';
+        const esCombo = normalizar(p.tipo) === 'combos';
+        // En los combos el "varietal" es lo que lleva adentro: va como detalle, no como tag
+        const tagRaw = esCombo ? 'COMBO'
+            : (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
+        const tag = tagRaw ? `<span class="tag">${hesc(tagRaw)}</span>` : '';
+        const badge = p.promo ? `<span class="promo-badge">${hesc(p.promo)}</span>` : '';
+        const lleva = (esCombo && p.cepa) ? `<span class="lleva">Lleva: ${hesc(p.cepa)}</span>` : '';
         return `
                 <div class="producto">
-                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${p.name}"></div>
+                    ${badge}
+                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${hesc(p.name)}" onerror="this.onerror=null;this.src=SIN_FOTO"></div>
                     ${tag}
                     <span class="nombre">${p.name}</span>
-                    <span class="precio">$${p.price}</span>
+                    ${lleva}
+                    <span class="precio">$${precioTexto(p.price)}</span>
                     <div class="selector-cantidad">
                         <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
                         <input type="number" class="input-qty" value="1" id="${qid}" readonly>
                         <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
                     </div>
-                    <button class="btn-add" onclick="addItem('${p.name}', '${p.price}', '${p.tipo}', '${p.costo}', '${qid}')">Añadir al pedido</button>
+                    <button class="btn-add" onclick="addItem('${jesc(p.name)}', '${jesc(p.price)}', '${jesc(p.tipo)}', '${jesc(p.mayorista)}', '${qid}')">Añadir al pedido</button>
                 </div>`;
     }
 
@@ -768,10 +837,10 @@
         grid.innerHTML = filtered.map((p, index) => productCard(p, 'qty-' + index)).join('');
     }
 
-    function addItem(n, p, t, c, qtyId) {
+    function addItem(n, p, t, m, qtyId) {
         const qty = parseInt(document.getElementById(qtyId).value);
         const item = cart.find(i => i.n === n);
-        if (item) item.q += qty; else cart.push({n, p, t, c, q: qty});
+        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty});
         document.getElementById(qtyId).value = 1;
         updateCartUI();
     }
@@ -810,7 +879,7 @@
             const { item, regular, pu, lineTotal, esVinoItem } = ln;
             const aplicado = mayorista && esVinoItem && pu < regular;
             const precioCu = aplicado
-                ? `<s style="color:#777;">$${item.p}</s> <span style="color:#d4af37;">$${pu.toLocaleString('es-AR')}</span> c/u`
+                ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pu.toLocaleString('es-AR')}</span> c/u`
                 : `$${item.p} c/u`;
             list.innerHTML += `
                 <div class="cart-item">
