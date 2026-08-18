@@ -132,6 +132,12 @@
         .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .producto { position: relative; }
         .promo-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--rojo); color: #fff; font-size: 0.58em; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.45); max-width: 78%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* Cuando un producto tiene más de una oferta se listan todas, porque al
+           cliente le conviene una u otra según cuánto lleve (2X si lleva dos,
+           SIX PACK si lleva seis). En el cartelito de arriba no entran. */
+        .promos { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
+        .promos-titulo { width: 100%; color: var(--gris); font-size: 0.64em; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 2px; }
+        .promo-chip { font-size: 0.62em; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; background: rgba(237,28,36,.16); border: 1px solid rgba(237,28,36,.45); padding: 3px 7px; border-radius: 6px; }
         .lleva { color: var(--gris); font-size: 0.72em; line-height: 1.3; margin: -4px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .ahorro { color: #4ade80; font-size: 0.72em; font-weight: 700; margin: -6px 0 10px; }
         .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -427,6 +433,9 @@
     const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
     // Los precios se muestran sin centavos, como se cobran: $36.000
     const precioTexto = (v) => Math.round(parseNum(v)).toLocaleString('es-AR');
+    // Lo mismo pero para números ya calculados (totales, precios unitarios).
+    // No pasa por parseNum, que es para los textos que manda el sistema.
+    const pesosTexto = (n) => Math.round(Number(n) || 0).toLocaleString('es-AR');
     const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
 
     // Un producto entra en una categoría por su Tipo o su Cepa (así "GIN" agarra los que tienen cepa GIN).
@@ -451,9 +460,13 @@
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
         if (mayorista && esVino(item.t)) {
-            // El precio mayorista lo publica el sistema (antes se calculaba con el costo)
+            // El precio mayorista sale tal cual del sistema: tiene que ser el
+            // mismo que cobra el mostrador en una venta mayorista. Antes acá se
+            // tomaba el más barato de los dos, así que en los productos donde
+            // el mayorista quedó por encima del minorista el catálogo prometía
+            // un precio que después no coincidía con el del sistema.
             const may = parseNum(item.m);
-            if (may > 0) return regular > 0 ? Math.min(regular, may) : may;
+            if (may > 0) return may;
         }
         return regular;
     }
@@ -694,7 +707,13 @@
                 stock: clean(f.STOCK),
                 mayorista: clean(f.MAYORISTA),
                 marca: clean(f.Etiqueta),   // bodega / marca, como la carga el sistema
-                promo: clean(f.PROMO)       // ofertas vigentes: "2x1 + 10% OFF"
+                promo: clean(f.PROMO),      // ofertas vigentes, todas juntas: "2X + SIX PACK"
+                // Las mismas ofertas pero una por una, para poder mostrarlas
+                // separadas. Si el sistema todavía no manda PROMOS (o los datos
+                // vienen de la planilla vieja), se parte PROMO por el " + ".
+                promos: Array.isArray(f.PROMOS)
+                    ? f.PROMOS.map(clean).filter(Boolean)
+                    : (clean(f.PROMO) ? clean(f.PROMO).split(' + ').map(s => s.trim()).filter(Boolean) : [])
             })).filter(p => p.name !== "" && Number(p.stock) > 0);
 
             ofertas = (data && data.ofertas) ? data.ofertas : { productos: [], combos: [] };
@@ -772,7 +791,17 @@
         const tagRaw = esCombo ? 'COMBO'
             : (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
         const tag = tagRaw ? `<span class="tag">${hesc(tagRaw)}</span>` : '';
-        const badge = p.promo ? `<span class="promo-badge">${hesc(p.promo)}</span>` : '';
+        // Un producto puede tener varias ofertas a la vez. En el cartelito de
+        // la esquina no entran todas, así que ahí va el número y abajo la lista
+        // completa, para que el cliente vea cuál le conviene y la pida.
+        const promos = (p.promos && p.promos.length) ? p.promos : (p.promo ? [p.promo] : []);
+        const badge = promos.length
+            ? `<span class="promo-badge">${hesc(promos.length > 1 ? promos.length + ' ofertas' : promos[0])}</span>`
+            : '';
+        const listaPromos = promos.length > 1
+            ? `<div class="promos"><span class="promos-titulo">Elegí la que te convenga</span>` +
+              promos.map(o => `<span class="promo-chip">${hesc(o)}</span>`).join('') + `</div>`
+            : '';
         const lleva = (esCombo && p.cepa) ? `<span class="lleva">Lleva: ${hesc(p.cepa)}</span>` : '';
         return `
                 <div class="producto">
@@ -782,6 +811,7 @@
                     <span class="nombre">${p.name}</span>
                     ${lleva}
                     <span class="precio">$${precioTexto(p.price)}</span>
+                    ${listaPromos}
                     <div class="selector-cantidad">
                         <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
                         <input type="number" class="input-qty" value="1" id="${qid}" readonly>
@@ -877,10 +907,14 @@
 
         lineas.forEach((ln, index) => {
             const { item, regular, pu, lineTotal, esVinoItem } = ln;
-            const aplicado = mayorista && esVinoItem && pu < regular;
+            // El precio que se muestra tiene que ser el que se suma al total.
+            // Antes el mayorista solo se mostraba si era MÁS BARATO que la
+            // lista, así que si quedaba invertido se veía un precio y se
+            // cobraba otro.
+            const aplicado = mayorista && esVinoItem && Math.round(pu) !== Math.round(regular);
             const precioCu = aplicado
-                ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pu.toLocaleString('es-AR')}</span> c/u`
-                : `$${item.p} c/u`;
+                ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pesosTexto(pu)}</span> c/u`
+                : `$${pesosTexto(pu)} c/u`;
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
@@ -892,7 +926,7 @@
                         <span class="cart-qty-val">${item.q}</span>
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
                     </div>
-                    <span class="cart-item-total">$${lineTotal.toLocaleString('es-AR')}</span>
+                    <span class="cart-item-total">$${pesosTexto(lineTotal)}</span>
                     <button class="cart-remove" onclick="removeItem(${index})">✕</button>
                 </div>`;
         });
@@ -903,10 +937,10 @@
             const ahorro = totalRegular - total;
             htmlDetails += `<div style="color:#d4af37; font-weight:bold;">🍷 ¡PRECIO MAYORISTA ACTIVADO!</div>`;
             if (lineas.some((ln) => esVino(ln.item.t) && parseNum(ln.item.m) <= 0)) htmlDetails += `<div style="color:#888; font-size:0.85em;">Los que están en oferta quedan a su precio de oferta.</div>`;
-            if (ahorro > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Ahorrás $${ahorro.toLocaleString('es-AR')}</div>`;
-            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${total.toLocaleString('es-AR')}</div>`;
+            if (ahorro > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Ahorrás $${pesosTexto(ahorro)}</div>`;
+            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
         } else {
-            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${total.toLocaleString('es-AR')}</div>`;
+            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
             if (itemsVino > 0) {
                 const faltan = VINOS_PARA_MAYORISTA - itemsVino;
                 htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vino(s). ¡Sumá ${faltan} más y accedé al PRECIO MAYORISTA! 🍷</small>`;
@@ -919,10 +953,10 @@
         const { mayorista, total, lineas } = calcularResumen();
         let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
         lineas.forEach(ln => {
-            msg += `• ${ln.item.q}x ${ln.item.n} ($${ln.pu.toLocaleString('es-AR')} c/u)%0A`;
+            msg += `• ${ln.item.q}x ${ln.item.n} ($${pesosTexto(ln.pu)} c/u)%0A`;
         });
         if (mayorista) { msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`; }
-        msg += `%0A*TOTAL FINAL: $${total.toLocaleString('es-AR')}*`;
+        msg += `%0A*TOTAL FINAL: $${pesosTexto(total)}*`;
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
 
