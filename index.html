@@ -457,6 +457,142 @@
         return normalizar(p.cepa) === normalizar(sub);
     }
 
+    // ── Promos ──────────────────────────────────────────────────────────
+    // Portado tal cual de src/lib/promos.ts del sistema. El catálogo tiene que
+    // COBRAR lo mismo que el mostrador: antes mostraba la etiqueta ("2X
+    // $17.000") pero sumaba dos unidades sueltas.
+    const redondearPesos = (n) => Math.round(n);
+    const esPrecioPorCantidad = (p) => !!p && p.kind === 'PRECIO' && p.nBuy > 1;
+
+    function calcularLinea(qty, unitPrice, promo) {
+        const base = redondearPesos(qty * unitPrice);
+        if (!promo) return { total: base, discount: 0 };
+        let total = base;
+        if (promo.kind === 'PORCENTAJE') {
+            total = redondearPesos(qty * unitPrice * (1 - promo.percent / 100));
+        } else if (promo.kind === 'NXM' && promo.nBuy > 0 && promo.nPay > 0 && promo.nPay < promo.nBuy) {
+            // Cada grupo de nBuy unidades se cobra nPay; el resto va completo
+            const grupos = Math.floor(qty / promo.nBuy);
+            const resto = qty % promo.nBuy;
+            total = redondearPesos((grupos * promo.nPay + resto) * unitPrice);
+        } else if (esPrecioPorCantidad(promo) && promo.precioPack > 0) {
+            // Cada pack completo sale el precio cerrado; lo que sobra, a lista
+            const packs = Math.floor(qty / promo.nBuy);
+            const resto = qty % promo.nBuy;
+            total = redondearPesos(packs * promo.precioPack + resto * unitPrice);
+        }
+        if (total < 0) total = 0;
+        return { total, discount: base - total };
+    }
+
+    // De las ofertas del producto, la que más le conviene al cliente con esa
+    // cantidad. Si todavía ninguna descuenta (un 2x1 llevando 1), queda la
+    // primera para que igual pueda armarse entre variedades.
+    function mejorOferta(ofertas, qty, unitPrice) {
+        if (!ofertas || !ofertas.length) return null;
+        let mejor = ofertas[0];
+        let mejorTotal = calcularLinea(qty, unitPrice, mejor).total;
+        for (const o of ofertas) {
+            const t = calcularLinea(qty, unitPrice, o).total;
+            if (t < mejorTotal) { mejor = o; mejorTotal = t; }
+        }
+        return mejor;
+    }
+
+    // Un 2x1 se puede armar entre variedades de la misma línea: 1 Malbec + 1
+    // Cabernet del mismo vino y precio cuentan como dos unidades de la promo.
+    // Son la misma familia los que empiezan igual, valen lo mismo y tienen la
+    // misma promo.
+    const sinAcentos = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    const inicioNombre = (n) => sinAcentos(n).split(/\s+/).slice(0, 2).join(' ');
+
+    // Qué promo le toca a cada renglón. No alcanza con que cada uno elija la
+    // suya: si dos variedades de la misma línea eligen promos distintas dejan
+    // de contarse juntas y se pierde el 3x2 armado entre variedades. Así que
+    // primero se mira si al grupo le conviene una promo común.
+    function asignarPromos(lineas) {
+        const grupos = new Map();
+        lineas.forEach((l, i) => {
+            const clave = `${redondearPesos(l.unitPrice)}|${inicioNombre(l.nombre)}`;
+            grupos.set(clave, [...(grupos.get(clave) || []), i]);
+        });
+
+        for (const indices of grupos.values()) {
+            // Opción 1: cada renglón con la que más le conviene por su cuenta
+            const propias = indices.map(i => mejorOferta(lineas[i].of, lineas[i].qty, lineas[i].unitPrice));
+            let asignacion = propias;
+            let mejorTotal = indices.reduce((a, i, n) =>
+                a + calcularLinea(lineas[i].qty, lineas[i].unitPrice, propias[n]).total, 0);
+
+            // Opción 2: una promo común a TODO el grupo, contando las unidades
+            // juntas. Solo las que están en todos los renglones se pueden armar
+            // entre variedades.
+            if (indices.length > 1) {
+                const comunes = (lineas[indices[0]].of || []).filter(o =>
+                    indices.every(i => (lineas[i].of || []).some(x =>
+                        x.nombre === o.nombre && (x.precioPack || 0) === (o.precioPack || 0))));
+                const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
+                const precio = lineas[indices[0]].unitPrice;
+                for (const o of comunes) {
+                    const total = calcularLinea(unidades, precio, o).total;
+                    if (total < mejorTotal) { mejorTotal = total; asignacion = indices.map(() => o); }
+                }
+            }
+            indices.forEach((i, n) => { lineas[i].promo = asignacion[n]; });
+        }
+        return lineas;
+    }
+
+    function claveFamilia(l) {
+        const pack = (l.promo && l.promo.precioPack) ? redondearPesos(l.promo.precioPack) : '';
+        return `${(l.promo && l.promo.nombre) || ''}|${redondearPesos(l.unitPrice)}|${pack}|${inicioNombre(l.nombre)}`;
+    }
+
+    // Reparte un importe en pesos enteros según el peso de cada parte. La
+    // diferencia del redondeo va a la última, así la suma da exacta.
+    function repartir(total, pesos) {
+        const suma = pesos.reduce((a, b) => a + b, 0);
+        if (suma <= 0) return pesos.map(() => 0);
+        const montos = pesos.map(p => redondearPesos((p / suma) * total));
+        const dif = redondearPesos(total) - montos.reduce((a, b) => a + b, 0);
+        if (dif !== 0) montos[montos.length - 1] += dif;
+        return montos;
+    }
+
+    function calcularLineas(lineas) {
+        const resultado = lineas.map(l => calcularLinea(l.qty, l.unitPrice, l.promo));
+        // Las que se cuentan por unidades hay que mirarlas entre varias líneas.
+        // Un porcentaje da igual por línea que en conjunto.
+        const porUnidades = (p) =>
+            (!!p && p.kind === 'NXM' && p.nBuy > 0 && p.nPay > 0 && p.nPay < p.nBuy) ||
+            (esPrecioPorCantidad(p) && !!p.precioPack && p.precioPack > 0);
+
+        const familias = new Map();
+        lineas.forEach((l, i) => {
+            if (!porUnidades(l.promo)) return;
+            const clave = claveFamilia(l);
+            familias.set(clave, [...(familias.get(clave) || []), i]);
+        });
+
+        for (const indices of familias.values()) {
+            if (indices.length < 2) continue; // una sola línea ya se calculó bien
+            const p = lineas[indices[0]].promo;
+            const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
+            const precio = lineas[indices[0]].unitPrice;
+            const grupos = Math.floor(unidades / p.nBuy);
+            const resto = unidades % p.nBuy;
+            const totalFamilia = esPrecioPorCantidad(p)
+                ? redondearPesos(grupos * (p.precioPack || 0) + resto * precio)
+                : redondearPesos((grupos * p.nPay + resto) * precio);
+            const montos = repartir(totalFamilia, indices.map(i => lineas[i].qty));
+            indices.forEach((indice, n) => {
+                const base = redondearPesos(lineas[indice].qty * lineas[indice].unitPrice);
+                resultado[indice] = { total: montos[n], discount: base - montos[n] };
+            });
+        }
+        return resultado;
+    }
+
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
         if (mayorista && esVino(item.t)) {
@@ -474,15 +610,25 @@
     function calcularResumen() {
         const itemsVino = cart.reduce((acc, i) => acc + (esVino(i.t) ? i.q : 0), 0);
         const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
-        let total = 0;
         const lineas = cart.map(item => {
             const regular = parseNum(item.p);
             const pu = precioUnitario(item, mayorista);
-            const lineTotal = pu * item.q;
-            total += lineTotal;
-            return { item, regular, pu, lineTotal, esVinoItem: esVino(item.t) };
+            return {
+                item, regular, pu, esVinoItem: esVino(item.t),
+                // Lo que necesita el motor de promos
+                nombre: item.n, qty: item.q, unitPrice: pu, of: item.of, promo: null,
+            };
         });
-        return { itemsVino, mayorista, total, lineas };
+        asignarPromos(lineas);
+        const totales = calcularLineas(lineas);
+        let total = 0, ahorroPromos = 0;
+        lineas.forEach((ln, i) => {
+            ln.lineTotal = totales[i].total;
+            ln.descuento = totales[i].discount;
+            total += ln.lineTotal;
+            ahorroPromos += ln.descuento;
+        });
+        return { itemsVino, mayorista, total, lineas, ahorroPromos };
     }
 
     function scrollMenu(id, px) {
@@ -713,7 +859,10 @@
                 // vienen de la planilla vieja), se parte PROMO por el " + ".
                 promos: Array.isArray(f.PROMOS)
                     ? f.PROMOS.map(clean).filter(Boolean)
-                    : (clean(f.PROMO) ? clean(f.PROMO).split(' + ').map(s => s.trim()).filter(Boolean) : [])
+                    : (clean(f.PROMO) ? clean(f.PROMO).split(' + ').map(s => s.trim()).filter(Boolean) : []),
+                // Las ofertas con su REGLA (2x1, 20% OFF, precio por pack), que
+                // es lo que permite cobrarlas igual que el mostrador
+                ofertas: Array.isArray(f.OFERTAS) ? f.OFERTAS : []
             })).filter(p => p.name !== "" && Number(p.stock) > 0);
 
             ofertas = (data && data.ofertas) ? data.ofertas : { productos: [], combos: [] };
@@ -870,7 +1019,10 @@
     function addItem(n, p, t, m, qtyId) {
         const qty = parseInt(document.getElementById(qtyId).value);
         const item = cart.find(i => i.n === n);
-        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty});
+        // Las ofertas no viajan por el onclick (son objetos): se buscan acá por
+        // nombre, que es la misma clave con la que se agrupa el carrito.
+        const prod = allProducts.find(x => x.name === n);
+        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty, of: prod ? prod.ofertas : []});
         document.getElementById(qtyId).value = 1;
         updateCartUI();
     }
@@ -903,7 +1055,7 @@
         const list = document.getElementById('cart-list');
         const details = document.getElementById('total-details');
         list.innerHTML = '';
-        const { itemsVino, mayorista, total, lineas } = calcularResumen();
+        const { itemsVino, mayorista, total, lineas, ahorroPromos } = calcularResumen();
 
         lineas.forEach((ln, index) => {
             const { item, regular, pu, lineTotal, esVinoItem } = ln;
@@ -915,11 +1067,15 @@
             const precioCu = aplicado
                 ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pesosTexto(pu)}</span> c/u`
                 : `$${pesosTexto(pu)} c/u`;
+            // Qué promo se le aplicó a esta línea y cuánto le descontó
+            const promoAplicada = (ln.promo && ln.descuento > 0)
+                ? `<br><small style="color:#4ade80;">${hesc(ln.promo.etiqueta || ln.promo.nombre)} · ahorrás $${pesosTexto(ln.descuento)}</small>`
+                : '';
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <strong>${item.n}</strong><br>
-                        <small>${precioCu}</small>
+                        <small>${precioCu}</small>${promoAplicada}
                     </div>
                     <div class="cart-qty-controls">
                         <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
@@ -931,31 +1087,39 @@
                 </div>`;
         });
 
+        // Lo que costaría todo a precio de lista, sin promo ni mayorista
+        const totalLista = lineas.reduce((a, ln) => a + redondearPesos(ln.regular * ln.item.q), 0);
+        // El ahorro se separa: una parte es de las promos y otra del mayorista.
+        // Juntarlos en un solo número no dejaba ver de dónde salía cada peso.
+        const ahorroMayorista = totalLista - total - ahorroPromos;
+
         let htmlDetails = '';
         if (mayorista) {
-            const totalRegular = lineas.reduce((a, ln) => a + ln.regular * ln.item.q, 0);
-            const ahorro = totalRegular - total;
             htmlDetails += `<div style="color:#d4af37; font-weight:bold;">🍷 ¡PRECIO MAYORISTA ACTIVADO!</div>`;
             if (lineas.some((ln) => esVino(ln.item.t) && parseNum(ln.item.m) <= 0)) htmlDetails += `<div style="color:#888; font-size:0.85em;">Los que están en oferta quedan a su precio de oferta.</div>`;
-            if (ahorro > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Ahorrás $${pesosTexto(ahorro)}</div>`;
-            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
-        } else {
-            htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
-            if (itemsVino > 0) {
-                const faltan = VINOS_PARA_MAYORISTA - itemsVino;
-                htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vino(s). ¡Sumá ${faltan} más y accedé al PRECIO MAYORISTA! 🍷</small>`;
-            }
+            if (ahorroMayorista > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Precio mayorista: ahorrás $${pesosTexto(ahorroMayorista)}</div>`;
+        }
+        if (ahorroPromos > 0) htmlDetails += `<div style="color:#4ade80; font-size:0.9em;">Promos aplicadas: ahorrás $${pesosTexto(ahorroPromos)}</div>`;
+        htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
+        if (!mayorista && itemsVino > 0) {
+            const faltan = VINOS_PARA_MAYORISTA - itemsVino;
+            htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vino(s). ¡Sumá ${faltan} más y accedé al PRECIO MAYORISTA! 🍷</small>`;
         }
         details.innerHTML = htmlDetails;
     }
 
     function sendWpp() {
-        const { mayorista, total, lineas } = calcularResumen();
+        const { mayorista, total, lineas, ahorroPromos } = calcularResumen();
         let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
         lineas.forEach(ln => {
-            msg += `• ${ln.item.q}x ${ln.item.n} ($${pesosTexto(ln.pu)} c/u)%0A`;
+            msg += `• ${ln.item.q}x ${ln.item.n} ($${pesosTexto(ln.pu)} c/u)`;
+            // Que el pedido llegue diciendo qué promo lleva cada renglón, así
+            // el mostrador cobra lo mismo que vio el cliente
+            if (ln.promo && ln.descuento > 0) msg += ` — ${ln.promo.etiqueta || ln.promo.nombre}: $${pesosTexto(ln.lineTotal)}`;
+            msg += `%0A`;
         });
         if (mayorista) { msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`; }
+        if (ahorroPromos > 0) { msg += `%0A*🔥 PROMOS APLICADAS: ahorro $${pesosTexto(ahorroPromos)}*`; }
         msg += `%0A*TOTAL FINAL: $${pesosTexto(total)}*`;
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
     }
