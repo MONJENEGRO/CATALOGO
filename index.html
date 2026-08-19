@@ -129,19 +129,29 @@
         .producto:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.45); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
         .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
         .producto img { max-width: 100%; max-height: 170px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.55)); }
-        .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* El varietal también entero: hay varios largos (CABERNET SAUVIGNON) */
+        .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; }
         .producto { position: relative; }
-        .promo-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--rojo); color: #fff; font-size: 0.58em; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.45); max-width: 78%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* El cartel de la oferta se lee entero: si no entra en un renglón,
+           pasa al siguiente en vez de cortarse ("Día del Pinot Noir"). */
+        .promo-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--rojo); color: #fff; font-size: 0.58em; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.45); max-width: 78%; text-align: right; line-height: 1.25; }
         /* Cuando un producto tiene más de una oferta se listan todas, porque al
            cliente le conviene una u otra según cuánto lleve (2X si lleva dos,
            SIX PACK si lleva seis). En el cartelito de arriba no entran. */
         .promos { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
         .promos-titulo { width: 100%; color: var(--gris); font-size: 0.64em; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 2px; }
         .promo-chip { font-size: 0.62em; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; background: rgba(237,28,36,.16); border: 1px solid rgba(237,28,36,.45); padding: 3px 7px; border-radius: 6px; }
-        .lleva { color: var(--gris); font-size: 0.72em; line-height: 1.3; margin: -4px 0 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        /* Lo que lleva un combo, completo: antes se cortaba a tres líneas y no
+           se veían todos los productos que trae. */
+        .lleva { color: var(--gris); font-size: 0.72em; line-height: 1.3; margin: -4px 0 8px; }
         .ahorro { color: #4ade80; font-size: 0.72em; font-weight: 700; margin: -6px 0 10px; }
-        .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: .5px; }
+        /* El nombre se ve COMPLETO, sin recortar. Antes estaba limitado a dos
+           líneas y los nombres largos (CERVEZA HEINEKEN S/ALCOHOL PORRONCITO
+           330 CC) quedaban cortados con puntos suspensivos. El min-height
+           mantiene alineadas las tarjetas de nombre corto, y el margin-top:auto
+           del precio deja el precio y el botón abajo, parejos en toda la fila. */
+        .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; overflow-wrap: break-word; }
+        .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-top: auto; margin-bottom: 12px; letter-spacing: .5px; }
         /* Con un descuento por porcentaje se muestran los dos precios: el de
            lista tachado y, al lado, lo que sale de verdad. */
         .precio-lista { color: var(--gris); font-size: 0.72em; font-weight: 600; margin-right: 6px; }
@@ -197,7 +207,7 @@
 </head>
 <body>
 
-<div class="promobar">🍷 Pedí por WhatsApp y te lo acercamos · Precio mayorista en vinos llevando 6 o más (los que están en oferta no suman)</div>
+<div class="promobar">🍷 Pedí por WhatsApp · Envío gratis en Córdoba Capital superando los $100.000 · Precio mayorista en vinos llevando 6 o más (los que están en oferta no suman)</div>
 
 <header>
     <h1 class="brand" onclick="showHome()">MONJE NEGRO</h1>
