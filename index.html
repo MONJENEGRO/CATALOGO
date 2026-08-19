@@ -457,6 +457,12 @@
         if (c === 'ofertas') return !!p.promo || !!p.promoDia;
         if (c === 'combos') return t === 'combos';
         if (c === 'vinos') return t.indexOf('vino') === 0;
+        // El sistema tiene las cervezas separadas por formato (CERVEZA LATA,
+        // CERVEZAS BOTELLA, CERVEZA PORRONCITO, CERVEZA LATON). Para el cliente
+        // son todas "cervezas": se juntan en una sola categoría. Antes se
+        // buscaba una categoría llamada "cervezas", que no existe, y la
+        // pestaña quedaba siempre vacía.
+        if (c === 'cervezas') return t.indexOf('cerveza') === 0;
         if (c === 'licores') return [t, ce].some(x => x === 'licor' || x === 'licores');
         if (c === 'vermouth') return [t, ce].some(x => x === 'vermouth' || x === 'vermut');
         return t === c || ce === c;
