@@ -145,6 +145,8 @@
         /* Con un descuento por porcentaje se muestran los dos precios: el de
            lista tachado y, al lado, lo que sale de verdad. */
         .precio-lista { color: var(--gris); font-size: 0.72em; font-weight: 600; margin-right: 6px; }
+        /* La promo del día lleva su propio cartel, con el título que se le puso */
+        .promo-badge-dia { background: #7c3aed; }
         .selector-cantidad { display: flex; align-items: center; justify-content: space-between; background: #0c0c0f; border: 1px solid var(--linea); border-radius: 9px; margin-bottom: 9px; overflow: hidden; }
         .btn-qty { background: transparent; color: #fff; border: none; padding: 9px 0; cursor: pointer; width: 38px; font-size: 1.1em; font-weight: bold; transition: .15s; }
         .btn-qty:hover { background: #1d1d22; color: var(--gold); }
@@ -410,7 +412,11 @@
            <text x="100" y="176" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#555">foto en camino</text>
          </svg>`);
 
-    const TIPOS = ["Todos", "OFERTAS", "APERITIVOS", "CERVEZAS", "COMBOS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
+    // Los combos dejaron de ser una categoría suelta del menú: viven adentro de
+    // OFERTAS, como una subpestaña más.
+    const TIPOS = ["Todos", "OFERTAS", "APERITIVOS", "CERVEZAS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
+    // Subpestañas de OFERTAS. Se muestran solo las que tienen algo en oferta.
+    const TIPOS_OFERTA = ["COMBOS", "VINOS", "ESPUMANTES", "CERVEZAS", "APERITIVOS", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VODKA", "WHISKY"];
 
     // Subcategorías: solo VINOS (por color) y ESPUMANTES (por tipo) tienen submenú.
     const CEPAS = {
@@ -428,6 +434,7 @@
     let fCepa = 'Todos';
     let fMarca = '';
     let fColor = 'Todos';
+    let fOferta = 'Todos';   // subpestaña dentro de OFERTAS
 
     const normalizar = (texto) => {
         if (!texto) return "";
@@ -447,7 +454,7 @@
         if (cat === 'Todos') return true;
         const c = normalizar(cat), t = normalizar(p.tipo), ce = normalizar(p.cepa);
         // Ofertas: todo lo que tenga una promo vigente, incluidos los combos
-        if (c === 'ofertas') return !!p.promo;
+        if (c === 'ofertas') return !!p.promo || !!p.promoDia;
         if (c === 'combos') return t === 'combos';
         if (c === 'vinos') return t.indexOf('vino') === 0;
         if (c === 'licores') return [t, ce].some(x => x === 'licor' || x === 'licores');
@@ -636,11 +643,20 @@
         const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
         const lineas = cart.map(item => {
             const regular = parseNum(item.p);
-            const pu = precioUnitario(item, mayorista);
+            const base = precioUnitario(item, mayorista);
+            // La promo del día no se acumula con las ofertas del producto: se
+            // toma la que le deje el total más bajo al cliente.
+            const pd = (item.pd && item.pd.precio > 0 && item.pd.precio < base) ? item.pd : null;
+            let pu = base, of = item.of, promoDia = null;
+            if (pd) {
+                const conOferta = calcularLinea(item.q, base, mejorOferta(item.of, item.q, base)).total;
+                const conDia = redondearPesos(item.q * pd.precio);
+                if (conDia <= conOferta) { pu = pd.precio; of = []; promoDia = pd; }
+            }
             return {
-                item, regular, pu, esVinoItem: esVino(item.t),
+                item, regular, pu, esVinoItem: esVino(item.t), promoDia,
                 // Lo que necesita el motor de promos
-                nombre: item.n, qty: item.q, unitPrice: pu, of: item.of, promo: null,
+                nombre: item.n, qty: item.q, unitPrice: pu, of, promo: null,
             };
         });
         asignarPromos(lineas);
@@ -786,7 +802,7 @@
     // Aplica la opción elegida: pasa al catálogo, filtra y sube al inicio
     function navTo(kind, val) {
         document.getElementById('buscador').value = '';
-        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = ''; fColor = 'Todos';
+        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = ''; fColor = 'Todos'; fOferta = 'Todos';
         if (kind === 'tipo') fTipo = val;
         else if (kind === 'cepa') fCepa = val;
         else if (kind === 'marca') fMarca = val;
@@ -819,7 +835,7 @@
     // Sale del mismo sistema, así que lo que cargás en Productos u Ofertas
     // aparece acá solo.
     function enOferta() {
-        return allProducts.filter(p => !!p.promo);
+        return allProducts.filter(p => !!p.promo || !!p.promoDia);
     }
 
     function buildOfertas() {
@@ -832,12 +848,9 @@
             return;
         }
         bloque.style.display = '';
-        const combos = lista.filter(p => normalizar(p.tipo) === 'combos').length;
-        if (banner) {
-            banner.textContent = combos
-                ? `${lista.length} ofertas vigentes, con ${combos} combo${combos > 1 ? 's' : ''}`
-                : `${lista.length} ofertas vigentes`;
-        }
+        // Sin contar cuántas hay: el número cambia todo el tiempo y no le suma
+        // nada al cliente
+        if (banner) banner.textContent = 'Ofertas y combos';
         // Primero los combos, después el resto
         const orden = lista.slice().sort((a, b) => {
             const ca = normalizar(a.tipo) === 'combos' ? 0 : 1;
@@ -886,7 +899,10 @@
                     : (clean(f.PROMO) ? clean(f.PROMO).split(' + ').map(s => s.trim()).filter(Boolean) : []),
                 // Las ofertas con su REGLA (2x1, 20% OFF, precio por pack), que
                 // es lo que permite cobrarlas igual que el mostrador
-                ofertas: Array.isArray(f.OFERTAS) ? f.OFERTAS : []
+                ofertas: Array.isArray(f.OFERTAS) ? f.OFERTAS : [],
+                // Promo del día ("hoy todos los Pinot al precio mayorista"):
+                // llega con el precio ya resuelto y el cartel para anunciarla
+                promoDia: (f.PROMO_DIA && f.PROMO_DIA.precio > 0) ? f.PROMO_DIA : null
             })).filter(p => p.name !== "" && Number(p.stock) > 0);
 
             ofertas = (data && data.ofertas) ? data.ofertas : { productos: [], combos: [] };
@@ -908,7 +924,15 @@
         const secCepas = document.getElementById('seccion-cepas');
         const secVar = document.getElementById('seccion-varietal');
 
-        if (normalizar(fTipo) === 'vinos') {
+        if (normalizar(fTipo) === 'ofertas') {
+            // Nivel 2 en Ofertas: la categoría. Solo las que tienen algo hoy.
+            const enOf = allProducts.filter(p => !!p.promo || !!p.promoDia);
+            const conOferta = TIPOS_OFERTA.filter(t => enOf.some(p => matchCategoria(p, t)));
+            secCepas.style.display = conOferta.length ? 'block' : 'none';
+            document.getElementById('filtros-cepa').innerHTML = ['Todos', ...conOferta].map(t =>
+                `<button class="btn-filtro ${t === fOferta ? 'active' : ''}" onclick="setOferta('${t}')">${t}</button>`).join('');
+            secVar.style.display = 'none';
+        } else if (normalizar(fTipo) === 'vinos') {
             // Nivel 2: color (Tintos / Blancos / Rosados)
             secCepas.style.display = 'block';
             const colores = [['Todos', 'Todos'], ['Tintos', 'TINTOS'], ['Blancos', 'BLANCOS'], ['Rosados', 'ROSADOS']];
@@ -938,8 +962,14 @@
     }
 
     function setFiltro(cat, val) {
-        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fColor = 'Todos'; fMarca = ''; }
+        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fColor = 'Todos'; fMarca = ''; fOferta = 'Todos'; }
         else { fCepa = val; }
+        renderFiltros();
+        renderProducts();
+    }
+
+    function setOferta(val) {
+        fOferta = val;
         renderFiltros();
         renderProducts();
     }
@@ -973,24 +1003,34 @@
         const textos = (p.promos && p.promos.length) ? p.promos : (p.promo ? [p.promo] : []);
         const etiquetas = ofertas.length ? ofertas.map(etiquetaOferta) : textos;
 
-        const badge = etiquetas.length
-            ? `<span class="promo-badge">${hesc(etiquetas.length > 1 ? etiquetas.length + ' ofertas' : etiquetas[0])}</span>`
-            : '';
+        // Promo del día: alcanza al producto por ser de cierto varietal o
+        // categoría, no por estar cargada en su ficha. Manda sobre el resto.
+        const pd = (p.promoDia && p.promoDia.precio > 0 && p.promoDia.precio < lista) ? p.promoDia : null;
 
-        // Un descuento por porcentaje se ve mejor en el precio mismo: la lista
-        // tachada y al lado lo que sale de verdad.
+        const badge = (pd && pd.titulo)
+            ? `<span class="promo-badge promo-badge-dia">${hesc(pd.titulo)}</span>`
+            : etiquetas.length
+                ? `<span class="promo-badge">${hesc(etiquetas.length > 1 ? etiquetas.length + ' ofertas' : etiquetas[0])}</span>`
+                : '';
+
+        // Un descuento se ve mejor en el precio mismo: la lista tachada y al
+        // lado lo que sale de verdad. Vale para la promo del día y para los
+        // descuentos por porcentaje.
         const pct = ofertas.find(o => o.kind === 'PORCENTAJE' && o.percent > 0);
-        const precioHtml = pct
-            ? `<span class="precio"><s class="precio-lista">$${precioTexto(p.price)}</s> $${pesosTexto(unitarioConOferta(pct, lista))}</span>`
+        const precioConDescuento = pd ? pd.precio : (pct ? unitarioConOferta(pct, lista) : null);
+        const precioHtml = precioConDescuento !== null
+            ? `<span class="precio"><s class="precio-lista">$${precioTexto(p.price)}</s> $${pesosTexto(precioConDescuento)}</span>`
             : `<span class="precio">$${precioTexto(p.price)}</span>`;
 
-        // En las promos por cantidad (2X, 3x2, CAJA) lo que le sirve al cliente
-        // es cuánto le queda cada unidad llevando la promo.
+        // El unitario solo hace falta en las promos que no dicen ningún precio
+        // (2x1, 3x2): ahí es el número con el que el cliente compara. En "2X
+        // $17.000" o "CAJA $58.800" el precio ya está escrito y agregarle el
+        // unitario era repetir lo mismo dos veces.
         const chip = (o) => {
             const et = hesc(etiquetaOferta(o));
-            return (o.kind === 'PORCENTAJE')
-                ? `<span class="promo-chip">${et}</span>`
-                : `<span class="promo-chip">${et} · x1 $${pesosTexto(unitarioConOferta(o, lista))}</span>`;
+            return (o.kind === 'NXM')
+                ? `<span class="promo-chip">${et} · x1 $${pesosTexto(unitarioConOferta(o, lista))}</span>`
+                : `<span class="promo-chip">${et}</span>`;
         };
         const listaPromos = ofertas.length
             ? `<div class="promos">` +
@@ -1027,7 +1067,10 @@
         let filtered = allProducts.filter(p => {
             const mTipo = matchCategoria(p, fTipo);
             let mSub;
-            if (normalizar(fTipo) === 'vinos') {
+            if (normalizar(fTipo) === 'ofertas') {
+                // Dentro de Ofertas se filtra por categoría: COMBOS, VINOS…
+                mSub = fOferta === 'Todos' || matchCategoria(p, fOferta);
+            } else if (normalizar(fTipo) === 'vinos') {
                 const mColor = fColor === 'Todos' || normalizar(p.tipo) === 'vinos ' + normalizar(fColor);
                 const mVar = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
                 mSub = mColor && mVar;
@@ -1071,7 +1114,7 @@
         // Las ofertas no viajan por el onclick (son objetos): se buscan acá por
         // nombre, que es la misma clave con la que se agrupa el carrito.
         const prod = allProducts.find(x => x.name === n);
-        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty, of: prod ? prod.ofertas : []});
+        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty, of: prod ? prod.ofertas : [], pd: prod ? prod.promoDia : null});
         document.getElementById(qtyId).value = 1;
         updateCartUI();
     }
@@ -1117,9 +1160,11 @@
                 ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pesosTexto(pu)}</span> c/u`
                 : `$${pesosTexto(pu)} c/u`;
             // Qué promo se le aplicó a esta línea y cuánto le descontó
-            const promoAplicada = (ln.promo && ln.descuento > 0)
-                ? `<br><small style="color:#4ade80;">${hesc(etiquetaOferta(ln.promo))} · ahorrás $${pesosTexto(ln.descuento)}</small>`
-                : '';
+            const promoAplicada = ln.promoDia
+                ? `<br><small style="color:#c4b5fd;">${hesc(ln.promoDia.titulo || 'Promo del día')} · ahorrás $${pesosTexto(redondearPesos(ln.regular * ln.item.q) - ln.lineTotal)}</small>`
+                : (ln.promo && ln.descuento > 0)
+                    ? `<br><small style="color:#4ade80;">${hesc(etiquetaOferta(ln.promo))} · ahorrás $${pesosTexto(ln.descuento)}</small>`
+                    : '';
             list.innerHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
@@ -1164,7 +1209,8 @@
             msg += `• ${ln.item.q}x ${ln.item.n} ($${pesosTexto(ln.pu)} c/u)`;
             // Que el pedido llegue diciendo qué promo lleva cada renglón, así
             // el mostrador cobra lo mismo que vio el cliente
-            if (ln.promo && ln.descuento > 0) msg += ` — ${etiquetaOferta(ln.promo)}: $${pesosTexto(ln.lineTotal)}`;
+            if (ln.promoDia) msg += ` — ${ln.promoDia.titulo || 'Promo del día'}: $${pesosTexto(ln.lineTotal)}`;
+            else if (ln.promo && ln.descuento > 0) msg += ` — ${etiquetaOferta(ln.promo)}: $${pesosTexto(ln.lineTotal)}`;
             msg += `%0A`;
         });
         if (mayorista) { msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`; }
