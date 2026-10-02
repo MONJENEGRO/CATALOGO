@@ -8,6 +8,7 @@
 <title>Monje Negro · Botillería</title>
 <style>
 @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
+@font-face { font-family: 'Anton'; src: url('Anton-Regular.woff2') format('woff2'); font-display: swap; }   /* SIL OFL 1.1, ver Anton-OFL.txt */
 
 /* Tema oscuro (predeterminado). El claro se activa con data-tema="claro" (o abriendo con ?tema=claro). */
 :root {
@@ -18,6 +19,11 @@
     --cta: var(--accent);
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
     --radius: 14px;
+    /* Fotos y tarjetas de categorías sobre blanco (como papel), en los dos temas */
+    --foto-bg: #ffffff;
+    --titulo-tile: #7a1614;
+    --ok-bg: #dcf5e3; --ok-tx: #17663a;
+    --papel: #f4f2ee url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .03' numOctaves='4' seed='7'/%3E%3CfeDiffuseLighting lighting-color='%23fff' surfaceScale='1.6'%3E%3CfeDistantLight azimuth='40' elevation='62'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.55'/%3E%3C/svg%3E");
 }
 :root[data-tema="claro"] {
     color-scheme: light;
@@ -74,26 +80,25 @@ img { display: block; }
 .sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
 .sec-h h2 { font-size: 18px; margin: 0; }
 
-/* Tiles de categorías */
-.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-@media (min-width: 560px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 820px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 1040px) { .tiles { grid-template-columns: repeat(5, 1fr); } }
-.tile { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius); overflow: hidden; background: radial-gradient(120% 90% at 50% 8%, var(--tint, rgba(120,120,130,.16)), var(--card) 80%); box-shadow: var(--shadow); display: block; transition: transform .15s; }
-.tile:active { transform: scale(.97); }
-.tile-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.tile-emoji { position: absolute; left: 0; right: 0; top: 16%; text-align: center; font-size: 56px; line-height: 1; }
-.tile-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 11px; color: var(--text); }
-.tile.foto .tile-cap { padding-top: 38px; background: linear-gradient(transparent, rgba(0,0,0,.86)); color: #fff; }
-.tile-cap b { display: block; font-size: 15px; line-height: 1.15; }
-.tile-cap small { display: block; font-size: 11.5px; opacity: .75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tile-badge { position: absolute; top: 8px; left: 8px; z-index: 3; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px; }
+/* Tarjetas de categorías: papel blanco, el nombre grande a la izquierda y botellas a la derecha */
+.tiles { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 600px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+.tile { position: relative; height: 112px; border-radius: 8px; overflow: hidden; display: block; background: var(--papel); box-shadow: var(--shadow); transition: transform .15s; }
+.tile:active { transform: scale(.98); }
+.tile-name { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); z-index: 2; max-width: 54%; font-family: 'Anton', 'Arial Narrow', Impact, sans-serif; font-weight: 400; font-size: 31px; line-height: .98; text-transform: uppercase; color: var(--titulo-tile); }
+.tile.con-badge .tile-name { top: calc(50% - 10px); }
+.tile-bot { position: absolute; right: 12px; top: 7px; bottom: -16px; z-index: 1; display: flex; align-items: flex-end; justify-content: flex-end; }
+.tile-bot img { height: 100%; width: auto; max-width: 96px; object-fit: contain; object-position: bottom; margin-left: -10px; }
+.tile-bot img:nth-child(2) { position: relative; z-index: 2; height: 106%; }      /* la del medio, adelante */
+.tile-emoji { font-size: 58px; line-height: 1; align-self: center; margin: 0 10px 14px 0; }
+.tile-badge { position: absolute; left: 18px; bottom: 9px; z-index: 3; background: var(--ok-bg); color: var(--ok-tx); font-size: 10.5px; font-weight: 800; letter-spacing: .2px; padding: 4px 9px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,.18); text-transform: uppercase; }
 
 /* Tira horizontal (promo del día, recomendados) */
 .hscroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding: 2px 2px 8px; margin: 0 -2px; }
 .hscroll::-webkit-scrollbar { display: none; }
 .card { flex: 0 0 150px; scroll-snap-align: start; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; cursor: pointer; display: flex; flex-direction: column; }
-.card-img { position: relative; height: 130px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; }
+.card-img { position: relative; height: 130px; border-radius: 10px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 .card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 6px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
 
@@ -123,9 +128,23 @@ img { display: block; }
 /* Precio mayorista informativo */
 .mayline { display: block; font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 5px; }
 .stock { font-size: 11.5px; color: var(--accent); font-weight: 600; margin-top: 4px; }
-.prow-img { position: relative; width: 96px; height: 96px; flex: none; border-radius: 12px; background: var(--card2); display: flex; align-items: center; justify-content: center; }
+.prow-img { position: relative; width: 96px; height: 96px; flex: none; border-radius: 12px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; }
 .prow-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
 .ph { font-size: 38px; line-height: 1; }
+/* Botellas recortadas (sin el fondo del local): enteras y centradas sobre blanco */
+img.rc { object-fit: contain !important; padding: 5px; border-radius: 0 !important; }
+.card-img img.rc { padding: 8px; }
+/* Combos sin foto: las botellas que lleva, una al lado de la otra */
+.combo-fotos { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 100%; padding: 6px 4px 4px; }
+.combo-fotos img { height: 100%; width: auto; max-width: 52%; object-fit: contain; margin: 0 -5px; }
+.combo-fotos img:nth-child(2) { height: 86%; }
+/* "Hasta X% OFF" sobre la foto */
+.pbadge { position: absolute; top: 5px; left: 5px; z-index: 2; background: var(--ok-bg); color: var(--ok-tx); font-size: 9px; font-weight: 800; line-height: 1.15; padding: 3px 6px; border-radius: 999px; box-shadow: 0 1px 3px rgba(0,0,0,.22); text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+.card-img .pbadge { font-size: 10.5px; padding: 4px 7px; }
+/* con cartel, la botella baja un poco para que no le tape el cuello */
+.prow-img .pbadge + img.rc, .prow-img .pbadge + .combo-fotos { padding-top: 21px; }
+.card-img .pbadge + img.rc, .card-img .pbadge + .combo-fotos { padding-top: 27px; }
+.ps-hero .pbadge { top: 14px; left: 14px; font-size: 12.5px; padding: 5px 10px; }
 .ctl { position: absolute; right: -6px; bottom: -6px; }
 .addbtn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--cta); color: #fff; font-size: 22px; line-height: 1; box-shadow: 0 3px 8px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; }
 .stepper { display: inline-flex; align-items: center; background: var(--cta); color: #fff; border-radius: 999px; height: 34px; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
@@ -164,6 +183,9 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .ps-hero .blur { position: absolute; inset: -30px; background-size: cover; background-position: center; filter: blur(24px) brightness(.62); transform: scale(1.1); }
 .ps-hero img { position: relative; max-height: 90%; max-width: 84%; object-fit: contain; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
 .ps-hero .ph { font-size: 92px; }
+.ps-hero.blanco { background: var(--foto-bg); }
+.ps-hero.blanco img { max-height: 92%; border-radius: 0; box-shadow: none; padding: 0; }
+.ps-hero .combo-fotos { height: 88%; width: 80%; }
 .ps-body { padding: 16px 18px 6px; }
 .ps-body h2 { margin: 0 0 8px; font-size: 21px; line-height: 1.2; }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -187,7 +209,8 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .cs-h { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 6px; padding-right: 40px; }
 .cs-h h2 { margin: 0; font-size: 21px; }
 .ci { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.ci-img { width: 52px; height: 52px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; flex: none; }
+.ci-img { width: 52px; height: 52px; border-radius: 10px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden; }
+.ci-img img.rc { padding: 3px; }
 .ci-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 .ci-img .ph { font-size: 24px; }
 .ci-info { flex: 1; min-width: 0; }
@@ -295,6 +318,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 const CONFIG = {
     // Todo sale del sistema de gestión: productos, precios, stock, precio mayorista, ofertas y combos
     API_URL: 'https://sistema-monje.vercel.app/api/catalogo?formato=json',
+    RECORTES: 'recortes/index.json',     // fotos con fondo blanco (las arma herramientas/recortar_fotos.py)
     WHATSAPP: '5493517874303',          // 351 787-4303 en formato internacional (549 + característica + número)
     NOMBRE: 'Monje Negro',
     SUBTITULO: 'Botillería · Córdoba',
@@ -308,7 +332,7 @@ const CONFIG = {
 };
 
 /* Precio mayorista: con 6 o más vinos/espumantes en el pedido, cada uno se cobra al precio mayorista
-   que manda el sistema. Los que están en oferta no tienen mayorista: quedan a su precio de oferta. */
+   que manda el sistema. Los que están en oferta suman para llegar a 6, pero no bajan: quedan a su precio de oferta. */
 const TIPOS_MAYORISTA = ['VINOS TINTOS', 'VINOS BLANCOS', 'VINOS ROSADOS', 'ESPUMANTES'];
 const VINOS_PARA_MAYORISTA = 6;
 
@@ -363,6 +387,17 @@ function imgUrl(u) {
     if (/^https?:\/\/github\.com\/[^/]+\/[^/]+\/blob\//i.test(u))
         return u.replace(/^https?:\/\/github\.com\//i, 'https://raw.githubusercontent.com/').replace('/blob/', '/').replace(/\?raw=true$/i, '');
     return u;
+}
+// Fotos con fondo blanco: recortes/index.json dice qué foto tiene su versión recortada
+// (la genera herramientas/recortar_fotos.py). Si no está, se usa la foto original.
+let recortes = {};
+function fotosProducto(u) {
+    const foto = imgUrl(u);
+    let archivo = '';
+    try { archivo = decodeURIComponent(foto); } catch (e) { archivo = foto; }
+    const r = !/^https?:/i.test(foto) && recortes[archivo];
+    if (!r) return { img: foto, foto, rc: false };
+    return { img: 'recortes/' + encodeURIComponent(r[0]) + '?v=' + r[1], foto, rc: true };
 }
 
 /* =====================================================================
@@ -526,36 +561,32 @@ const CORREGIR = { VOSKA: 'VODKA', JAGGER: 'LICOR' };
 const corregido = (s) => CORREGIR[s] || s;
 
 // Cada producto cae en la PRIMERA sección que coincide
+const DESTILADOS = ['DESTILADOS', 'GIN', 'VODKA', 'RON', 'CACHACA', 'TEQUILA', 'WHISKY', 'WHISKEY', 'BRANDY', 'COGNAC', 'PISCO', 'GRAPPA', 'MEZCAL'];
+const SIN_ALCOHOL = ['GASEOSAS', 'GASEOSA', 'ENERGIZANTES', 'AGUA', 'AGUAS', 'SODA', 'JUGOS', 'JUGO', 'HIELO', 'DEPORTIVAS'];
+// Agrupadas como las tarjetas de referencia: adentro de cada una se elige el tipo (ej. Destilados → Vodka) y la marca
 const GRUPOS = [
-    { id: 'combos',     nombre: 'Combos',                 emoji: '🎉', tint: 'rgba(237,120,28,.22)', test: p => p.C === 'COMBOS' || p.T === 'COMBOS' },
-    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C.startsWith('VINO') || p.T.startsWith('VINO') },
-    { id: 'espumantes', nombre: 'Espumantes',             emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE'].includes(p.C) || p.T === 'ESPUMANTES' },
-    { id: 'sidras',     nombre: 'Sidras',                 emoji: '🍏', tint: 'rgba(150,190,40,.20)', test: p => ['SIDRA', 'SIDRAS'].includes(p.C) || ['SIDRA', 'SIDRAS'].includes(p.T) },
-    { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', tint: 'rgba(230,150,20,.22)', test: p => p.C.startsWith('CERVEZA') || p.T.startsWith('CERVEZA') },
-    { id: 'vermouth',   nombre: 'Vermouth',               emoji: '🍸', tint: 'rgba(180,40,40,.18)',  test: p => [p.C, p.T, p.F].some(x => x === 'VERMUT' || x === 'VERMOUTH') },
-    { id: 'aperitivos', nombre: 'Aperitivos',             emoji: '🍹', tint: 'rgba(200,60,40,.18)',  test: p => p.C === 'APERITIVOS' || p.T === 'APERITIVOS' },
-    { id: 'gin',        nombre: 'Gin',                    emoji: '🌿', tint: 'rgba(40,140,170,.20)', test: p => [p.C, p.T, p.F].includes('GIN') },
-    { id: 'vodka',      nombre: 'Vodka',                  emoji: '🧊', tint: 'rgba(90,110,200,.18)', test: p => [p.C, p.T, p.F].includes('VODKA') },
-    { id: 'ron',        nombre: 'Ron y cachaça',          emoji: '🌴', tint: 'rgba(140,80,30,.20)',  test: p => [p.C, p.T, p.F].some(x => x === 'RON' || x === 'CACHACA') },
-    { id: 'tequila',    nombre: 'Tequila',                emoji: '🌵', tint: 'rgba(120,170,40,.20)', test: p => [p.C, p.T, p.F].includes('TEQUILA') },
-    { id: 'whisky',     nombre: 'Whisky',                 emoji: '🥃', tint: 'rgba(170,100,20,.22)', test: p => [p.C, p.T, p.F].includes('WHISKY') },
-    { id: 'licores',    nombre: 'Licores',                emoji: '🍯', tint: 'rgba(150,50,130,.18)', test: p => [p.C, p.T].some(x => ['LICOR', 'LICORES'].includes(x)) },
-    { id: 'gaseosas',   nombre: 'Gaseosas',               emoji: '🥤', tint: 'rgba(30,160,90,.18)',  test: p => p.C === 'GASEOSAS' || p.T === 'GASEOSAS' },
-    { id: 'sinalcohol', nombre: 'Energizantes, aguas y más', emoji: '💧', tint: 'rgba(30,140,200,.18)', test: p => ['ENERGIZANTES', 'AGUA', 'AGUAS', 'SODA', 'JUGOS', 'JUGO', 'HIELO', 'DEPORTIVAS'].includes(p.C) },
-    { id: 'kiosco',     nombre: 'Kiosco',                 emoji: '🍫', tint: 'rgba(200,120,40,.20)', test: p => ['COMIDA', 'TABACO', 'HABANO', 'HABANOS', 'KIOSCO', 'CEDAS', 'FILTROS'].includes(p.C) },
-    { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', tint: 'rgba(130,60,170,.18)', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS', 'ESTUCHES', 'PACKAGING'].includes(p.C) },
-    { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', tint: 'rgba(120,120,130,.18)', test: p => !!p.C },   // con categoría que no encaja en las de arriba
+    { id: 'combos',     nombre: 'Combos',                 emoji: '🎉', test: p => p.C === 'COMBOS' || p.T === 'COMBOS' },
+    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', test: p => p.C.startsWith('VINO') || p.T.startsWith('VINO') },
+    { id: 'espumantes', nombre: 'Espumantes y sidras',    emoji: '🥂', test: p => ['ESPUMANTES', 'ESPUMANTE', 'SIDRA', 'SIDRAS'].some(x => x === p.C || x === p.T) },
+    { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', test: p => p.C.startsWith('CERVEZA') || p.T.startsWith('CERVEZA') },
+    { id: 'vermut',     nombre: 'Vermut',                 emoji: '🍸', test: p => [p.C, p.T, p.F].some(x => x === 'VERMUT' || x === 'VERMOUTH') },
+    { id: 'aperitivos', nombre: 'Aperitivos y licores',   emoji: '🍹', test: p => [p.C, p.T].some(x => ['APERITIVOS', 'APERITIVO', 'LICOR', 'LICORES'].includes(x)) },
+    { id: 'destilados', nombre: 'Destilados',             emoji: '🥃', test: p => [p.C, p.T, p.F].some(x => DESTILADOS.includes(x)) },
+    { id: 'sinalcohol', nombre: 'Sin alcohol',            emoji: '🥤', test: p => SIN_ALCOHOL.includes(p.C) },
+    { id: 'kiosco',     nombre: 'Kiosco',                 emoji: '🍫', test: p => ['COMIDA', 'TABACO', 'HABANO', 'HABANOS', 'KIOSCO', 'CEDAS', 'FILTROS'].includes(p.C) },
+    { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS', 'ESTUCHES', 'PACKAGING'].includes(p.C) },
+    { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', test: p => !!p.C },   // con categoría que no encaja en las de arriba
 ];
 // Promos: todo lo que tiene una oferta vigente en el sistema (menos los combos, que van aparte).
 // Cada producto sigue apareciendo también en su categoría.
-const PROMOS_DEF = { id: 'promos', nombre: 'Promos', emoji: '🔥', tint: 'rgba(237,28,36,.22)' };
+const PROMOS_DEF = { id: 'promos', nombre: 'Promos', emoji: '🔥' };
 
 /* Filtros dentro de cada categoría: TIPO → SUBCATEGORÍA → MARCA (columna Etiqueta).
    Acá va el nombre que se muestra en cada fila: [primera fila, segunda fila]. */
 const FILTROS = {
     vinos: ['Tipo', 'Varietal'], espumantes: ['Tipo', 'Estilo'], cervezas: ['Envase', 'Estilo'],
-    gaseosas: ['Tipo', 'Sabor'], aperitivos: ['Tipo', 'Tipo'], kiosco: ['Tipo', 'Producto'],
-    sinalcohol: ['Tipo', 'Presentación'], combos: ['', 'Bebida'], promos: ['Categoría', 'Subcategoría'],
+    aperitivos: ['Tipo', 'Variedad'], destilados: ['Tipo', 'Variedad'], sinalcohol: ['Tipo', 'Variedad'],
+    kiosco: ['Tipo', 'Producto'], combos: ['', 'Bebida'], promos: ['Categoría', 'Subcategoría'],
 };
 const FILTROS_DEF = ['Tipo', 'Subcategoría'];
 const NIVEL_TIPO = { key: p => p.T, label: p => bonito((p.tipo || '').replace(/^\s*(vinos?|cervezas?)\s+/i, '')) };   // "VINOS TINTOS" -> "Tintos", "CERVEZA LATA" -> "Lata"
@@ -565,7 +596,7 @@ const NIVEL_CATEGORIA = { key: p => p.grupo, label: p => (GRUPOS.find(g => g.id 
 const NIVEL_MARCA = { key: p => p.marca, label: p => bonito(p.marcaTxt) };
 function nivelesDe(g) {
     if (g.id === 'combos') return [null, NIVEL_BEBIDA];
-    if (g.id === 'vermouth') return [null, null];       // el sistema los tiene como VERMUT o APERITIVOS: se elige directo la marca
+    if (g.id === 'vermut') return [null, null];         // el sistema los tiene como VERMUT o APERITIVOS: se elige directo la marca
     if (g.id === 'promos') return [NIVEL_CATEGORIA, NIVEL_VARIETAL];
     return [NIVEL_TIPO, NIVEL_VARIETAL];
 }
@@ -581,6 +612,9 @@ function construir(data) {
     const llevaDe = {};
     ((data && data.ofertas && data.ofertas.combos) || []).forEach(c => { if (c && c.nombre) llevaDe[norm(c.nombre)] = c.lleva || ''; });
     const txt = (v) => (v === null || v === undefined) ? '' : String(v).trim();
+    // Botella recortada de cada producto (aunque no tenga stock), para armar la foto de los combos
+    const recortePorNombre = new Map();
+    filas.forEach(f => { const x = fotosProducto(txt(f.IMAGEN)); if (x.rc) recortePorNombre.set(norm(f.NOMBRE), x.img); });
     const seen = {};
     productos = [];
     filas.forEach(f => {
@@ -602,7 +636,7 @@ function construir(data) {
         productos.push({
             id, nombre, titulo: titulo(nombre),
             precio: parseNum(f.PRECIO), mayorista: parseNum(f.MAYORISTA),
-            img: imgUrl(txt(f.IMAGEN)),
+            ...fotosProducto(txt(f.IMAGEN)),       // img (la recortada, si hay), foto (la original) y rc
             C, T, F: esCombo ? '' : corregido(norm(f.VARIETAL)),
             tipo, varietal: esCombo ? '' : txt(f.VARIETAL),
             stock: Number(f.STOCK),
@@ -622,6 +656,8 @@ function construir(data) {
         const g = GRUPOS.find(x => x.test(p));
         p.grupo = g ? g.id : '';
         p.enPromo = !p.esCombo && (p.ofertas.length > 0 || p.promos.length > 0 || !!p.promoDia);
+        p.desc = descuentoMax(p);
+        p.combo = (p.esCombo && !p.img) ? fotosCombo(p.lleva, recortePorNombre) : [];
     });
     grupos = GRUPOS.map(g => ({ ...g, items: productos.filter(p => p.grupo === g.id) })).filter(g => g.items.length);
     const enPromo = productos.filter(p => p.enPromo);
@@ -638,8 +674,32 @@ function ordenGrupos() {
     if (promosGrupo) lista.push(promosGrupo);
     return lista.concat(grupos.filter(g => g.id !== 'combos'));
 }
+// Los vinos en oferta suman para llegar a los 6, pero no bajan al precio mayorista: quedan a su precio de oferta
+const conMayorista = (p) => esVinoMay(p) && p.mayorista > 0 && !p.ofertas.length;
 // Precio mayorista por unidad, para mostrarlo a modo informativo (solo donde se aplica: vinos y espumantes)
-const mayUnit = (p) => (esVinoMay(p) && p.mayorista > 0 && p.mayorista < p.precio) ? p.mayorista : 0;
+const mayUnit = (p) => (conMayorista(p) && p.mayorista < p.precio) ? p.mayorista : 0;
+
+// Lo máximo que se ahorra con las ofertas del producto, en %: una cerveza de $4.000 que llevando 2
+// sale $3.500 c/u ($7.000 en vez de $8.000) → 12,5% → "Hasta 13% OFF"
+function descuentoMax(p) {
+    if (!(p.precio > 0)) return 0;
+    let max = 0;
+    p.ofertas.forEach(o => { max = Math.max(max, 1 - unitarioConOferta(o, p.precio) / p.precio); });
+    if (p.promoDia && p.promoDia.precio < p.precio) max = Math.max(max, 1 - p.promoDia.precio / p.precio);
+    return Math.round(max * 100);
+}
+const hastaOff = (n) => n > 0 ? `Hasta ${n}% OFF` : '';
+
+// "1 × FERNET BRANCA 750 ML + 2 × a elegir: COCA COLA COMUN 1,5 L, COCA COLA ZERO 1,5 L" → las fotos de lo que lleva
+function fotosCombo(lleva, recortePorNombre) {
+    const fotos = [];
+    (lleva || '').split(' + ').forEach(parte => {
+        const opciones = parte.replace(/^\s*\d+\s*[×x]\s*/i, '').replace(/^a elegir:\s*/i, '').split(/,\s*|\s+y\s+\d+\s+más/i);
+        const img = opciones.map(n => recortePorNombre.get(norm(n))).find(Boolean);
+        if (img && !fotos.includes(img) && fotos.length < 3) fotos.push(img);
+    });
+    return fotos;
+}
 
 /* =====================================================================
    Carrito
@@ -651,8 +711,9 @@ function cargarCarrito() {
     cart = new Map(Object.entries(c).filter(([id, q]) => byId[id] && q > 0));
 }
 function precioUnitario(p, mayorista) {
-    // El mayorista sale tal cual del sistema: es el mismo que cobra el mostrador en una venta mayorista
-    if (mayorista && esVinoMay(p) && p.mayorista > 0) return p.mayorista;
+    // El mayorista sale tal cual del sistema: es el mismo que cobra el mostrador en una venta mayorista.
+    // Los que están en oferta suman para llegar a los 6, pero se cobran a su precio de oferta.
+    if (mayorista && conMayorista(p)) return p.mayorista;
     return p.precio;
 }
 function calcular() {
@@ -706,10 +767,12 @@ function actualizarBarra() {
    ===================================================================== */
 function phEmoji(p) { const g = GRUPOS.find(x => x.id === p.grupo); return g ? g.emoji : '🛒'; }
 function imgHTML(p) {
-    return p.img
-        ? `<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" data-ph="${phEmoji(p)}">`
-        : `<span class="ph">${phEmoji(p)}</span>`;
+    if (p.img) return `<img src="${esc(p.img)}"${p.rc ? ` class="rc" data-orig="${esc(p.foto)}"` : ''} alt="" loading="lazy" decoding="async" data-ph="${phEmoji(p)}">`;
+    if (p.combo && p.combo.length) return comboHTML(p.combo);
+    return `<span class="ph">${phEmoji(p)}</span>`;
 }
+const comboHTML = (fotos) => `<div class="combo-fotos">${fotos.map(src => `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" data-quitar="1">`).join('')}</div>`;
+const badgeHTML = (p) => p.desc > 0 ? `<span class="pbadge">${hastaOff(p.desc)}</span>` : '';
 // El precio que se ve: con descuento tachado si hay promo del día o un % OFF
 function precioVista(p) {
     const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
@@ -721,7 +784,8 @@ function precioVista(p) {
 function priceHTML(p) {
     if (!(p.precio > 0)) return `<div class="price"><span class="consultar">Precio a consultar</span></div>`;
     const v = precioVista(p);
-    if (v.lista) return `<div class="price"><b>${money(v.actual)}</b><s>${money(v.lista)}</s><span class="off${v.dia ? ' dia' : ''}">${esc(v.tag)}</span></div>`;
+    // El % ya lo dice el cartel "Hasta X% OFF" de la foto; acá queda el precio de antes tachado
+    if (v.lista) return `<div class="price"><b>${money(v.actual)}</b><s>${money(v.lista)}</s>${v.dia ? `<span class="off dia">${esc(v.tag)}</span>` : ''}</div>`;
     return `<div class="price"><b>${money(p.precio)}</b></div>`;
 }
 // Las demás ofertas (2X $X, CAJA $X, 3x2…). En las que no dicen precio (3x2) va lo que sale cada una.
@@ -763,37 +827,45 @@ function rowHTML(p) {
             ${p.lleva ? `<p class="prow-desc">Lleva: ${esc(p.lleva)}</p>` : ''}
             ${priceHTML(p)}${ofertasHTML(p, false)}${mayHTML(p)}${stockHTML(p)}
         </div>
-        <div class="prow-img">${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
+        <div class="prow-img">${badgeHTML(p)}${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
     </div>`;
 }
 function cardHTML(p) {
     return `<div class="card" data-act="open" data-id="${p.id}">
-        <div class="card-img">${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
+        <div class="card-img">${badgeHTML(p)}${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
         <h3>${esc(p.titulo)}</h3>${priceHTML(p)}${mayHTML(p)}
     </div>`;
 }
-const fotoDe = (items) => (items.find(p => p.img) || {}).img || '';
+// Tarjeta de categoría: nombre a la izquierda, botellas recortadas a la derecha y el mayor descuento que hay adentro
 function tileHTML(t) {
-    return `<a class="tile ${t.img ? 'foto' : ''}" href="${t.href}" style="--tint:${t.tint}">
-        ${t.img ? `<img class="tile-img" src="${esc(t.img)}" alt="" loading="lazy" decoding="async" data-tile="${t.emoji}">` : `<span class="tile-emoji">${t.emoji}</span>`}
+    const bot = t.fotos.length
+        ? t.fotos.map(src => `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" data-quitar="1">`).join('')
+        : `<span class="tile-emoji">${t.emoji}</span>`;
+    return `<a class="tile${t.badge ? ' con-badge' : ''}" href="${t.href}">
+        <span class="tile-name">${esc(t.nombre)}</span>
+        <span class="tile-bot" data-emoji="${t.emoji}">${bot}</span>
         ${t.badge ? `<span class="tile-badge">${esc(t.badge)}</span>` : ''}
-        <div class="tile-cap"><b>${esc(t.nombre)}</b>${t.sub ? `<small>${esc(t.sub)}</small>` : ''}</div>
     </a>`;
 }
-// Debajo del nombre de cada categoría: qué hay adentro (sin números)
-function resumenGrupo(g) {
-    const [n1, n2] = nivelesDe(g);
-    for (const n of [n1, n2, NIVEL_MARCA]) {
-        if (!n) continue;
-        const reales = opciones(g.items, n.key, n.label, '').filter(o => o.k !== OTROS);
-        if (reales.length >= 2) return reales.slice(0, 3).map(o => o.t).join(' · ');
-    }
-    return '';
+// Hasta 3 botellas recortadas de marcas distintas (en Promos, las de mayor descuento; en el resto, las de más
+// stock), sin repetir las que ya salieron en otra tarjeta. En Combos, las botellas de lo que llevan.
+function botellasDe(g, usadas) {
+    if (g.id === 'combos') return [...new Set(g.items.flatMap(p => p.combo))].slice(0, 3);
+    const orden = g.id === 'promos' ? (a, b) => b.desc - a.desc || b.stock - a.stock : (a, b) => b.stock - a.stock;
+    const con = g.items.filter(p => p.rc).sort(orden);
+    const out = [], marcas = new Set();
+    const tomar = (p, distintas) => {
+        if (out.length >= 3 || out.includes(p.img) || usadas.has(p.img)) return;
+        if (distintas && marcas.has(p.marca || p.id)) return;
+        marcas.add(p.marca || p.id); out.push(p.img);
+    };
+    con.forEach(p => tomar(p, true));
+    con.forEach(p => tomar(p, false));
+    if (!out.length) con.slice(0, 3).forEach(p => out.push(p.img));   // si todas estaban usadas, se repiten
+    out.forEach(img => usadas.add(img));
+    return out;
 }
-function badgePromos(items) {
-    const max = Math.max(0, ...items.flatMap(p => p.ofertas.filter(o => o.kind === 'PORCENTAJE').map(o => Math.round(o.percent))));
-    return max > 0 ? `Hasta ${max}% OFF` : '';
-}
+const badgeGrupo = (items) => hastaOff(items.reduce((m, p) => Math.max(m, p.desc || 0), 0));
 
 /* =====================================================================
    Vistas
@@ -821,12 +893,15 @@ function renderNavChips(show) {
 }
 
 function renderHome(main) {
+    const usadas = new Set();
     const tiles = ordenGrupos().map(g => ({
-        href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, tint: g.tint, sub: resumenGrupo(g),
-        img: fotoDe(g.items), badge: g.id === 'promos' ? badgePromos(g.items) : '',
+        href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, fotos: botellasDe(g, usadas), badge: badgeGrupo(g.items),
     }));
     const dia = productos.filter(p => p.promoDia && p.promoDia.precio < p.precio);
-    const recos = productos.filter(p => p.img && esVinoMay(p) && p.precio > 0)
+    // Las de mayor descuento (y entre las que empatan, primero las que tienen foto)
+    const top = productos.filter(p => p.desc > 0).sort((a, b) => b.desc - a.desc || (!!b.img - !!a.img)).slice(0, 12);
+    const conFoto = productos.filter(p => p.rc && esVinoMay(p) && p.precio > 0 && !p.desc);
+    const recos = (conFoto.length >= 6 ? conFoto : productos.filter(p => p.img && esVinoMay(p) && p.precio > 0))
         .map(p => [Math.random(), p]).sort((a, b) => a[0] - b[0]).slice(0, 12).map(x => x[1]);
     main.innerHTML = `
         <section class="sec">
@@ -836,6 +911,10 @@ function renderHome(main) {
         ${dia.length ? `<section class="sec">
             <div class="sec-h"><h2>⭐ ${esc(dia[0].promoDia.titulo || 'Promo del día')}</h2></div>
             <div class="hscroll">${dia.slice(0, 12).map(cardHTML).join('')}</div>
+        </section>` : ''}
+        ${top.length ? `<section class="sec">
+            <div class="sec-h"><h2>🔥 Las mejores promos</h2><a href="#/c/promos" style="font-size:13px;color:var(--accent);font-weight:600">Ver todas ›</a></div>
+            <div class="hscroll">${top.map(cardHTML).join('')}</div>
         </section>` : ''}
         ${recos.length ? `<section class="sec">
             <div class="sec-h"><h2>🍷 Recomendados</h2><a href="#/c/vinos" style="font-size:13px;color:var(--accent);font-weight:600">Ver vinos ›</a></div>
@@ -1019,6 +1098,13 @@ function totalFicha(p, q) {
     const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
     return pd ? Math.min(conOferta, redondearPesos(q * pd.precio)) : conOferta;
 }
+// Foto grande de la ficha: la botella recortada sobre blanco; si solo hay foto del local, con su fondo desenfocado
+function heroHTML(p) {
+    if (p.img && !p.rc) return `<div class="ps-hero">${badgeHTML(p)}<div class="blur" style="background-image:url('${esc(p.img.replace(/'/g, '%27'))}')"></div><img src="${esc(p.img)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}"></div>`;
+    const dentro = p.img ? `<img src="${esc(p.img)}" class="rc" data-orig="${esc(p.foto)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}">`
+        : (p.combo && p.combo.length) ? comboHTML(p.combo) : `<span class="ph">${phEmoji(p)}</span>`;
+    return `<div class="ps-hero blanco">${badgeHTML(p)}${dentro}</div>`;
+}
 function renderProducto() {
     const p = byId[psId]; if (!p) return;
     const tags = [];
@@ -1030,7 +1116,7 @@ function renderProducto() {
     const tf = totalFicha(p, psQty);
     $('#sp-producto').innerHTML = `
         <button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
-        <div class="ps-hero">${p.img ? `<div class="blur" style="background-image:url('${esc(p.img.replace(/'/g, '%27'))}')"></div><img src="${esc(p.img)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}">` : `<span class="ph">${phEmoji(p)}</span>`}</div>
+        ${heroHTML(p)}
         <div class="ps-body">
             <h2>${esc(p.titulo)}</h2>
             ${tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
@@ -1062,7 +1148,7 @@ function renderCarrito() {
     let may = '';
     if (r.may) {
         may = `<div class="may">🍷 ¡Precio mayorista activado!${r.ahorroMay > 0 ? ' Ahorrás ' + money(r.ahorroMay) : ''}` +
-            (r.lineas.some(l => esVinoMay(l.p) && !(l.p.mayorista > 0)) ? '<small>Los que están en oferta quedan a su precio de oferta.</small>' : '') + `</div>`;
+            (r.lineas.some(l => esVinoMay(l.p) && l.p.ofertas.length) ? '<small>Los que están en oferta suman para llegar a 6, pero quedan a su precio de oferta.</small>' : '') + `</div>`;
     } else if (r.vinos > 0) {
         const faltan = VINOS_PARA_MAYORISTA - r.vinos;
         may = `<div class="may">🍷 Sumá ${faltan} ${faltan === 1 ? 'vino' : 'vinos'} más y pagás precio mayorista<div class="bar"><i style="width:${Math.round(100 * r.vinos / VINOS_PARA_MAYORISTA)}%"></i></div></div>`;
@@ -1171,7 +1257,7 @@ function renderInfo() {
             <ul>
                 <li><span>🛵</span><span>${esc(CONFIG.ENTREGAS.join(' · '))}. Envío gratis en ${esc(CONFIG.ZONA_ENVIO_GRATIS)} superando los ${money(CONFIG.ENVIO_GRATIS_DESDE)}; si no, se coordina por WhatsApp.</span></li>
                 <li><span>💳</span><span>${esc(CONFIG.PAGOS.join(' · '))}</span></li>
-                <li><span>🍷</span><span>Precio mayorista llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar). Los que están en oferta quedan a su precio de oferta.</span></li>
+                <li><span>🍷</span><span>Precio mayorista llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar). Los que están en oferta también suman para llegar a ${VINOS_PARA_MAYORISTA}, pero quedan a su precio de oferta.</span></li>
                 <li><span>🛒</span><span>Armá tu pedido, tocá <b>Ver pedido</b> y lo enviás por WhatsApp. Te confirmamos al toque.</span></li>
             </ul>
             <a class="btn btn-wpp" href="${waLink('')}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
@@ -1238,14 +1324,20 @@ document.addEventListener('input', (e) => {
 document.addEventListener('change', (e) => {
     if (e.target.id === 'orden') { view.orden = e.target.value; render(); }
 });
-// Si una foto no existe, se reemplaza por el ícono de su categoría
+// Si una foto no carga: el recorte pasa a la foto original, y si tampoco está, el ícono de su categoría
 document.addEventListener('error', (e) => {
     const img = e.target;
     if (img.tagName !== 'IMG') return;
-    if (img.dataset.tile) {
-        const s = document.createElement('span'); s.className = 'tile-emoji'; s.textContent = img.dataset.tile;
-        const t = img.closest('.tile'); if (t) t.classList.remove('foto');
-        img.replaceWith(s); return;
+    if (img.dataset.orig) {
+        const orig = img.dataset.orig;
+        delete img.dataset.orig; img.classList.remove('rc'); img.src = orig; return;
+    }
+    if (img.dataset.quitar) {        // botellas de las tarjetas y de los combos: se saca la que falta
+        const caja = img.parentElement; img.remove();
+        if (caja && caja.dataset.emoji && !caja.querySelector('img')) {
+            const s = document.createElement('span'); s.className = 'tile-emoji'; s.textContent = caja.dataset.emoji; caja.appendChild(s);
+        }
+        return;
     }
     if (img.dataset.ph) { const s = document.createElement('span'); s.className = 'ph'; s.textContent = img.dataset.ph; img.replaceWith(s); }
 }, true);
@@ -1286,8 +1378,13 @@ function skeleton() {
 async function cargar() {
     skeleton();
     try {
-        const res = await fetch(CONFIG.API_URL + '&t=' + Date.now());
+        // La lista de fotos recortadas se pide junto con los productos (si no llega, se usan las fotos originales)
+        const [res, rc] = await Promise.all([
+            fetch(CONFIG.API_URL + '&t=' + Date.now()),
+            fetch(CONFIG.RECORTES + '?v=' + Math.floor(Date.now() / 6e5)).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+        ]);
         if (!res.ok) throw new Error('HTTP ' + res.status);
+        recortes = rc || {};
         construir(await res.json());
         cargarCarrito();
         actualizarBarra();

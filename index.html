@@ -207,7 +207,7 @@
 </head>
 <body>
 
-<div class="promobar">🍷 Pedí por WhatsApp · Envío gratis en Córdoba Capital superando los $100.000 · Precio mayorista en vinos llevando 6 o más (los que están en oferta no suman)</div>
+<div class="promobar">🍷 Pedí por WhatsApp · Envío gratis en Córdoba Capital superando los $100.000 · Precio mayorista en vinos llevando 6 o más (los que están en oferta suman, pero quedan a su precio de oferta)</div>
 
 <header>
     <h1 class="brand" onclick="showHome()">MONJE NEGRO</h1>
@@ -376,7 +376,7 @@
         </div>
         <div class="f-col">
             <h4>Beneficio</h4>
-            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades. Los productos en oferta ya vienen con su descuento, así que no llevan precio mayorista.</p>
+            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades. Los productos en oferta suman para llegar a las 6, pero ya vienen con su descuento, así que no llevan precio mayorista.</p>
         </div>
         <div class="f-col">
             <h4>Contacto</h4>
@@ -643,7 +643,9 @@
 
     function precioUnitario(item, mayorista) {
         const regular = parseNum(item.p);
-        if (mayorista && esVino(item.t)) {
+        // Los vinos en oferta suman para llegar a los 6, pero no bajan al
+        // precio mayorista: se cobran a su precio de oferta.
+        if (mayorista && esVino(item.t) && !(item.of && item.of.length)) {
             // El precio mayorista sale tal cual del sistema: tiene que ser el
             // mismo que cobra el mostrador en una venta mayorista. Antes acá se
             // tomaba el más barato de los dos, así que en los productos donde
