@@ -9,16 +9,21 @@
 <style>
 @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
 
+/* Tema oscuro (predeterminado). El claro se activa con data-tema="claro" (o abriendo con ?tema=claro). */
 :root {
-    --bg: #f2f2f4; --card: #ffffff; --card2: #f6f6f8; --text: #16161a; --muted: #6c6c76; --line: #e3e3e8;
-    --brand: #0a0a0a; --accent: #d4141c; --accent-2: #a50f15; --gold: #a8760a; --ok: #14833b;
-    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.06);
-    --radius: 14px;
-}
-:root[data-tema="oscuro"] {
+    color-scheme: dark;
     --bg: #0b0b0d; --card: #16161a; --card2: #1e1e23; --text: #f3f3f4; --muted: #9b9ba5; --line: #2a2a31;
     --brand: #000000; --accent: #ed1c24; --accent-2: #c9151c; --gold: #d4af37; --ok: #3ccf6e;
+    --cta: var(--accent);
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+    --radius: 14px;
+}
+:root[data-tema="claro"] {
+    color-scheme: light;
+    --bg: #f2f2f4; --card: #ffffff; --card2: #f6f6f8; --text: #16161a; --muted: #6c6c76; --line: #e3e3e8;
+    --brand: #0a0a0a; --accent: #d4141c; --accent-2: #a50f15; --gold: #a8760a; --ok: #14833b;
+    --cta: #0a0a0a;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.06);
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -54,14 +59,15 @@ img { display: block; }
 .sbox .ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); opacity: .5; pointer-events: none; }
 .sbox .clr { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; width: 32px; height: 32px; border-radius: 50%; display: none; color: var(--muted); font-size: 17px; }
 .sbox.has .clr { display: block; }
-.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 10px 0 2px; }
+.chips { position: relative; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 10px 0 2px; }
 .chips::-webkit-scrollbar { display: none; }
 .chips:empty { display: none; }
 .chip { flex: none; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 13px; font-size: 13px; white-space: nowrap; }
 .chip small { color: var(--muted); margin-left: 3px; }
-.chip.on { background: var(--brand); color: #fff; border-color: var(--brand); }
-.chip.on small { color: rgba(255,255,255,.7); }
-:root[data-tema="oscuro"] .chip.on { background: var(--accent); border-color: var(--accent); }
+.chip.on { background: var(--cta); color: #fff; border-color: var(--cta); }
+.chip.on small { color: rgba(255,255,255,.75); }
+/* Nombre de la fila de filtros: queda fijo a la izquierda y las opciones pasan por detrás */
+.clbl { position: sticky; left: 0; z-index: 2; flex: none; display: flex; align-items: center; font-size: 10.5px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: var(--muted); background: var(--bg); padding-right: 8px; box-shadow: 10px 0 10px -4px var(--bg); }
 
 /* ---------- Secciones ---------- */
 .sec { margin: 12px 0 24px; }
@@ -115,23 +121,12 @@ img { display: block; }
 .prow-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
 .ph { font-size: 38px; line-height: 1; }
 .ctl { position: absolute; right: -6px; bottom: -6px; }
-.addbtn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--brand); color: #fff; font-size: 22px; line-height: 1; box-shadow: 0 3px 8px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; }
-:root[data-tema="oscuro"] .addbtn { background: var(--accent); }
-.stepper { display: inline-flex; align-items: center; background: var(--brand); color: #fff; border-radius: 999px; height: 34px; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
-:root[data-tema="oscuro"] .stepper { background: var(--accent); }
+.addbtn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--cta); color: #fff; font-size: 22px; line-height: 1; box-shadow: 0 3px 8px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; }
+.stepper { display: inline-flex; align-items: center; background: var(--cta); color: #fff; border-radius: 999px; height: 34px; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
 .stepper button { width: 32px; height: 34px; border: 0; background: transparent; color: #fff; font-size: 19px; line-height: 1; }
 .stepper span { min-width: 16px; text-align: center; font-weight: 700; font-size: 14px; }
 .more { text-align: center; color: var(--muted); font-size: 13px; padding: 18px 0; }
 .vacio { text-align: center; color: var(--muted); padding: 40px 16px; line-height: 1.6; }
-
-/* Bodegas */
-.blist { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
-@media (min-width: 760px) { .blist { grid-template-columns: 1fr 1fr; } }
-.brow { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow); }
-.binit { width: 44px; height: 44px; border-radius: 50%; background: var(--card2); display: flex; align-items: center; justify-content: center; font-family: 'AM Tripoli', serif; color: var(--accent); font-size: 17px; flex: none; }
-.brow b { flex: 1; font-weight: 600; font-size: 14.5px; }
-.brow small { color: var(--muted); font-size: 12.5px; }
-.brow i { font-style: normal; color: var(--muted); font-size: 18px; }
 
 /* Skeleton de carga */
 .sk { background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%); background-size: 200% 100%; animation: sk 1.2s infinite; border-radius: var(--radius); }
@@ -140,9 +135,8 @@ img { display: block; }
 footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px 14px 10px; }
 
 /* ---------- Barra del carrito ---------- */
-#cartbar { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translate(-50%, 160%); width: calc(100% - 24px); max-width: 520px; background: var(--brand); color: #fff; border: 0; border-radius: 16px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.35); z-index: 40; transition: transform .25s; }
+#cartbar { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translate(-50%, 160%); width: calc(100% - 24px); max-width: 520px; background: var(--cta); color: #fff; border: 0; border-radius: 16px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.35); z-index: 40; transition: transform .25s; }
 #cartbar.show { transform: translate(-50%, 0); }
-:root[data-tema="oscuro"] #cartbar { background: var(--accent); }
 .cb-n { background: rgba(255,255,255,.18); border-radius: 10px; min-width: 30px; height: 30px; padding: 0 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 .cb-t { flex: 1; font-weight: 700; text-align: left; }
 .cb-total { font-weight: 800; }
@@ -174,8 +168,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .foot { position: sticky; bottom: 0; display: flex; gap: 10px; align-items: center; padding: 12px 18px calc(14px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); }
 .foot .stepper { height: 46px; }
 .foot .stepper button { width: 42px; height: 46px; }
-.btn { flex: 1; height: 48px; border: 0; border-radius: 14px; background: var(--brand); color: #fff; font-weight: 700; font-size: 15.5px; }
-:root[data-tema="oscuro"] .btn { background: var(--accent); }
+.btn { flex: 1; height: 48px; border: 0; border-radius: 14px; background: var(--cta); color: #fff; font-weight: 700; font-size: 15.5px; }
 .btn-wpp { background: #1faa53 !important; }
 .btn-ghost { background: transparent; border: 0; color: var(--muted); font-size: 13px; text-decoration: underline; }
 
@@ -204,8 +197,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .form .err { border-color: var(--accent) !important; }
 .seg { display: flex; gap: 8px; flex-wrap: wrap; }
 .seg button { flex: 1 1 auto; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 10px; font-size: 13.5px; }
-.seg button.on { border-color: var(--brand); background: var(--brand); color: #fff; }
-:root[data-tema="oscuro"] .seg button.on { border-color: var(--accent); background: var(--accent); }
+.seg button.on { border-color: var(--cta); background: var(--cta); color: #fff; }
 .tot { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 4px; font-size: 15px; }
 .tot b { font-size: 22px; }
 
@@ -280,7 +272,7 @@ const CONFIG = {
     PILLS: ['🛵 Envíos', '🏪 Retiro en el local'],
     ENTREGAS: ['Envío a domicilio', 'Retiro en el local'],
     PAGOS: ['Efectivo', 'Transferencia', 'Mercado Pago'],
-    TEMA: 'claro',                       // 'claro' u 'oscuro' (también se puede probar con ?tema=oscuro)
+    TEMA: 'oscuro',                      // 'oscuro' o 'claro' (también se puede probar con ?tema=claro)
 };
 
 /* Precio mayorista: con 6+ vinos/espumantes, cada uno pasa a costo + 25% */
@@ -292,8 +284,9 @@ const MARGEN_MAYORISTA = 1.25;
    C = columna CATEGORIA, T = TIPO, F = VARIETAL (todo en mayúsculas y sin acentos). */
 const GRUPOS = [
     { id: 'promos',     nombre: 'Promos y combos',        emoji: '🔥', tint: 'rgba(237,28,36,.20)',  test: p => p.C === 'PROMOS' || p.T === 'PROMOS' },
-    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C === 'VINO' || p.C === 'VINOS' || p.T.startsWith('VINO'), vino: true },
-    { id: 'espumantes', nombre: 'Espumantes y sidras',    emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE', 'SIDRA', 'SIDRAS'].includes(p.C) || p.T === 'ESPUMANTES' },
+    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C === 'VINO' || p.C === 'VINOS' || p.T.startsWith('VINO') },
+    { id: 'espumantes', nombre: 'Espumantes',             emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE'].includes(p.C) || p.T === 'ESPUMANTES' },
+    { id: 'sidras',     nombre: 'Sidras',                 emoji: '🍏', tint: 'rgba(150,190,40,.20)', test: p => ['SIDRA', 'SIDRAS'].includes(p.C) || ['SIDRA', 'SIDRAS'].includes(p.T) },
     { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', tint: 'rgba(230,150,20,.22)', test: p => p.C === 'CERVEZAS' || p.T === 'CERVEZAS' },
     { id: 'vermouth',   nombre: 'Vermouth',               emoji: '🍸', tint: 'rgba(180,40,40,.18)',  test: p => ['VERMUT', 'VERMOUTH'].includes(p.F) || ['VERMUT', 'VERMOUTH'].includes(p.T) },
     { id: 'aperitivos', nombre: 'Aperitivos',             emoji: '🍹', tint: 'rgba(200,60,40,.18)',  test: p => p.C === 'APERITIVOS' || p.T === 'APERITIVOS' },
@@ -309,8 +302,14 @@ const GRUPOS = [
     { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', tint: 'rgba(130,60,170,.18)', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS'].includes(p.C) },
     { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', tint: 'rgba(120,120,130,.18)', test: () => true },
 ];
-const BODEGAS_TILE = { nombre: 'Bodegas', emoji: '🍇', tint: 'rgba(150,90,30,.20)' };
-const COLORES_VINO = [['TINTOS', 'Tintos'], ['BLANCOS', 'Blancos'], ['ROSADOS', 'Rosados']];
+/* Filtros dentro de cada categoría: TIPO → VARIETAL (subcategoría) → MARCA (columna Etiqueta).
+   Acá va el nombre que se muestra en cada fila: [fila de TIPO, fila de VARIETAL]. */
+const FILTROS = {
+    vinos: ['Tipo', 'Varietal'], espumantes: ['Tipo', 'Estilo'], cervezas: ['Tipo', 'Envase'],
+    gaseosas: ['Tipo', 'Sabor'], aperitivos: ['Tipo', 'Tipo'], promos: ['Tipo', 'Tipo'],
+    kiosco: ['Tipo', 'Producto'], sinalcohol: ['Tipo', 'Presentación'],
+};
+const FILTROS_DEF = ['Tipo', 'Subcategoría'];
 
 /* =====================================================================
    Utilidades
@@ -334,11 +333,13 @@ function cap(w) {
     if (i < 0) return w;
     return w.slice(0, i) + w[i].toUpperCase() + w.slice(i + 1).toLowerCase();
 }
+const UNIDADES = /^(ML|CC|CL|KG|GR|G|LTS|LT|L)$/;
 function titulo(s) {
-    return (s || '').trim().split(/\s+/).map((w, i) => {
+    return (s || '').trim().split(/\s+/).map((w, i, todas) => {
         const W = norm(w);
         const u = W.match(/^(\d+(?:[.,]\d+)?)(ML|CC|CL|KG|GR|G|LTS|LT|L)$/);
         if (u) return u[1] + (u[2] === 'L' ? 'L' : u[2].toLowerCase());
+        if (i > 0 && UNIDADES.test(W) && /^\d+([.,]\d+)?$/.test(todas[i - 1])) return W === 'L' ? 'L' : W.toLowerCase();   // "473 ML" -> "473 ml"
         if (/\d/.test(w)) return w;
         if (ROMANOS.has(W) || SIGLAS.has(W)) return W;
         if (i > 0 && MINUS.has(W)) return w.toLowerCase();
@@ -346,10 +347,9 @@ function titulo(s) {
     }).join(' ');
 }
 const slug = (s) => norm(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'item';
-function iniciales(s) {
-    const w = norm(s).split(' ').filter(Boolean);
-    return w.length >= 2 ? w[0][0] + w[1][0] : (w[0] || '?').slice(0, 2);
-}
+// Para filtros y datos: con tildes donde corresponde ("REGALERIA" -> "Regalería", "PORRON" -> "Porrón")
+const ACENTOS = { Regaleria: 'Regalería', Mani: 'Maní', Tonica: 'Tónica', Porron: 'Porrón', Laton: 'Latón', Rose: 'Rosé', Sifon: 'Sifón', Torrontes: 'Torrontés', Semillon: 'Semillón', Limon: 'Limón', Cachaca: 'Cachaça' };
+const bonito = (s) => titulo(s).split(' ').map(w => ACENTOS[w] || w).join(' ');
 
 // Las fotos cargadas como "github.com/.../CATALOGO/blob/<versión>/X?raw=true" se sirven desde
 // este mismo sitio (más rápido, sin redirección).
@@ -382,7 +382,7 @@ function parseCSV(text) {
 /* =====================================================================
    Datos
    ===================================================================== */
-let productos = [], byId = {}, grupos = [], bodegas = [], hayOfertas = false;
+let productos = [], byId = {}, grupos = [], hayOfertas = false;
 
 // Busca cada columna por su título (si no lo encuentra, usa la posición de siempre)
 const COLS = {
@@ -392,12 +392,6 @@ const COLS = {
     oferta: [['OFERTA', 'PRECIO OFERTA', 'PRECIO PROMO', 'PRECIO DESCUENTO'], -1],
     desc: [['DESCRIPCION', 'DETALLE'], -1],
 };
-
-const BRAND_PRE = new Set(['EL', 'LA', 'LOS', 'LAS', 'DON', 'DONA', 'FINCA', 'BODEGA', 'BODEGAS', 'SANTA', 'SAN', 'CASA', 'ALTA', 'GRAN', 'VINA', 'DOMAINE', 'CHACRA', 'VALLE']);
-function brandOf(name) {
-    const w = norm(name).split(' ');
-    return (w[1] && BRAND_PRE.has(w[0])) ? w[0] + ' ' + w[1] : (w[0] || '');
-}
 
 function construir(text) {
     const rows = parseCSV(text);
@@ -430,7 +424,7 @@ function construir(text) {
             tipo: cell(r, 'tipo'), varietal: cell(r, 'varietal'),
             stock: Number.isFinite(st) ? st : null,
             costo: parseNum(cell(r, 'costo')),
-            marca: marcaRaw ? norm(marcaRaw) : brandOf(nombre),
+            marca: norm(marcaRaw), marcaTxt: marcaRaw,       // columna Etiqueta: clave para filtrar / texto a mostrar
             desc: cell(r, 'desc'),
         });
     });
@@ -439,11 +433,6 @@ function construir(text) {
     productos.forEach(p => { byId[p.id] = p; p.grupo = (GRUPOS.find(g => g.test(p)) || GRUPOS[GRUPOS.length - 1]).id; });
     grupos = GRUPOS.map(g => ({ ...g, items: productos.filter(p => p.grupo === g.id) })).filter(g => g.items.length);
     hayOfertas = productos.some(p => p.oferta);
-
-    // Bodegas = marcas de los vinos y espumantes
-    const cnt = {};
-    productos.filter(p => p.grupo === 'vinos' || p.grupo === 'espumantes').forEach(p => { if (p.marca) cnt[p.marca] = (cnt[p.marca] || 0) + 1; });
-    bodegas = Object.keys(cnt).map(k => ({ key: k, nombre: titulo(k), n: cnt[k] })).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 }
 
 const precioLista = (p) => p.oferta || p.precio;
@@ -517,8 +506,8 @@ function stockHTML(p) {
 }
 function metaDe(p) {
     const parts = [];
-    if (p.marca) parts.push(titulo(p.marca));
-    if (p.F && p.F !== p.marca && p.F !== p.T && !['PROMOS'].includes(p.F)) parts.push(titulo(p.varietal));
+    if (p.marca) parts.push(bonito(p.marcaTxt));
+    if (p.F && p.F !== p.marca && p.F !== p.T && p.F !== p.C) parts.push(bonito(p.varietal));
     return parts.join(' · ');
 }
 function ctlHTML(id) {
@@ -560,34 +549,27 @@ function badgeDe(items) {
 /* =====================================================================
    Vistas
    ===================================================================== */
-const view = { name: 'home', arg: '', color: '', vari: '', orden: 'rel', q: '' };
+// t = tipo, f = subcategoría (varietal), m = marca elegidos dentro de la categoría
+const view = { name: 'home', arg: '', t: '', f: '', m: '', orden: 'rel', q: '' };
 let pendientes = [], observer = null;
 
 function render() {
     const main = $('#main');
-    const enLista = view.q || view.name !== 'home';
     $('#back').classList.toggle('show', view.name !== 'home' && !view.q);
-    renderNavChips(enLista);
-    if (view.q) return renderBusqueda(main);
-    if (view.name === 'c') return renderCategoria(main);
-    if (view.name === 'bodegas') return renderBodegas(main);
-    if (view.name === 'b') return renderBodega(main);
-    if (view.name === 'ofertas') return renderLista(main, '🏷️ Ofertas', productos.filter(p => p.oferta));
-    renderHome(main);
+    renderNavChips(view.q || view.name !== 'home');
+    if (view.q) renderBusqueda(main);
+    else if (view.name === 'c') renderCategoria(main);
+    else if (view.name === 'ofertas') renderLista(main, '🏷️ Ofertas', productos.filter(p => p.oferta));
+    else renderHome(main);
+    centrarChips();
 }
 
 function renderNavChips(show) {
     const el = $('#navchips');
     if (!show) { el.innerHTML = ''; return; }
-    const cur = view.name === 'c' ? view.arg : (view.name === 'bodegas' || view.name === 'b' ? '__bodegas' : '');
-    const items = [['__home', 'Inicio']].concat(grupos.map(g => [g.id, g.nombre]));
-    items.splice(3, 0, ['__bodegas', 'Bodegas']);
-    el.innerHTML = items.map(([id, n]) => {
-        const href = id === '__home' ? '#/' : id === '__bodegas' ? '#/bodegas' : '#/c/' + id;
-        return `<a class="chip ${id === cur ? 'on' : ''}" href="${href}">${esc(n)}</a>`;
-    }).join('');
-    const on = el.querySelector('.on');
-    if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+    const cur = view.name === 'c' ? view.arg : '';
+    el.innerHTML = [['', 'Inicio']].concat(grupos.map(g => [g.id, g.nombre])).map(([id, n]) =>
+        `<a class="chip ${id && id === cur ? 'on' : ''}" href="${id ? '#/c/' + id : '#/'}">${esc(n)}</a>`).join('');
 }
 
 function renderHome(main) {
@@ -599,10 +581,6 @@ function renderHome(main) {
     }
     grupos.forEach(g => {
         tiles.push({ href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, tint: g.tint, sub: prod(g.items.length), img: fotoDe(g.items), badge: badgeDe(g.items) });
-        if (g.id === 'vinos' && bodegas.length) {
-            const conFoto = g.items.filter(p => p.img);   // otra foto distinta a la del tile de Vinos
-            tiles.push({ href: '#/bodegas', nombre: BODEGAS_TILE.nombre, emoji: BODEGAS_TILE.emoji, tint: BODEGAS_TILE.tint, sub: bodegas.length + ' bodegas', img: conFoto.length > 1 ? conFoto[conFoto.length - 1].img : '', badge: '' });
-        }
     });
 
     const recos = productos.filter(p => p.img && esVinoMay(p) && precioLista(p) > 0)
@@ -630,46 +608,74 @@ function selectOrden() {
     const ops = [['rel', 'Destacados'], ['pmin', 'Menor precio'], ['pmax', 'Mayor precio'], ['az', 'A - Z']];
     return `<select id="orden" aria-label="Ordenar">${ops.map(([v, t]) => `<option value="${v}" ${view.orden === v ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
 }
-function chipsHTML(kind, opciones, actual, labelTodos) {
-    return `<div class="chips subchips">` +
-        `<button class="chip ${!actual ? 'on' : ''}" data-act="chip" data-k="${kind}" data-v="">${labelTodos}</button>` +
-        opciones.map(([v, t, n]) => `<button class="chip ${actual === v ? 'on' : ''}" data-act="chip" data-k="${kind}" data-v="${esc(v)}">${esc(t)}${n ? `<small>${n}</small>` : ''}</button>`).join('') +
-        `</div>`;
+/* ---------- Filtros dentro de la categoría: TIPO → SUBCATEGORÍA (varietal) → MARCA ---------- */
+const OTROS = '~otros';
+const tKey = (p) => p.T;
+const tLabel = (p) => bonito(p.tipo.replace(/^\s*vinos?\s+/i, ''));        // "VINOS TINTOS" -> "Tintos"
+const fKey = (p) => (p.F && p.F !== p.T && p.F !== p.C) ? p.F : '';      // el varietal, cuando aporta algo
+const mKey = (p) => p.marca;
+// Opciones de una fila de filtros: [{k, t, n}], de la que más productos tiene a la que menos.
+// Los productos sin ese dato van juntos en "Otros", así ninguno queda afuera.
+function opciones(items, keyFn, labelFn, otros) {
+    const m = new Map(); let sin = 0;
+    items.forEach(p => {
+        const k = keyFn(p);
+        if (!k) { sin++; return; }
+        const o = m.get(k) || { k, t: labelFn(p), n: 0 };
+        o.n++; m.set(k, o);
+    });
+    const arr = [...m.values()].sort((a, b) => b.n - a.n || a.t.localeCompare(b.t, 'es'));
+    if (arr.length && sin) arr.push({ k: OTROS, t: otros, n: sin });
+    return arr;
 }
-function contarVarietales(items, excluir) {
-    const c = {};
-    items.forEach(p => { if (p.F && p.F !== excluir && p.F !== p.T) c[p.F] = c[p.F] || [p.F, titulo(p.varietal), 0], c[p.F][2]++; });
-    return Object.values(c).sort((a, b) => b[2] - a[2]);
+const coincide = (keyFn, sel) => (p) => !sel || (sel === OTROS ? !keyFn(p) : keyFn(p) === sel);
+function filaChips(k, rotulo, todos, ops, sel) {
+    return `<div class="chips subchips"><span class="clbl">${esc(rotulo)}</span>` +
+        `<button class="chip ${!sel ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="">${esc(todos)}</button>` +
+        ops.map(o => `<button class="chip ${sel === o.k ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="${esc(o.k)}">${esc(o.t)}<small>${o.n}</small></button>`).join('') +
+        `</div>`;
 }
 
 function renderCategoria(main) {
     const g = grupoDe(view.arg);
     if (!g) { location.hash = '#/'; return; }
-    let items = g.items, filtros = '';
-    if (g.vino) {
-        const colores = COLORES_VINO.map(([k, t]) => [k, t, items.filter(p => p.T === 'VINOS ' + k).length]).filter(x => x[2]);
-        filtros += chipsHTML('color', colores, view.color, 'Todos');
-        if (view.color) {
-            items = items.filter(p => p.T === 'VINOS ' + view.color);
-            filtros += chipsHTML('vari', contarVarietales(items), view.vari, 'Ver todos');
-        }
-    } else {
-        const vars = contarVarietales(items, g.id.toUpperCase());
-        if (vars.length >= 2) filtros += chipsHTML('vari', vars, view.vari, 'Todos');
+    const [rot1, rot2] = FILTROS[g.id] || FILTROS_DEF;
+    let items = g.items, filas = '';
+    const camino = [];
+
+    // 1) Tipo: solo si la categoría tiene más de uno (ej. Vinos: tintos / blancos / rosados)
+    const o1 = opciones(items, tKey, tLabel, 'Otros');
+    const hay1 = o1.length >= 2;
+    if (!hay1 || !o1.some(o => o.k === view.t)) view.t = '';
+    if (hay1) {
+        filas += filaChips('t', rot1, 'Todos', o1, view.t);
+        if (view.t) { items = items.filter(coincide(tKey, view.t)); camino.push(o1.find(o => o.k === view.t).t); }
     }
-    if (view.vari) items = items.filter(p => p.F === view.vari);
-    renderLista(main, g.emoji + ' ' + g.nombre, items, filtros);
+    // 2) Subcategoría (varietal): si hay tipos, aparece después de elegir uno
+    const o2 = (!hay1 || view.t) ? opciones(items, fKey, p => bonito(p.varietal), 'Otros') : [];
+    const hay2 = o2.length >= 2;
+    if (!hay2 || !o2.some(o => o.k === view.f)) view.f = '';
+    if (hay2) {
+        filas += filaChips('f', rot2, 'Ver todos', o2, view.f);
+        if (view.f) { items = items.filter(coincide(fKey, view.f)); camino.push(o2.find(o => o.k === view.f).t); }
+    }
+    // 3) Marca (columna Etiqueta) de lo que quedó filtrado
+    const o3 = opciones(items, mKey, p => bonito(p.marcaTxt), 'Otras');
+    const hay3 = o3.length >= 2;
+    if (!hay3 || !o3.some(o => o.k === view.m)) view.m = '';
+    if (hay3) {
+        filas += filaChips('m', 'Marca', 'Todas', o3, view.m);
+        if (view.m) { items = items.filter(coincide(mKey, view.m)); camino.push(o3.find(o => o.k === view.m).t); }
+    }
+    renderLista(main, g.emoji + ' ' + g.nombre, items, filas, camino);
 }
 
-function renderBodegas(main) {
-    main.innerHTML = `<div class="lh"><div><h1>🍇 Bodegas</h1><span>${bodegas.length} bodegas</span></div></div>
-        <div class="blist">${bodegas.map(b => `<a class="brow" href="#/b/${encodeURIComponent(b.key)}">
-            <span class="binit">${esc(iniciales(b.key))}</span><b>${esc(b.nombre)}</b><small>${b.n}</small><i>›</i></a>`).join('')}</div>`;
-}
-function renderBodega(main) {
-    const b = bodegas.find(x => x.key === view.arg);
-    const items = productos.filter(p => (p.grupo === 'vinos' || p.grupo === 'espumantes') && p.marca === view.arg);
-    renderLista(main, b ? b.nombre : titulo(view.arg), items);
+// Deja a la vista (centrado) el chip elegido en cada fila que se desliza
+function centrarChips() {
+    document.querySelectorAll('.chips').forEach(fila => {
+        const on = fila.querySelector('.chip.on');
+        if (on && fila.scrollWidth > fila.clientWidth) fila.scrollLeft = on.offsetLeft - (fila.clientWidth - on.offsetWidth) / 2;
+    });
 }
 function renderBusqueda(main) {
     const toks = norm(view.q).split(' ').filter(Boolean);
@@ -680,9 +686,10 @@ function renderBusqueda(main) {
     renderLista(main, `Resultados para “${view.q}”`, items);
 }
 
-function renderLista(main, titulo_, items, filtros = '') {
+function renderLista(main, titulo_, items, filtros = '', camino = []) {
     const lista = ordenar(items);
-    main.innerHTML = `<div class="lh"><div><h1>${esc(titulo_)}</h1><span>${lista.length} ${lista.length === 1 ? 'producto' : 'productos'}</span></div>${lista.length > 1 ? selectOrden() : ''}</div>
+    const cant = `${lista.length} ${lista.length === 1 ? 'producto' : 'productos'}`;
+    main.innerHTML = `<div class="lh"><div><h1>${esc(titulo_)}</h1><span>${camino.length ? esc(camino.join(' › ')) + ' · ' : ''}${cant}</span></div>${lista.length > 1 ? selectOrden() : ''}</div>
         ${filtros}
         ${lista.length ? '<div class="plist" id="plist"></div><div class="more" id="more"></div>'
             : '<div class="vacio">No encontramos productos.<br><small>Probá con otra búsqueda o categoría.</small></div>'}`;
@@ -711,17 +718,14 @@ function agregarMas() {
 function route() {
     const h = location.hash.replace(/^#\/?/, '');
     const [name, ...rest] = h.split('/');
-    view.name = name || 'home';
+    view.name = ['c', 'ofertas'].includes(name) ? name : 'home';   // links viejos (ej. #/bodegas) van al inicio
     view.arg = decodeURIComponent(rest.join('/'));
-    view.color = ''; view.vari = ''; view.orden = 'rel';
+    view.t = ''; view.f = ''; view.m = ''; view.orden = 'rel';
     if (view.q) { view.q = ''; $('#q').value = ''; $('#sbox').classList.remove('has'); }
     render();
     window.scrollTo(0, 0);
 }
-function goBack() {
-    if (view.name === 'b') location.hash = '#/bodegas';
-    else location.hash = '#/';
-}
+function goBack() { location.hash = '#/'; }
 
 /* Hojas (producto / carrito / info) */
 let sheetOpen = null, sheetPushed = false;
@@ -764,9 +768,9 @@ function abrirProducto(id) { psId = id; psQty = 1; openSheet('producto'); }
 function renderProducto() {
     const p = byId[psId]; if (!p) return;
     const tags = [];
-    if (p.marca) tags.push((p.grupo === 'vinos' || p.grupo === 'espumantes' ? 'Bodega: ' : '') + titulo(p.marca));
-    if (p.varietal && p.F !== p.T && p.F !== p.marca) tags.push(titulo(p.varietal));
-    if (p.tipo && p.T !== p.F) tags.push(titulo(p.tipo));
+    if (p.marca) tags.push((p.grupo === 'vinos' || p.grupo === 'espumantes' ? 'Bodega: ' : 'Marca: ') + bonito(p.marcaTxt));
+    if (fKey(p) && p.F !== p.marca) tags.push(bonito(p.varietal));
+    if (p.tipo && p.T !== p.F) tags.push(bonito(p.tipo));
     const pl = precioLista(p);
     $('#sp-producto').innerHTML = `
         <button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
@@ -888,9 +892,8 @@ document.addEventListener('click', (e) => {
         case 'dec': addQty(id, -1); break;
         case 'open': abrirProducto(id); break;
         case 'chip':
-            if (el.dataset.k === 'color') { view.color = el.dataset.v; view.vari = ''; }
-            else view.vari = el.dataset.v;
-            render(); break;
+            if (['t', 'f', 'm'].includes(el.dataset.k)) { view[el.dataset.k] = el.dataset.v; render(); }
+            break;
         case 'cart': openSheet('carrito'); break;
         case 'info': openSheet('info'); break;
         case 'close': closeSheet(); break;
@@ -953,7 +956,7 @@ window.addEventListener('scroll', () => $('#topbar').classList.toggle('scrolled'
    ===================================================================== */
 function pintarEncabezado() {
     const tema = new URLSearchParams(location.search).get('tema') || CONFIG.TEMA;
-    if (tema === 'oscuro') document.documentElement.dataset.tema = 'oscuro';
+    if (/^clar/i.test(tema)) document.documentElement.dataset.tema = 'claro';   // acepta ?tema=claro o ?tema=clara
     $('#h-nombre').textContent = CONFIG.NOMBRE.toUpperCase();
     $('#h-sub').textContent = CONFIG.SUBTITULO;
     $('#h-pills').innerHTML = CONFIG.PILLS.map(t => `<span class="hpill">${esc(t)}</span>`).join('');
