@@ -1,0 +1,58 @@
+# Cada vez que se sube una foto de producto a la raíz del repo, le saca el fondo
+# para que el catálogo la muestre sobre blanco (ver herramientas/recortar_fotos.py).
+# Solo recorta las fotos nuevas o cambiadas y guarda el resultado en recortes/.
+name: Fotos con fondo blanco
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.[jJ][pP][gG]'
+      - '*.[jJ][pP][eE][gG]'
+      - '*.[jJ][fF][iI][fF]'
+      - '*.[pP][nN][gG]'
+      - '*.[wW][eE][bB][pP]'
+  workflow_dispatch:      # también se puede correr a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fotos-fondo-blanco
+  cancel-in-progress: false
+
+jobs:
+  recortar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Modelo de recorte (queda guardado entre corridas)
+        uses: actions/cache@v4
+        with:
+          path: ~/.rembg
+          key: rembg-isnet-general-use
+
+      - name: Instalar el recortador
+        run: pip install "rembg[cpu]==2.0.85" pillow
+
+      - name: Recortar las fotos nuevas
+        run: python herramientas/recortar_fotos.py
+
+      - name: Guardar los recortes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add recortes
+          if git diff --cached --quiet; then echo "No hay fotos nuevas para recortar"; exit 0; fi
+          git commit -m "Fotos con fondo blanco"
+          for intento in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
