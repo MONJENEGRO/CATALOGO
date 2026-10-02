@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0a">
-<meta name="description" content="Monje Negro — Botillería en Córdoba. Vinos, espumantes, cervezas, destilados y más. Armá tu pedido y envialo por WhatsApp.">
+<meta name="description" content="Monje Negro — Botillería en Córdoba. Vinos, espumantes, cervezas, destilados, combos y promos. Armá tu pedido y envialo por WhatsApp.">
 <title>Monje Negro · Botillería</title>
 <style>
 @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
@@ -14,6 +14,7 @@
     color-scheme: dark;
     --bg: #0b0b0d; --card: #16161a; --card2: #1e1e23; --text: #f3f3f4; --muted: #9b9ba5; --line: #2a2a31;
     --brand: #000000; --accent: #ed1c24; --accent-2: #c9151c; --gold: #d4af37; --ok: #3ccf6e;
+    --promo: #ff6b6f; --dia: #c4b5fd;
     --cta: var(--accent);
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
     --radius: 14px;
@@ -22,6 +23,7 @@
     color-scheme: light;
     --bg: #f2f2f4; --card: #ffffff; --card2: #f6f6f8; --text: #16161a; --muted: #6c6c76; --line: #e3e3e8;
     --brand: #0a0a0a; --accent: #d4141c; --accent-2: #a50f15; --gold: #a8760a; --ok: #14833b;
+    --promo: #c4161c; --dia: #6d28d9;
     --cta: #0a0a0a;
     --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.06);
 }
@@ -45,7 +47,7 @@ img { display: block; }
 .hdr-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .hpill { font-size: 11.5px; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.11); }
 .hdr-info { margin-left: auto; align-self: flex-start; background: rgba(255,255,255,.13); border: 0; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12.5px; flex: none; }
-.anuncio { background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 600; text-align: center; padding: 8px 12px; }
+.anuncio { background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 600; text-align: center; padding: 8px 12px; line-height: 1.4; }
 
 /* ---------- Barra superior (búsqueda + categorías) ---------- */
 .topbar { position: sticky; top: 0; z-index: 20; background: var(--bg); padding: 10px 0 8px; transition: box-shadow .2s; }
@@ -63,9 +65,7 @@ img { display: block; }
 .chips::-webkit-scrollbar { display: none; }
 .chips:empty { display: none; }
 .chip { flex: none; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 13px; font-size: 13px; white-space: nowrap; }
-.chip small { color: var(--muted); margin-left: 3px; }
 .chip.on { background: var(--cta); color: #fff; border-color: var(--cta); }
-.chip.on small { color: rgba(255,255,255,.75); }
 /* Nombre de la fila de filtros: queda fijo a la izquierda y las opciones pasan por detrás */
 .clbl { position: sticky; left: 0; z-index: 2; flex: none; display: flex; align-items: center; font-size: 10.5px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: var(--muted); background: var(--bg); padding-right: 8px; box-shadow: 10px 0 10px -4px var(--bg); }
 
@@ -73,7 +73,6 @@ img { display: block; }
 .sec { margin: 12px 0 24px; }
 .sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
 .sec-h h2 { font-size: 18px; margin: 0; }
-.sec-h span { font-size: 13px; color: var(--muted); }
 
 /* Tiles de categorías */
 .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -87,28 +86,28 @@ img { display: block; }
 .tile-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 11px; color: var(--text); }
 .tile.foto .tile-cap { padding-top: 38px; background: linear-gradient(transparent, rgba(0,0,0,.86)); color: #fff; }
 .tile-cap b { display: block; font-size: 15px; line-height: 1.15; }
-.tile-cap small { font-size: 11.5px; opacity: .75; }
+.tile-cap small { display: block; font-size: 11.5px; opacity: .75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tile-badge { position: absolute; top: 8px; left: 8px; z-index: 3; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px; }
 
-/* Tira horizontal (recomendados) */
+/* Tira horizontal (promo del día, recomendados) */
 .hscroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding: 2px 2px 8px; margin: 0 -2px; }
 .hscroll::-webkit-scrollbar { display: none; }
 .card { flex: 0 0 150px; scroll-snap-align: start; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; cursor: pointer; display: flex; flex-direction: column; }
 .card-img { position: relative; height: 130px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-.card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 6px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
+.card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 6px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
 
 /* Lista de productos (estilo app de delivery) */
 .lh { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 6px 0 4px; }
 .lh h1 { font-size: 21px; margin: 0; line-height: 1.15; }
-.lh span { font-size: 13px; color: var(--muted); }
+.lh span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
 .lh select { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 8px; font-size: 13px; max-width: 46%; }
 .subchips { margin: 4px 0 6px; }
 .plist { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
 @media (min-width: 760px) { .plist { grid-template-columns: 1fr 1fr; } }
 .prow { display: flex; gap: 12px; background: var(--card); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); cursor: pointer; }
 .prow-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.prow-name { font-size: 15px; font-weight: 600; margin: 0 0 3px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.prow-name { font-size: 15px; font-weight: 600; margin: 0 0 3px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .prow-meta { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .prow-desc { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .price { margin-top: auto; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
@@ -116,6 +115,13 @@ img { display: block; }
 .price s { font-size: 12.5px; color: var(--muted); }
 .price .consultar { font-size: 14px; color: var(--muted); }
 .off { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
+.off.dia { background: #7c3aed; }
+/* Ofertas del sistema: 2X, CAJA, 3x2… */
+.ochips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 6px; }
+.ochip { font-size: 11.5px; font-weight: 700; color: var(--promo); background: rgba(237,28,36,.12); border: 1px solid rgba(237,28,36,.35); padding: 2px 7px; border-radius: 6px; }
+.ohint { width: 100%; font-size: 12px; color: var(--muted); }
+/* Precio mayorista informativo */
+.mayline { display: block; font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 5px; }
 .stock { font-size: 11.5px; color: var(--accent); font-weight: 600; margin-top: 4px; }
 .prow-img { position: relative; width: 96px; height: 96px; flex: none; border-radius: 12px; background: var(--card2); display: flex; align-items: center; justify-content: center; }
 .prow-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
@@ -164,13 +170,17 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .tag { font-size: 12px; padding: 4px 9px; border-radius: 999px; background: var(--card2); color: var(--muted); }
 .ps-desc { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 12px; }
 .ps-body .price b { font-size: 22px; }
-.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; background: rgba(212,175,55,.14); color: var(--gold); }
+.ps-body .ochips { margin-top: 10px; }
+.ps-body .ochip { font-size: 13px; padding: 4px 9px; }
+.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; background: rgba(212,175,55,.14); color: var(--gold); }
 .foot { position: sticky; bottom: 0; display: flex; gap: 10px; align-items: center; padding: 12px 18px calc(14px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); }
+.foot.col { flex-direction: column; align-items: stretch; gap: 6px; }
+.foot.col .btn { flex: none; width: 100%; }
 .foot .stepper { height: 46px; }
 .foot .stepper button { width: 42px; height: 46px; }
 .btn { flex: 1; height: 48px; border: 0; border-radius: 14px; background: var(--cta); color: #fff; font-weight: 700; font-size: 15.5px; }
 .btn-wpp { background: #1faa53 !important; }
-.btn-ghost { background: transparent; border: 0; color: var(--muted); font-size: 13px; text-decoration: underline; }
+.btn-ghost { background: transparent; border: 0; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 6px; }
 
 /* Carrito / checkout */
 .cs { padding: 14px 18px 4px; }
@@ -185,9 +195,14 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .ci-info small { color: var(--muted); font-size: 12.5px; }
 .ci-info small s { margin-right: 4px; }
 .ci-info small em { font-style: normal; color: var(--gold); font-weight: 600; }
+.ci-promo { display: block; font-size: 12px; color: var(--ok); margin-top: 2px; }
+.ci-dia { display: block; font-size: 12px; color: var(--dia); margin-top: 2px; }
+.ci-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.ci-total { font-weight: 700; font-size: 14px; }
 .ci .stepper { height: 32px; }
 .ci .stepper button { width: 30px; height: 32px; font-size: 17px; }
 .may { margin: 12px 0 4px; padding: 11px 12px; border-radius: 12px; background: rgba(212,175,55,.14); color: var(--gold); font-size: 13px; font-weight: 600; }
+.may small { display: block; font-weight: 500; margin-top: 4px; color: var(--muted); }
 .bar { height: 6px; border-radius: 3px; background: rgba(212,175,55,.25); margin-top: 7px; overflow: hidden; }
 .bar i { display: block; height: 100%; background: var(--gold); border-radius: 3px; }
 .form { margin-top: 14px; }
@@ -198,8 +213,22 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
 .seg { display: flex; gap: 8px; flex-wrap: wrap; }
 .seg button { flex: 1 1 auto; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 10px; font-size: 13.5px; }
 .seg button.on { border-color: var(--cta); background: var(--cta); color: #fff; }
-.tot { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 4px; font-size: 15px; }
+/* Envío: a coordinar o gratis */
+.envio-note { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; background: var(--card2); }
+.envio-note small { display: block; color: var(--muted); margin-top: 3px; }
+.envio-note.gratis { background: rgba(60,207,110,.14); color: var(--ok); }
+.tline { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; color: var(--muted); margin: 8px 0 0; }
+.tline b { color: var(--text); font-weight: 600; }
+.tline.ok b { color: var(--ok); }
+.tot { display: flex; justify-content: space-between; align-items: baseline; margin: 12px 0 4px; font-size: 15px; }
 .tot b { font-size: 22px; }
+
+/* Confirmación del pedido */
+.conf { text-align: center; padding: 30px 22px 8px; }
+.conf-ico { font-size: 54px; line-height: 1; }
+.conf h2 { margin: 12px 0 8px; font-size: 21px; }
+.conf p { margin: 0 0 10px; color: var(--text); line-height: 1.5; font-size: 14.5px; }
+.conf p.muted { color: var(--muted); font-size: 13px; }
 
 /* Info */
 .info { padding: 22px 18px 18px; }
@@ -264,76 +293,49 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px
    CONFIGURACIÓN — lo que más vas a querer cambiar está acá
    ===================================================================== */
 const CONFIG = {
-    EXCEL_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRh5hj_V9tKP0pltPLCB8WMDw2f6L0DkKUWx0adnDXkWPVCqsqR-hOMFLPBKq6DIceIM2o7Pz-Z0COM/pub?output=csv',
-    WHATSAPP: '5493512345678',          // ⚠️ número de ejemplo: reemplazar por el real (549 + característica + número)
+    // Todo sale del sistema de gestión: productos, precios, stock, precio mayorista, ofertas y combos
+    API_URL: 'https://sistema-monje.vercel.app/api/catalogo?formato=json',
+    WHATSAPP: '5493517874303',          // 351 787-4303 en formato internacional (549 + característica + número)
     NOMBRE: 'Monje Negro',
     SUBTITULO: 'Botillería · Córdoba',
-    ANUNCIO: '🍷 Precio mayorista llevando 6 vinos o más',
+    ANUNCIO: '🛵 Envío gratis en Córdoba Capital superando los $100.000 · 🍷 Precio mayorista llevando 6 vinos o más',
     PILLS: ['🛵 Envíos', '🏪 Retiro en el local'],
     ENTREGAS: ['Envío a domicilio', 'Retiro en el local'],
     PAGOS: ['Efectivo', 'Transferencia', 'Mercado Pago'],
+    ENVIO_GRATIS_DESDE: 100000,          // desde este total el envío es gratis
+    ZONA_ENVIO_GRATIS: 'Córdoba Capital',
     TEMA: 'oscuro',                      // 'oscuro' o 'claro' (también se puede probar con ?tema=claro)
 };
 
-/* Precio mayorista: con 6+ vinos/espumantes, cada uno pasa a costo + 25% */
+/* Precio mayorista: con 6 o más vinos/espumantes en el pedido, cada uno se cobra al precio mayorista
+   que manda el sistema. Los que están en oferta no tienen mayorista: quedan a su precio de oferta. */
 const TIPOS_MAYORISTA = ['VINOS TINTOS', 'VINOS BLANCOS', 'VINOS ROSADOS', 'ESPUMANTES'];
 const VINOS_PARA_MAYORISTA = 6;
-const MARGEN_MAYORISTA = 1.25;
-
-/* Secciones del catálogo. Cada producto cae en la PRIMERA que coincide.
-   C = columna CATEGORIA, T = TIPO, F = VARIETAL (todo en mayúsculas y sin acentos). */
-const GRUPOS = [
-    { id: 'promos',     nombre: 'Promos y combos',        emoji: '🔥', tint: 'rgba(237,28,36,.20)',  test: p => p.C === 'PROMOS' || p.T === 'PROMOS' },
-    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C === 'VINO' || p.C === 'VINOS' || p.T.startsWith('VINO') },
-    { id: 'espumantes', nombre: 'Espumantes',             emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE'].includes(p.C) || p.T === 'ESPUMANTES' },
-    { id: 'sidras',     nombre: 'Sidras',                 emoji: '🍏', tint: 'rgba(150,190,40,.20)', test: p => ['SIDRA', 'SIDRAS'].includes(p.C) || ['SIDRA', 'SIDRAS'].includes(p.T) },
-    { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', tint: 'rgba(230,150,20,.22)', test: p => p.C === 'CERVEZAS' || p.T === 'CERVEZAS' },
-    { id: 'vermouth',   nombre: 'Vermouth',               emoji: '🍸', tint: 'rgba(180,40,40,.18)',  test: p => ['VERMUT', 'VERMOUTH'].includes(p.F) || ['VERMUT', 'VERMOUTH'].includes(p.T) },
-    { id: 'aperitivos', nombre: 'Aperitivos',             emoji: '🍹', tint: 'rgba(200,60,40,.18)',  test: p => p.C === 'APERITIVOS' || p.T === 'APERITIVOS' },
-    { id: 'gin',        nombre: 'Gin',                    emoji: '🌿', tint: 'rgba(40,140,170,.20)', test: p => p.T === 'GIN' || p.F === 'GIN' },
-    { id: 'vodka',      nombre: 'Vodka',                  emoji: '🧊', tint: 'rgba(90,110,200,.18)', test: p => p.T === 'VODKA' || p.F === 'VODKA' },
-    { id: 'ron',        nombre: 'Ron',                    emoji: '🌴', tint: 'rgba(140,80,30,.20)',  test: p => p.T === 'RON' || p.F === 'RON' },
-    { id: 'tequila',    nombre: 'Tequila',                emoji: '🌵', tint: 'rgba(120,170,40,.20)', test: p => p.T === 'TEQUILA' || p.F === 'TEQUILA' },
-    { id: 'whisky',     nombre: 'Whisky',                 emoji: '🥃', tint: 'rgba(170,100,20,.22)', test: p => [p.C, p.T, p.F].includes('WHISKY') },
-    { id: 'licores',    nombre: 'Licores',                emoji: '🍯', tint: 'rgba(150,50,130,.18)', test: p => ['LICOR', 'LICORES'].includes(p.C) || ['LICOR', 'LICORES'].includes(p.T) },
-    { id: 'gaseosas',   nombre: 'Gaseosas',               emoji: '🥤', tint: 'rgba(30,160,90,.18)',  test: p => p.C === 'GASEOSAS' || p.T === 'GASEOSAS' },
-    { id: 'sinalcohol', nombre: 'Energizantes, aguas y más', emoji: '💧', tint: 'rgba(30,140,200,.18)', test: p => ['ENERGIZANTES', 'AGUA', 'AGUAS', 'SODA', 'JUGOS', 'JUGO', 'HIELO'].includes(p.C) },
-    { id: 'kiosco',     nombre: 'Kiosco',                 emoji: '🍫', tint: 'rgba(200,120,40,.20)', test: p => ['COMIDA', 'TABACO', 'HABANO', 'HABANOS', 'KIOSCO'].includes(p.C) },
-    { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', tint: 'rgba(130,60,170,.18)', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS'].includes(p.C) },
-    { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', tint: 'rgba(120,120,130,.18)', test: () => true },
-];
-/* Filtros dentro de cada categoría: TIPO → VARIETAL (subcategoría) → MARCA (columna Etiqueta).
-   Acá va el nombre que se muestra en cada fila: [fila de TIPO, fila de VARIETAL]. */
-const FILTROS = {
-    vinos: ['Tipo', 'Varietal'], espumantes: ['Tipo', 'Estilo'], cervezas: ['Tipo', 'Envase'],
-    gaseosas: ['Tipo', 'Sabor'], aperitivos: ['Tipo', 'Tipo'], promos: ['Tipo', 'Tipo'],
-    kiosco: ['Tipo', 'Producto'], sinalcohol: ['Tipo', 'Presentación'],
-};
-const FILTROS_DEF = ['Tipo', 'Subcategoría'];
 
 /* =====================================================================
    Utilidades
    ===================================================================== */
 const $ = (s) => document.querySelector(s);
-const norm = (s) => (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
-const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
+const norm = (s) => (s == null ? '' : String(s)).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
+const parseNum = (v) => parseFloat((v == null ? '' : String(v)).replace(/\./g, '').replace(',', '.')) || 0;
 const money = (n) => '$' + Math.round(n).toLocaleString('es-AR');
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
 };
+const waLink = (texto) => `https://wa.me/${CONFIG.WHATSAPP.replace(/\D/g, '')}` + (texto ? `?text=${encodeURIComponent(texto)}` : '');
 
 // "ABSOLUT MANGO 750ML" -> "Absolut Mango 750ml"
 const MINUS = new Set(['DE', 'DEL', 'LA', 'LAS', 'EL', 'LOS', 'Y', 'E', 'O', 'U', 'CON', 'SIN', 'A', 'AL', 'EN', 'X', 'POR']);
 const ROMANOS = new Set(['II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'XI', 'XII']);
 const SIGLAS = new Set(['IPA', 'APA', 'DOC', 'DOCG', 'AOC', 'IGT', 'XO', 'VSOP', 'VS', 'MN']);
+const UNIDADES = /^(ML|CC|CL|KG|GR|G|LTS|LT|L)$/;
 function cap(w) {
     const i = w.search(/\p{L}/u);
     if (i < 0) return w;
     return w.slice(0, i) + w[i].toUpperCase() + w.slice(i + 1).toLowerCase();
 }
-const UNIDADES = /^(ML|CC|CL|KG|GR|G|LTS|LT|L)$/;
 function titulo(s) {
     return (s || '').trim().split(/\s+/).map((w, i, todas) => {
         const W = norm(w);
@@ -346,10 +348,10 @@ function titulo(s) {
         return w.split('-').map(cap).join('-');
     }).join(' ');
 }
-const slug = (s) => norm(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'item';
 // Para filtros y datos: con tildes donde corresponde ("REGALERIA" -> "Regalería", "PORRON" -> "Porrón")
-const ACENTOS = { Regaleria: 'Regalería', Mani: 'Maní', Tonica: 'Tónica', Porron: 'Porrón', Laton: 'Latón', Rose: 'Rosé', Sifon: 'Sifón', Torrontes: 'Torrontés', Semillon: 'Semillón', Limon: 'Limón', Cachaca: 'Cachaça' };
+const ACENTOS = { Regaleria: 'Regalería', Mani: 'Maní', Tonica: 'Tónica', Porron: 'Porrón', Laton: 'Latón', Rose: 'Rosé', Sifon: 'Sifón', Torrontes: 'Torrontés', Semillon: 'Semillón', Limon: 'Limón', Cachaca: 'Cachaça', Degustacion: 'Degustación' };
 const bonito = (s) => titulo(s).split(' ').map(w => ACENTOS[w] || w).join(' ');
+const slug = (s) => norm(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'item';
 
 // Las fotos cargadas como "github.com/.../CATALOGO/blob/<versión>/X?raw=true" se sirven desde
 // este mismo sitio (más rápido, sin redirección).
@@ -363,82 +365,281 @@ function imgUrl(u) {
     return u;
 }
 
-function parseCSV(text) {
-    const rows = []; let row = [], f = '', q = false;
-    for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        if (q) {
-            if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; }
-            else f += c;
-        } else if (c === '"') q = true;
-        else if (c === ',') { row.push(f); f = ''; }
-        else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
-        else if (c !== '\r') f += c;
+/* =====================================================================
+   Promos — portado tal cual del catálogo actual (que a su vez sale de
+   src/lib/promos.ts del sistema). El catálogo tiene que COBRAR lo mismo
+   que el mostrador.
+   ===================================================================== */
+const redondearPesos = (n) => Math.round(n);
+const esPrecioPorCantidad = (p) => !!p && p.kind === 'PRECIO' && p.nBuy > 1;
+
+function calcularLinea(qty, unitPrice, promo) {
+    const base = redondearPesos(qty * unitPrice);
+    if (!promo) return { total: base, discount: 0 };
+    let total = base;
+    if (promo.kind === 'PORCENTAJE') {
+        total = redondearPesos(qty * unitPrice * (1 - promo.percent / 100));
+    } else if (promo.kind === 'NXM' && promo.nBuy > 0 && promo.nPay > 0 && promo.nPay < promo.nBuy) {
+        // Cada grupo de nBuy unidades se cobra nPay; el resto va completo
+        const grupos = Math.floor(qty / promo.nBuy);
+        const resto = qty % promo.nBuy;
+        total = redondearPesos((grupos * promo.nPay + resto) * unitPrice);
+    } else if (esPrecioPorCantidad(promo) && promo.precioPack > 0) {
+        // Desde que llega a nBuy, TODAS salen al unitario del pack. Abajo de nBuy no hay promo.
+        if (qty >= promo.nBuy) total = redondearPesos((qty * promo.precioPack) / promo.nBuy);
     }
-    if (f !== '' || row.length) { row.push(f); rows.push(row); }
-    return rows;
+    if (total < 0) total = 0;
+    return { total, discount: base - total };
+}
+
+// Cómo se escribe una oferta: el % se redondea ("21.56862745098039% OFF" -> "22% OFF")
+function etiquetaOferta(o) {
+    if (o.kind === 'PORCENTAJE' && o.percent > 0) return `${Math.round(o.percent)}% OFF`;
+    return o.etiqueta || o.nombre || '';
+}
+
+// Lo que termina saliendo CADA UNIDAD llevando esa oferta
+function unitarioConOferta(o, precioLista) {
+    if (o.kind === 'PORCENTAJE') return precioLista * (1 - o.percent / 100);
+    if (o.kind === 'NXM' && o.nBuy > 0 && o.nPay > 0 && o.nPay < o.nBuy) return precioLista * o.nPay / o.nBuy;
+    if (esPrecioPorCantidad(o) && o.precioPack > 0) return o.precioPack / o.nBuy;
+    return precioLista;
+}
+
+// De las ofertas del producto, la que más le conviene al cliente con esa cantidad
+function mejorOferta(ofertas, qty, unitPrice) {
+    if (!ofertas || !ofertas.length) return null;
+    let mejor = ofertas[0];
+    let mejorTotal = calcularLinea(qty, unitPrice, mejor).total;
+    for (const o of ofertas) {
+        const t = calcularLinea(qty, unitPrice, o).total;
+        if (t < mejorTotal) { mejor = o; mejorTotal = t; }
+    }
+    return mejor;
+}
+
+// Un 2x1 se puede armar entre variedades de la misma línea: son la misma familia los que
+// empiezan igual, valen lo mismo y tienen la misma promo.
+const inicioNombre = (n) => norm(n).split(' ').slice(0, 2).join(' ');
+
+function asignarPromos(lineas) {
+    const grupos = new Map();
+    lineas.forEach((l, i) => {
+        const clave = `${redondearPesos(l.unitPrice)}|${inicioNombre(l.nombre)}`;
+        grupos.set(clave, [...(grupos.get(clave) || []), i]);
+    });
+    for (const indices of grupos.values()) {
+        // Opción 1: cada renglón con la que más le conviene por su cuenta
+        const propias = indices.map(i => mejorOferta(lineas[i].of, lineas[i].qty, lineas[i].unitPrice));
+        let asignacion = propias;
+        let mejorTotal = indices.reduce((a, i, n) => a + calcularLinea(lineas[i].qty, lineas[i].unitPrice, propias[n]).total, 0);
+        // Opción 2: una promo común a TODO el grupo, contando las unidades juntas
+        if (indices.length > 1) {
+            const comunes = (lineas[indices[0]].of || []).filter(o =>
+                indices.every(i => (lineas[i].of || []).some(x => x.nombre === o.nombre && (x.precioPack || 0) === (o.precioPack || 0))));
+            const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
+            const precio = lineas[indices[0]].unitPrice;
+            for (const o of comunes) {
+                const total = calcularLinea(unidades, precio, o).total;
+                if (total < mejorTotal) { mejorTotal = total; asignacion = indices.map(() => o); }
+            }
+        }
+        indices.forEach((i, n) => { lineas[i].promo = asignacion[n]; });
+    }
+    return lineas;
+}
+
+function claveFamilia(l) {
+    const pack = (l.promo && l.promo.precioPack) ? redondearPesos(l.promo.precioPack) : '';
+    return `${(l.promo && l.promo.nombre) || ''}|${redondearPesos(l.unitPrice)}|${pack}|${inicioNombre(l.nombre)}`;
+}
+
+// Reparte un importe en pesos enteros según el peso de cada parte (la diferencia del redondeo va a la última)
+function repartir(total, pesos) {
+    const suma = pesos.reduce((a, b) => a + b, 0);
+    if (suma <= 0) return pesos.map(() => 0);
+    const montos = pesos.map(p => redondearPesos((p / suma) * total));
+    const dif = redondearPesos(total) - montos.reduce((a, b) => a + b, 0);
+    if (dif !== 0) montos[montos.length - 1] += dif;
+    return montos;
+}
+
+function calcularLineas(lineas) {
+    const resultado = lineas.map(l => calcularLinea(l.qty, l.unitPrice, l.promo));
+    // Las que se cuentan por unidades hay que mirarlas entre varias líneas
+    const porUnidades = (p) =>
+        (!!p && p.kind === 'NXM' && p.nBuy > 0 && p.nPay > 0 && p.nPay < p.nBuy) ||
+        (esPrecioPorCantidad(p) && !!p.precioPack && p.precioPack > 0);
+    const familias = new Map();
+    lineas.forEach((l, i) => {
+        if (!porUnidades(l.promo)) return;
+        const clave = claveFamilia(l);
+        familias.set(clave, [...(familias.get(clave) || []), i]);
+    });
+    for (const indices of familias.values()) {
+        if (indices.length < 2) continue;
+        const p = lineas[indices[0]].promo;
+        const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
+        const precio = lineas[indices[0]].unitPrice;
+        const grupos = Math.floor(unidades / p.nBuy);
+        const resto = unidades % p.nBuy;
+        const totalFamilia = esPrecioPorCantidad(p)
+            ? (unidades >= p.nBuy ? redondearPesos((unidades * (p.precioPack || 0)) / p.nBuy) : redondearPesos(unidades * precio))
+            : redondearPesos((grupos * p.nPay + resto) * precio);
+        const montos = repartir(totalFamilia, indices.map(i => lineas[i].qty));
+        indices.forEach((indice, n) => {
+            const base = redondearPesos(lineas[indice].qty * lineas[indice].unitPrice);
+            resultado[indice] = { total: montos[n], discount: base - montos[n] };
+        });
+    }
+    return resultado;
 }
 
 /* =====================================================================
-   Datos
+   Categorías
+   C = CATEGORIA, T = TIPO, F = VARIETAL del sistema (en mayúsculas y sin acentos)
    ===================================================================== */
-let productos = [], byId = {}, grupos = [], hayOfertas = false;
+// En los combos, la bebida principal se reconoce por el nombre (para el filtro dentro de Combos)
+const BEBIDAS = [
+    ['Fernet', /FERNET|BRANCA/],
+    ['Vodka', /VODKA|SKYY|SKKY|ABSOLUT|SMIRNOFF|SERNOVA/],
+    ['Vermut', /VERMU|CARPANO|CINZANO|DESCONFIADO|LUNFA|FASANO|MARTINI/],
+    ['Gin', /\bGIN\b|BEEFEATER|BOMBAY|GORDON|HEREDERO|MALARIA/],
+    ['Whisky', /WHISK|JACK DANIEL|CHIVAS|JAME?N?SON/],
+    ['Ron', /\bRON\b|BACARDI|HAVANA/],
+    ['Aperitivo', /APEROL|CAMPARI|GANCIA|CYNAR/],
+];
+const bebidaCombo = (p) => { const n = norm(p.nombre + ' ' + p.lleva); const b = BEBIDAS.find(([, re]) => re.test(n)); return b ? b[0] : ''; };
 
-// Busca cada columna por su título (si no lo encuentra, usa la posición de siempre)
-const COLS = {
-    nombre: [['NOMBRE', 'PRODUCTO'], 0], precio: [['PRECIO'], 1], categoria: [['CATEGORIA'], 2],
-    imagen: [['IMAGEN', 'FOTO', 'IMG'], 3], tipo: [['TIPO'], 4], varietal: [['VARIETAL', 'CEPA'], 5],
-    stock: [['STOCK'], 6], costo: [['COSTO'], 7], marca: [['ETIQUETA', 'MARCA', 'BODEGA'], 8],
-    oferta: [['OFERTA', 'PRECIO OFERTA', 'PRECIO PROMO', 'PRECIO DESCUENTO'], -1],
-    desc: [['DESCRIPCION', 'DETALLE'], -1],
+// Productos que el sistema tiene SIN categoría: si el nombre lo deja claro, se ubican solos.
+// Los que no (ej. "PRUEBA") no aparecen en ninguna categoría, solo si alguien los busca.
+const INFERIR = [
+    [/ESPUMANTE|CHAMPAGNE/, 'ESPUMANTES', 'ESPUMANTES'],
+    [/MALBEC|CABERNET|CHARDONNAY|SAUVIGNON|PINOT|SYRAH|MERLOT|BLEND|TORRONTES|BONARDA|TANNAT|DULCE NATURAL/, 'VINOS', ''],
+    [/CERVEZA|PORRON|LATON/, 'CERVEZAS', ''],
+    [/ACEITUNA|SALAME|JAMON|PICADA|BONDIOLA|QUESO|\bMANI\b|ALFAJOR|PAPAS/, 'COMIDA', 'COMIDA'],
+    [/TABACO|VAN HAASEN|LUCKY STRIKE|\bOCB\b|FILTRO/, 'TABACO', 'TABACO'],
+    [/COPA|MEDIDOR|JIGGER|SACACORCHO|DESTAPADOR/, 'REGALERIA', 'REGALERIA'],
+];
+// Errores de tipeo del sistema que partirían un filtro en dos ("Vodka" y "Voska")
+const CORREGIR = { VOSKA: 'VODKA', JAGGER: 'LICOR' };
+const corregido = (s) => CORREGIR[s] || s;
+
+// Cada producto cae en la PRIMERA sección que coincide
+const GRUPOS = [
+    { id: 'combos',     nombre: 'Combos',                 emoji: '🎉', tint: 'rgba(237,120,28,.22)', test: p => p.C === 'COMBOS' || p.T === 'COMBOS' },
+    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C.startsWith('VINO') || p.T.startsWith('VINO') },
+    { id: 'espumantes', nombre: 'Espumantes',             emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE'].includes(p.C) || p.T === 'ESPUMANTES' },
+    { id: 'sidras',     nombre: 'Sidras',                 emoji: '🍏', tint: 'rgba(150,190,40,.20)', test: p => ['SIDRA', 'SIDRAS'].includes(p.C) || ['SIDRA', 'SIDRAS'].includes(p.T) },
+    { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', tint: 'rgba(230,150,20,.22)', test: p => p.C.startsWith('CERVEZA') || p.T.startsWith('CERVEZA') },
+    { id: 'vermouth',   nombre: 'Vermouth',               emoji: '🍸', tint: 'rgba(180,40,40,.18)',  test: p => [p.C, p.T, p.F].some(x => x === 'VERMUT' || x === 'VERMOUTH') },
+    { id: 'aperitivos', nombre: 'Aperitivos',             emoji: '🍹', tint: 'rgba(200,60,40,.18)',  test: p => p.C === 'APERITIVOS' || p.T === 'APERITIVOS' },
+    { id: 'gin',        nombre: 'Gin',                    emoji: '🌿', tint: 'rgba(40,140,170,.20)', test: p => [p.C, p.T, p.F].includes('GIN') },
+    { id: 'vodka',      nombre: 'Vodka',                  emoji: '🧊', tint: 'rgba(90,110,200,.18)', test: p => [p.C, p.T, p.F].includes('VODKA') },
+    { id: 'ron',        nombre: 'Ron y cachaça',          emoji: '🌴', tint: 'rgba(140,80,30,.20)',  test: p => [p.C, p.T, p.F].some(x => x === 'RON' || x === 'CACHACA') },
+    { id: 'tequila',    nombre: 'Tequila',                emoji: '🌵', tint: 'rgba(120,170,40,.20)', test: p => [p.C, p.T, p.F].includes('TEQUILA') },
+    { id: 'whisky',     nombre: 'Whisky',                 emoji: '🥃', tint: 'rgba(170,100,20,.22)', test: p => [p.C, p.T, p.F].includes('WHISKY') },
+    { id: 'licores',    nombre: 'Licores',                emoji: '🍯', tint: 'rgba(150,50,130,.18)', test: p => [p.C, p.T].some(x => ['LICOR', 'LICORES'].includes(x)) },
+    { id: 'gaseosas',   nombre: 'Gaseosas',               emoji: '🥤', tint: 'rgba(30,160,90,.18)',  test: p => p.C === 'GASEOSAS' || p.T === 'GASEOSAS' },
+    { id: 'sinalcohol', nombre: 'Energizantes, aguas y más', emoji: '💧', tint: 'rgba(30,140,200,.18)', test: p => ['ENERGIZANTES', 'AGUA', 'AGUAS', 'SODA', 'JUGOS', 'JUGO', 'HIELO', 'DEPORTIVAS'].includes(p.C) },
+    { id: 'kiosco',     nombre: 'Kiosco',                 emoji: '🍫', tint: 'rgba(200,120,40,.20)', test: p => ['COMIDA', 'TABACO', 'HABANO', 'HABANOS', 'KIOSCO', 'CEDAS', 'FILTROS'].includes(p.C) },
+    { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', tint: 'rgba(130,60,170,.18)', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS', 'ESTUCHES', 'PACKAGING'].includes(p.C) },
+    { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', tint: 'rgba(120,120,130,.18)', test: p => !!p.C },   // con categoría que no encaja en las de arriba
+];
+// Promos: todo lo que tiene una oferta vigente en el sistema (menos los combos, que van aparte).
+// Cada producto sigue apareciendo también en su categoría.
+const PROMOS_DEF = { id: 'promos', nombre: 'Promos', emoji: '🔥', tint: 'rgba(237,28,36,.22)' };
+
+/* Filtros dentro de cada categoría: TIPO → SUBCATEGORÍA → MARCA (columna Etiqueta).
+   Acá va el nombre que se muestra en cada fila: [primera fila, segunda fila]. */
+const FILTROS = {
+    vinos: ['Tipo', 'Varietal'], espumantes: ['Tipo', 'Estilo'], cervezas: ['Envase', 'Estilo'],
+    gaseosas: ['Tipo', 'Sabor'], aperitivos: ['Tipo', 'Tipo'], kiosco: ['Tipo', 'Producto'],
+    sinalcohol: ['Tipo', 'Presentación'], combos: ['', 'Bebida'], promos: ['Categoría', 'Subcategoría'],
 };
-
-function construir(text) {
-    const rows = parseCSV(text);
-    const head = (rows[0] || []).map(norm);
-    const idx = {};
-    for (const k in COLS) {
-        const [alias, pos] = COLS[k];
-        const found = head.findIndex(h => alias.includes(h));
-        idx[k] = found >= 0 ? found : pos;
-    }
-    const cell = (r, k) => (idx[k] >= 0 && r[idx[k]] != null) ? r[idx[k]].trim() : '';
-
-    const seen = {};
-    productos = [];
-    rows.slice(1).forEach(r => {
-        const nombre = cell(r, 'nombre');
-        const stockTxt = cell(r, 'stock');
-        if (!nombre || stockTxt === '0') return;          // stock 0 = oculto (igual que antes)
-        const precio = parseNum(cell(r, 'precio'));
-        const ofertaN = parseNum(cell(r, 'oferta'));
-        const marcaRaw = cell(r, 'marca');
-        let id = slug(nombre);
-        if (seen[id]) id += '-' + (++seen[id]); else seen[id] = 1;
-        const st = parseInt(stockTxt, 10);
-        productos.push({
-            id, nombre, titulo: titulo(nombre),
-            precio, oferta: (ofertaN > 0 && ofertaN < precio) ? ofertaN : 0,
-            img: imgUrl(cell(r, 'imagen')),
-            C: norm(cell(r, 'categoria')), T: norm(cell(r, 'tipo')), F: norm(cell(r, 'varietal')),
-            tipo: cell(r, 'tipo'), varietal: cell(r, 'varietal'),
-            stock: Number.isFinite(st) ? st : null,
-            costo: parseNum(cell(r, 'costo')),
-            marca: norm(marcaRaw), marcaTxt: marcaRaw,       // columna Etiqueta: clave para filtrar / texto a mostrar
-            desc: cell(r, 'desc'),
-        });
-    });
-
-    byId = {};
-    productos.forEach(p => { byId[p.id] = p; p.grupo = (GRUPOS.find(g => g.test(p)) || GRUPOS[GRUPOS.length - 1]).id; });
-    grupos = GRUPOS.map(g => ({ ...g, items: productos.filter(p => p.grupo === g.id) })).filter(g => g.items.length);
-    hayOfertas = productos.some(p => p.oferta);
+const FILTROS_DEF = ['Tipo', 'Subcategoría'];
+const NIVEL_TIPO = { key: p => p.T, label: p => bonito((p.tipo || '').replace(/^\s*(vinos?|cervezas?)\s+/i, '')) };   // "VINOS TINTOS" -> "Tintos", "CERVEZA LATA" -> "Lata"
+const NIVEL_VARIETAL = { key: p => (p.F && p.F !== p.T && p.F !== p.C) ? p.F : '', label: p => bonito(p.varietal) };
+const NIVEL_BEBIDA = { key: bebidaCombo, label: bebidaCombo };
+const NIVEL_CATEGORIA = { key: p => p.grupo, label: p => (GRUPOS.find(g => g.id === p.grupo) || {}).nombre || 'Otros' };
+const NIVEL_MARCA = { key: p => p.marca, label: p => bonito(p.marcaTxt) };
+function nivelesDe(g) {
+    if (g.id === 'combos') return [null, NIVEL_BEBIDA];
+    if (g.id === 'vermouth') return [null, null];       // el sistema los tiene como VERMUT o APERITIVOS: se elige directo la marca
+    if (g.id === 'promos') return [NIVEL_CATEGORIA, NIVEL_VARIETAL];
+    return [NIVEL_TIPO, NIVEL_VARIETAL];
 }
 
-const precioLista = (p) => p.oferta || p.precio;
-const pctOff = (p) => p.oferta ? Math.round(100 - 100 * p.oferta / p.precio) : 0;
-const esVinoMay = (p) => TIPOS_MAYORISTA.includes(p.T);
-const grupoDe = (id) => grupos.find(g => g.id === id);
+/* =====================================================================
+   Datos (desde el sistema)
+   ===================================================================== */
+let productos = [], byId = {}, grupos = [], promosGrupo = null;
+
+function construir(data) {
+    const filas = Array.isArray(data) ? data : ((data && data.productos) || []);
+    // Lo que lleva cada combo, con el texto completo que arma el sistema
+    const llevaDe = {};
+    ((data && data.ofertas && data.ofertas.combos) || []).forEach(c => { if (c && c.nombre) llevaDe[norm(c.nombre)] = c.lleva || ''; });
+    const txt = (v) => (v === null || v === undefined) ? '' : String(v).trim();
+    const seen = {};
+    productos = [];
+    filas.forEach(f => {
+        const nombre = txt(f.NOMBRE);
+        if (!nombre || !(Number(f.STOCK) > 0)) return;          // sin stock no se muestra
+        let C = corregido(norm(f.CATEGORIA)), T = corregido(norm(f.TIPO));
+        let tipo = CORREGIR[norm(f.TIPO)] || txt(f.TIPO) || txt(f.CATEGORIA);
+        if (!C && !T) {
+            const r = INFERIR.find(([re]) => re.test(norm(nombre)));
+            if (r) { C = r[1]; T = r[2]; tipo = r[2]; }
+        }
+        const esCombo = C === 'COMBOS' || T === 'COMBOS';
+        // Las ofertas con su regla (2x1, 20% OFF, precio por pack): es lo que permite cobrarlas como el mostrador
+        const ofertas = (Array.isArray(f.OFERTAS) ? f.OFERTAS : []).filter(o => o && norm(o.etiqueta || o.nombre) !== 'COMBO');
+        const promos = (Array.isArray(f.PROMOS) ? f.PROMOS : (txt(f.PROMO) ? txt(f.PROMO).split(' + ') : []))
+            .map(txt).filter(s => s && norm(s) !== 'COMBO');
+        let id = slug(nombre);
+        if (seen[id]) id += '-' + (++seen[id]); else seen[id] = 1;
+        productos.push({
+            id, nombre, titulo: titulo(nombre),
+            precio: parseNum(f.PRECIO), mayorista: parseNum(f.MAYORISTA),
+            img: imgUrl(txt(f.IMAGEN)),
+            C, T, F: esCombo ? '' : corregido(norm(f.VARIETAL)),
+            tipo, varietal: esCombo ? '' : txt(f.VARIETAL),
+            stock: Number(f.STOCK),
+            marca: norm(f.Etiqueta), marcaTxt: txt(f.Etiqueta),
+            ofertas, promos,
+            // Promo del día ("hoy todos los Pinot al precio mayorista"): llega con el precio ya resuelto
+            promoDia: (f.PROMO_DIA && f.PROMO_DIA.precio > 0) ? f.PROMO_DIA : null,
+            esCombo, lleva: esCombo ? (llevaDe[norm(nombre)] || txt(f.VARIETAL)) : '',
+            // Para el mayorista cuenta el TIPO tal cual viene del sistema (no el que se deduce del nombre),
+            // igual que en el catálogo actual
+            vinoMay: TIPOS_MAYORISTA.includes(norm(f.TIPO)),
+        });
+    });
+    byId = {};
+    productos.forEach(p => {
+        byId[p.id] = p;
+        const g = GRUPOS.find(x => x.test(p));
+        p.grupo = g ? g.id : '';
+        p.enPromo = !p.esCombo && (p.ofertas.length > 0 || p.promos.length > 0 || !!p.promoDia);
+    });
+    grupos = GRUPOS.map(g => ({ ...g, items: productos.filter(p => p.grupo === g.id) })).filter(g => g.items.length);
+    const enPromo = productos.filter(p => p.enPromo);
+    promosGrupo = enPromo.length ? { ...PROMOS_DEF, items: enPromo } : null;
+}
+
+const esVinoMay = (p) => p.vinoMay;
+const grupoDe = (id) => id === 'promos' ? promosGrupo : grupos.find(g => g.id === id);
+// Orden de la portada y del menú: primero Combos y Promos, después el resto
+function ordenGrupos() {
+    const lista = [];
+    const gc = grupoDe('combos');
+    if (gc) lista.push(gc);
+    if (promosGrupo) lista.push(promosGrupo);
+    return lista.concat(grupos.filter(g => g.id !== 'combos'));
+}
+// Precio mayorista por unidad, para mostrarlo a modo informativo (solo donde se aplica: vinos y espumantes)
+const mayUnit = (p) => (esVinoMay(p) && p.mayorista > 0 && p.mayorista < p.precio) ? p.mayorista : 0;
 
 /* =====================================================================
    Carrito
@@ -450,24 +651,38 @@ function cargarCarrito() {
     cart = new Map(Object.entries(c).filter(([id, q]) => byId[id] && q > 0));
 }
 function precioUnitario(p, mayorista) {
-    const base = precioLista(p);
-    if (mayorista && esVinoMay(p) && p.costo > 0) {
-        const may = Math.round(p.costo * MARGEN_MAYORISTA);
-        return base > 0 ? Math.min(base, may) : may;   // nunca más caro que el precio de lista
-    }
-    return base;
+    // El mayorista sale tal cual del sistema: es el mismo que cobra el mostrador en una venta mayorista
+    if (mayorista && esVinoMay(p) && p.mayorista > 0) return p.mayorista;
+    return p.precio;
 }
 function calcular() {
     const items = [...cart].map(([id, q]) => ({ p: byId[id], q })).filter(x => x.p);
     const vinos = items.reduce((a, x) => a + (esVinoMay(x.p) ? x.q : 0), 0);
     const may = vinos >= VINOS_PARA_MAYORISTA;
-    let total = 0, lista = 0;
     const lineas = items.map(({ p, q }) => {
-        const pu = precioUnitario(p, may);
-        total += pu * q; lista += precioLista(p) * q;
-        return { p, q, pu, pl: precioLista(p) };
+        const base = precioUnitario(p, may);
+        // La promo del día no se acumula con las ofertas del producto: se toma la que deje el total más bajo
+        const pd = (p.promoDia && p.promoDia.precio > 0 && p.promoDia.precio < base) ? p.promoDia : null;
+        let pu = base, of = p.ofertas, promoDia = null;
+        if (pd) {
+            const conOferta = calcularLinea(q, base, mejorOferta(p.ofertas, q, base)).total;
+            const conDia = redondearPesos(q * pd.precio);
+            if (conDia <= conOferta) { pu = pd.precio; of = []; promoDia = pd; }
+        }
+        return { p, q, regular: p.precio, base, pu, promoDia, nombre: p.nombre, qty: q, unitPrice: pu, of, promo: null };
     });
-    return { lineas, vinos, may, total, ahorro: Math.max(0, lista - total), unidades: items.reduce((a, x) => a + x.q, 0) };
+    asignarPromos(lineas);
+    const tot = calcularLineas(lineas);
+    let total = 0, ahorroPromos = 0, ahorroMay = 0;
+    lineas.forEach((l, i) => {
+        l.lineTotal = tot[i].total;
+        l.descuento = tot[i].discount;
+        l.conMay = may && esVinoMay(l.p) && !l.promoDia && Math.round(l.pu) !== Math.round(l.regular);
+        if (l.conMay) ahorroMay += redondearPesos((l.regular - l.pu) * l.q);
+        total += l.lineTotal;
+        ahorroPromos += l.descuento;
+    });
+    return { lineas, vinos, may, total, ahorroPromos, ahorroMay, unidades: items.reduce((a, x) => a + x.q, 0) };
 }
 function setQty(id, q) {
     const antes = cart.get(id) || 0;
@@ -495,16 +710,40 @@ function imgHTML(p) {
         ? `<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" data-ph="${phEmoji(p)}">`
         : `<span class="ph">${phEmoji(p)}</span>`;
 }
+// El precio que se ve: con descuento tachado si hay promo del día o un % OFF
+function precioVista(p) {
+    const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
+    if (pd) return { actual: pd.precio, lista: p.precio, tag: pd.titulo || 'Promo del día', dia: true, pct: null };
+    const pct = p.ofertas.find(o => o.kind === 'PORCENTAJE' && o.percent > 0);
+    if (pct) return { actual: unitarioConOferta(pct, p.precio), lista: p.precio, tag: `-${Math.round(pct.percent)}%`, dia: false, pct };
+    return { actual: p.precio, lista: 0, tag: '', dia: false, pct: null };
+}
 function priceHTML(p) {
-    if (!(precioLista(p) > 0)) return `<div class="price"><span class="consultar">Precio a consultar</span></div>`;
-    if (p.oferta) return `<div class="price"><b>${money(p.oferta)}</b><s>${money(p.precio)}</s><span class="off">-${pctOff(p)}%</span></div>`;
+    if (!(p.precio > 0)) return `<div class="price"><span class="consultar">Precio a consultar</span></div>`;
+    const v = precioVista(p);
+    if (v.lista) return `<div class="price"><b>${money(v.actual)}</b><s>${money(v.lista)}</s><span class="off${v.dia ? ' dia' : ''}">${esc(v.tag)}</span></div>`;
     return `<div class="price"><b>${money(p.precio)}</b></div>`;
+}
+// Las demás ofertas (2X $X, CAJA $X, 3x2…). En las que no dicen precio (3x2) va lo que sale cada una.
+function ofertasHTML(p, completo) {
+    const yaEnPrecio = precioVista(p).pct;
+    const chips = p.ofertas.filter(o => o !== yaEnPrecio).map(o =>
+        `<span class="ochip">${esc(etiquetaOferta(o))}${o.kind === 'NXM' ? ' · x1 ' + money(unitarioConOferta(o, p.precio)) : ''}</span>`);
+    if (!p.ofertas.length) p.promos.forEach(t => chips.push(`<span class="ochip">${esc(t)}</span>`));   // si el sistema solo manda el texto
+    if (!chips.length) return '';
+    const total = p.ofertas.length || p.promos.length;
+    return `<div class="ochips">${completo && total > 1 ? '<span class="ohint">Tiene varias ofertas: se aplica sola la que más te conviene.</span>' : ''}${chips.join('')}</div>`;
+}
+function mayHTML(p) {
+    const m = mayUnit(p);
+    return m ? `<span class="mayline">🍷 Mayorista (${VINOS_PARA_MAYORISTA}+): ${money(m)} c/u</span>` : '';
 }
 function stockHTML(p) {
     if (p.stock == null || p.stock <= 0 || p.stock > 3) return '';
     return `<span class="stock">${p.stock === 1 ? '¡Última unidad!' : 'Quedan ' + p.stock}</span>`;
 }
 function metaDe(p) {
+    if (p.esCombo) return '';
     const parts = [];
     if (p.marca) parts.push(bonito(p.marcaTxt));
     if (p.F && p.F !== p.marca && p.F !== p.T && p.F !== p.C) parts.push(bonito(p.varietal));
@@ -521,8 +760,8 @@ function rowHTML(p) {
         <div class="prow-info">
             <h3 class="prow-name">${esc(p.titulo)}</h3>
             ${meta ? `<p class="prow-meta">${esc(meta)}</p>` : ''}
-            ${p.desc ? `<p class="prow-desc">${esc(p.desc)}</p>` : ''}
-            ${priceHTML(p)}${stockHTML(p)}
+            ${p.lleva ? `<p class="prow-desc">Lleva: ${esc(p.lleva)}</p>` : ''}
+            ${priceHTML(p)}${ofertasHTML(p, false)}${mayHTML(p)}${stockHTML(p)}
         </div>
         <div class="prow-img">${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
     </div>`;
@@ -530,26 +769,36 @@ function rowHTML(p) {
 function cardHTML(p) {
     return `<div class="card" data-act="open" data-id="${p.id}">
         <div class="card-img">${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
-        <h3>${esc(p.titulo)}</h3>${priceHTML(p)}
+        <h3>${esc(p.titulo)}</h3>${priceHTML(p)}${mayHTML(p)}
     </div>`;
 }
 const fotoDe = (items) => (items.find(p => p.img) || {}).img || '';
 function tileHTML(t) {
     return `<a class="tile ${t.img ? 'foto' : ''}" href="${t.href}" style="--tint:${t.tint}">
         ${t.img ? `<img class="tile-img" src="${esc(t.img)}" alt="" loading="lazy" decoding="async" data-tile="${t.emoji}">` : `<span class="tile-emoji">${t.emoji}</span>`}
-        ${t.badge ? `<span class="tile-badge">${t.badge}</span>` : ''}
-        <div class="tile-cap"><b>${esc(t.nombre)}</b><small>${esc(t.sub)}</small></div>
+        ${t.badge ? `<span class="tile-badge">${esc(t.badge)}</span>` : ''}
+        <div class="tile-cap"><b>${esc(t.nombre)}</b>${t.sub ? `<small>${esc(t.sub)}</small>` : ''}</div>
     </a>`;
 }
-function badgeDe(items) {
-    const max = Math.max(0, ...items.map(pctOff));
+// Debajo del nombre de cada categoría: qué hay adentro (sin números)
+function resumenGrupo(g) {
+    const [n1, n2] = nivelesDe(g);
+    for (const n of [n1, n2, NIVEL_MARCA]) {
+        if (!n) continue;
+        const reales = opciones(g.items, n.key, n.label, '').filter(o => o.k !== OTROS);
+        if (reales.length >= 2) return reales.slice(0, 3).map(o => o.t).join(' · ');
+    }
+    return '';
+}
+function badgePromos(items) {
+    const max = Math.max(0, ...items.flatMap(p => p.ofertas.filter(o => o.kind === 'PORCENTAJE').map(o => Math.round(o.percent))));
     return max > 0 ? `Hasta ${max}% OFF` : '';
 }
 
 /* =====================================================================
    Vistas
    ===================================================================== */
-// t = tipo, f = subcategoría (varietal), m = marca elegidos dentro de la categoría
+// t / f / m = lo elegido en cada fila de filtros dentro de la categoría
 const view = { name: 'home', arg: '', t: '', f: '', m: '', orden: 'rel', q: '' };
 let pendientes = [], observer = null;
 
@@ -559,7 +808,6 @@ function render() {
     renderNavChips(view.q || view.name !== 'home');
     if (view.q) renderBusqueda(main);
     else if (view.name === 'c') renderCategoria(main);
-    else if (view.name === 'ofertas') renderLista(main, '🏷️ Ofertas', productos.filter(p => p.oferta));
     else renderHome(main);
     centrarChips();
 }
@@ -568,29 +816,27 @@ function renderNavChips(show) {
     const el = $('#navchips');
     if (!show) { el.innerHTML = ''; return; }
     const cur = view.name === 'c' ? view.arg : '';
-    el.innerHTML = [['', 'Inicio']].concat(grupos.map(g => [g.id, g.nombre])).map(([id, n]) =>
+    el.innerHTML = [['', 'Inicio']].concat(ordenGrupos().map(g => [g.id, g.nombre])).map(([id, n]) =>
         `<a class="chip ${id && id === cur ? 'on' : ''}" href="${id ? '#/c/' + id : '#/'}">${esc(n)}</a>`).join('');
 }
 
 function renderHome(main) {
-    const prod = (n) => n + (n === 1 ? ' producto' : ' productos');
-    const tiles = [];
-    if (hayOfertas) {
-        const it = productos.filter(p => p.oferta);
-        tiles.push({ href: '#/ofertas', nombre: 'Ofertas', emoji: '🏷️', tint: 'rgba(237,28,36,.24)', sub: prod(it.length), img: fotoDe(it), badge: badgeDe(it) });
-    }
-    grupos.forEach(g => {
-        tiles.push({ href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, tint: g.tint, sub: prod(g.items.length), img: fotoDe(g.items), badge: badgeDe(g.items) });
-    });
-
-    const recos = productos.filter(p => p.img && esVinoMay(p) && precioLista(p) > 0)
+    const tiles = ordenGrupos().map(g => ({
+        href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, tint: g.tint, sub: resumenGrupo(g),
+        img: fotoDe(g.items), badge: g.id === 'promos' ? badgePromos(g.items) : '',
+    }));
+    const dia = productos.filter(p => p.promoDia && p.promoDia.precio < p.precio);
+    const recos = productos.filter(p => p.img && esVinoMay(p) && p.precio > 0)
         .map(p => [Math.random(), p]).sort((a, b) => a[0] - b[0]).slice(0, 12).map(x => x[1]);
-
     main.innerHTML = `
         <section class="sec">
-            <div class="sec-h"><h2>Categorías</h2><span>${productos.length} productos</span></div>
+            <div class="sec-h"><h2>Categorías</h2></div>
             <div class="tiles">${tiles.map(tileHTML).join('')}</div>
         </section>
+        ${dia.length ? `<section class="sec">
+            <div class="sec-h"><h2>⭐ ${esc(dia[0].promoDia.titulo || 'Promo del día')}</h2></div>
+            <div class="hscroll">${dia.slice(0, 12).map(cardHTML).join('')}</div>
+        </section>` : ''}
         ${recos.length ? `<section class="sec">
             <div class="sec-h"><h2>🍷 Recomendados</h2><a href="#/c/vinos" style="font-size:13px;color:var(--accent);font-weight:600">Ver vinos ›</a></div>
             <div class="hscroll">${recos.map(cardHTML).join('')}</div>
@@ -599,8 +845,8 @@ function renderHome(main) {
 
 function ordenar(items) {
     const a = items.slice();
-    if (view.orden === 'pmin') a.sort((x, y) => (precioLista(x) || 1e12) - (precioLista(y) || 1e12));
-    else if (view.orden === 'pmax') a.sort((x, y) => precioLista(y) - precioLista(x));
+    if (view.orden === 'pmin') a.sort((x, y) => (precioVista(x).actual || 1e12) - (precioVista(y).actual || 1e12));
+    else if (view.orden === 'pmax') a.sort((x, y) => precioVista(y).actual - precioVista(x).actual);
     else if (view.orden === 'az') a.sort((x, y) => x.titulo.localeCompare(y.titulo, 'es'));
     return a;
 }
@@ -608,13 +854,10 @@ function selectOrden() {
     const ops = [['rel', 'Destacados'], ['pmin', 'Menor precio'], ['pmax', 'Mayor precio'], ['az', 'A - Z']];
     return `<select id="orden" aria-label="Ordenar">${ops.map(([v, t]) => `<option value="${v}" ${view.orden === v ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
 }
-/* ---------- Filtros dentro de la categoría: TIPO → SUBCATEGORÍA (varietal) → MARCA ---------- */
+
+/* ---------- Filtros dentro de la categoría ---------- */
 const OTROS = '~otros';
-const tKey = (p) => p.T;
-const tLabel = (p) => bonito(p.tipo.replace(/^\s*vinos?\s+/i, ''));        // "VINOS TINTOS" -> "Tintos"
-const fKey = (p) => (p.F && p.F !== p.T && p.F !== p.C) ? p.F : '';      // el varietal, cuando aporta algo
-const mKey = (p) => p.marca;
-// Opciones de una fila de filtros: [{k, t, n}], de la que más productos tiene a la que menos.
+// Opciones de una fila: [{k, t, n}], de la que más productos tiene a la que menos.
 // Los productos sin ese dato van juntos en "Otros", así ninguno queda afuera.
 function opciones(items, keyFn, labelFn, otros) {
     const m = new Map(); let sin = 0;
@@ -632,7 +875,7 @@ const coincide = (keyFn, sel) => (p) => !sel || (sel === OTROS ? !keyFn(p) : key
 function filaChips(k, rotulo, todos, ops, sel) {
     return `<div class="chips subchips"><span class="clbl">${esc(rotulo)}</span>` +
         `<button class="chip ${!sel ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="">${esc(todos)}</button>` +
-        ops.map(o => `<button class="chip ${sel === o.k ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="${esc(o.k)}">${esc(o.t)}<small>${o.n}</small></button>`).join('') +
+        ops.map(o => `<button class="chip ${sel === o.k ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="${esc(o.k)}">${esc(o.t)}</button>`).join('') +
         `</div>`;
 }
 
@@ -640,32 +883,33 @@ function renderCategoria(main) {
     const g = grupoDe(view.arg);
     if (!g) { location.hash = '#/'; return; }
     const [rot1, rot2] = FILTROS[g.id] || FILTROS_DEF;
+    const [n1, n2] = nivelesDe(g);
     let items = g.items, filas = '';
     const camino = [];
 
     // 1) Tipo: solo si la categoría tiene más de uno (ej. Vinos: tintos / blancos / rosados)
-    const o1 = opciones(items, tKey, tLabel, 'Otros');
+    const o1 = n1 ? opciones(items, n1.key, n1.label, 'Otros') : [];
     const hay1 = o1.length >= 2;
     if (!hay1 || !o1.some(o => o.k === view.t)) view.t = '';
     if (hay1) {
         filas += filaChips('t', rot1, 'Todos', o1, view.t);
-        if (view.t) { items = items.filter(coincide(tKey, view.t)); camino.push(o1.find(o => o.k === view.t).t); }
+        if (view.t) { items = items.filter(coincide(n1.key, view.t)); camino.push(o1.find(o => o.k === view.t).t); }
     }
-    // 2) Subcategoría (varietal): si hay tipos, aparece después de elegir uno
-    const o2 = (!hay1 || view.t) ? opciones(items, fKey, p => bonito(p.varietal), 'Otros') : [];
+    // 2) Subcategoría: si hay tipos, aparece después de elegir uno
+    const o2 = (n2 && (!hay1 || view.t)) ? opciones(items, n2.key, n2.label, 'Otros') : [];
     const hay2 = o2.length >= 2;
     if (!hay2 || !o2.some(o => o.k === view.f)) view.f = '';
     if (hay2) {
         filas += filaChips('f', rot2, 'Ver todos', o2, view.f);
-        if (view.f) { items = items.filter(coincide(fKey, view.f)); camino.push(o2.find(o => o.k === view.f).t); }
+        if (view.f) { items = items.filter(coincide(n2.key, view.f)); camino.push(o2.find(o => o.k === view.f).t); }
     }
     // 3) Marca (columna Etiqueta) de lo que quedó filtrado
-    const o3 = opciones(items, mKey, p => bonito(p.marcaTxt), 'Otras');
+    const o3 = opciones(items, NIVEL_MARCA.key, NIVEL_MARCA.label, 'Otras');
     const hay3 = o3.length >= 2;
     if (!hay3 || !o3.some(o => o.k === view.m)) view.m = '';
     if (hay3) {
         filas += filaChips('m', 'Marca', 'Todas', o3, view.m);
-        if (view.m) { items = items.filter(coincide(mKey, view.m)); camino.push(o3.find(o => o.k === view.m).t); }
+        if (view.m) { items = items.filter(coincide(NIVEL_MARCA.key, view.m)); camino.push(o3.find(o => o.k === view.m).t); }
     }
     renderLista(main, g.emoji + ' ' + g.nombre, items, filas, camino);
 }
@@ -677,19 +921,20 @@ function centrarChips() {
         if (on && fila.scrollWidth > fila.clientWidth) fila.scrollLeft = on.offsetLeft - (fila.clientWidth - on.offsetWidth) / 2;
     });
 }
+
 function renderBusqueda(main) {
     const toks = norm(view.q).split(' ').filter(Boolean);
     const items = productos.filter(p => {
-        const hay = norm([p.titulo, p.marca, p.varietal, p.tipo, p.C, p.desc].join(' '));
+        const hay = norm([p.titulo, p.marcaTxt, p.varietal, p.tipo, p.C, p.lleva].join(' '));
         return toks.every(t => hay.includes(t));
     });
     renderLista(main, `Resultados para “${view.q}”`, items);
 }
 
+// Sin contar cuántos productos hay: el número no le suma nada al cliente
 function renderLista(main, titulo_, items, filtros = '', camino = []) {
     const lista = ordenar(items);
-    const cant = `${lista.length} ${lista.length === 1 ? 'producto' : 'productos'}`;
-    main.innerHTML = `<div class="lh"><div><h1>${esc(titulo_)}</h1><span>${camino.length ? esc(camino.join(' › ')) + ' · ' : ''}${cant}</span></div>${lista.length > 1 ? selectOrden() : ''}</div>
+    main.innerHTML = `<div class="lh"><div><h1>${esc(titulo_)}</h1>${camino.length ? `<span>${esc(camino.join(' › '))}</span>` : ''}</div>${lista.length > 1 ? selectOrden() : ''}</div>
         ${filtros}
         ${lista.length ? '<div class="plist" id="plist"></div><div class="more" id="more"></div>'
             : '<div class="vacio">No encontramos productos.<br><small>Probá con otra búsqueda o categoría.</small></div>'}`;
@@ -718,7 +963,7 @@ function agregarMas() {
 function route() {
     const h = location.hash.replace(/^#\/?/, '');
     const [name, ...rest] = h.split('/');
-    view.name = ['c', 'ofertas'].includes(name) ? name : 'home';   // links viejos (ej. #/bodegas) van al inicio
+    view.name = name === 'c' ? 'c' : 'home';                // links viejos (ej. #/bodegas) van al inicio
     view.arg = decodeURIComponent(rest.join('/'));
     view.t = ''; view.f = ''; view.m = ''; view.orden = 'rel';
     if (view.q) { view.q = ''; $('#q').value = ''; $('#sbox').classList.remove('has'); }
@@ -733,6 +978,7 @@ const timers = {};
 function showSheet(name) {
     const el = $('#sheet-' + name);
     clearTimeout(timers[name]);
+    $('#toast').classList.remove('show');      // que el "Agregado: …" no tape el total del pedido
     if (name === 'producto') renderProducto();
     if (name === 'carrito') renderCarrito();
     if (name === 'info') renderInfo();
@@ -746,6 +992,7 @@ function hideSheet(name) {
     const el = $('#sheet-' + name);
     el.classList.remove('open');
     timers[name] = setTimeout(() => el.classList.remove('vis'), 240);
+    if (name === 'carrito') enviadoUrl = null;
     sheetOpen = null;
     document.body.style.overflow = '';
 }
@@ -765,26 +1012,35 @@ window.addEventListener('popstate', () => {
 /* ---------- Ficha de producto ---------- */
 let psId = null, psQty = 1;
 function abrirProducto(id) { psId = id; psQty = 1; openSheet('producto'); }
+// Lo que sale llevar esa cantidad, con la mejor oferta (el mayorista depende de todo el pedido)
+function totalFicha(p, q) {
+    if (!(p.precio > 0)) return 0;
+    const conOferta = calcularLinea(q, p.precio, mejorOferta(p.ofertas, q, p.precio)).total;
+    const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
+    return pd ? Math.min(conOferta, redondearPesos(q * pd.precio)) : conOferta;
+}
 function renderProducto() {
     const p = byId[psId]; if (!p) return;
     const tags = [];
+    if (p.esCombo) tags.push('Combo');
     if (p.marca) tags.push((p.grupo === 'vinos' || p.grupo === 'espumantes' ? 'Bodega: ' : 'Marca: ') + bonito(p.marcaTxt));
-    if (fKey(p) && p.F !== p.marca) tags.push(bonito(p.varietal));
-    if (p.tipo && p.T !== p.F) tags.push(bonito(p.tipo));
-    const pl = precioLista(p);
+    if (NIVEL_VARIETAL.key(p) && p.F !== p.marca) tags.push(bonito(p.varietal));
+    if (p.tipo && p.T !== p.F && !p.esCombo) tags.push(bonito(p.tipo));
+    const m = mayUnit(p);
+    const tf = totalFicha(p, psQty);
     $('#sp-producto').innerHTML = `
         <button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
         <div class="ps-hero">${p.img ? `<div class="blur" style="background-image:url('${esc(p.img.replace(/'/g, '%27'))}')"></div><img src="${esc(p.img)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}">` : `<span class="ph">${phEmoji(p)}</span>`}</div>
         <div class="ps-body">
             <h2>${esc(p.titulo)}</h2>
             ${tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
-            ${p.desc ? `<p class="ps-desc">${esc(p.desc)}</p>` : ''}
-            ${priceHTML(p)}${stockHTML(p)}
-            ${esVinoMay(p) ? `<p class="note">🍷 Llevando ${VINOS_PARA_MAYORISTA} vinos o más (podés combinar) pagás <b>precio mayorista</b>.</p>` : ''}
+            ${p.lleva ? `<p class="ps-desc"><b>Lleva:</b> ${esc(p.lleva)}</p>` : ''}
+            ${priceHTML(p)}${ofertasHTML(p, true)}${stockHTML(p)}
+            ${m ? `<p class="note">🍷 <b>Precio mayorista: ${money(m)} c/u</b><br>Llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar distintos). Ahorrás ${money(p.precio - m)} por unidad.</p>` : ''}
         </div>
         <div class="foot">
             <div class="stepper"><button data-act="ps-dec" aria-label="Menos">−</button><span>${psQty}</span><button data-act="ps-inc" aria-label="Más">+</button></div>
-            <button class="btn" data-act="ps-add">Agregar${pl > 0 ? ' · ' + money(pl * psQty) : ''}</button>
+            <button class="btn" data-act="ps-add">Agregar${tf > 0 ? ' · ' + money(tf) : ''}</button>
         </div>`;
 }
 
@@ -792,67 +1048,119 @@ function renderProducto() {
 const cliente = Object.assign({ nombre: '', direccion: '', entrega: CONFIG.ENTREGAS[0], pago: CONFIG.PAGOS[0], notas: '' }, store.get('mn_cliente', {}));
 function guardarCliente() { const { notas, ...resto } = cliente; store.set('mn_cliente', resto); }
 const esEnvio = () => /env/i.test(cliente.entrega);
+let enviadoUrl = null;   // después de tocar "Enviar" se muestra la confirmación
+
 function renderCarrito() {
-    const r = calcular();
     const panel = $('#sp-carrito');
+    if (enviadoUrl) return renderConfirmacion(panel);
+    const r = calcular();
     if (!r.lineas.length) {
         panel.innerHTML = `<button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
             <div class="cs"><div class="cs-h"><h2>Tu pedido</h2></div><div class="vacio">Tu pedido está vacío.<br><small>Agregá productos con el botón +</small></div></div>`;
         return;
     }
     let may = '';
-    if (r.may) may = `<div class="may">🍷 ¡Precio mayorista activado!${r.ahorro > 0 ? ' Ahorrás ' + money(r.ahorro) : ''}</div>`;
-    else if (r.vinos > 0) {
+    if (r.may) {
+        may = `<div class="may">🍷 ¡Precio mayorista activado!${r.ahorroMay > 0 ? ' Ahorrás ' + money(r.ahorroMay) : ''}` +
+            (r.lineas.some(l => esVinoMay(l.p) && !(l.p.mayorista > 0)) ? '<small>Los que están en oferta quedan a su precio de oferta.</small>' : '') + `</div>`;
+    } else if (r.vinos > 0) {
         const faltan = VINOS_PARA_MAYORISTA - r.vinos;
         may = `<div class="may">🍷 Sumá ${faltan} ${faltan === 1 ? 'vino' : 'vinos'} más y pagás precio mayorista<div class="bar"><i style="width:${Math.round(100 * r.vinos / VINOS_PARA_MAYORISTA)}%"></i></div></div>`;
     }
+    const envio = esEnvio();
+    const gratis = envio && r.total >= CONFIG.ENVIO_GRATIS_DESDE;
+    const falta = CONFIG.ENVIO_GRATIS_DESDE - r.total;
+    const notaEnvio = !envio ? '' : gratis
+        ? `<div class="envio-note gratis">🎉 Tu pedido tiene <b>envío gratis</b> en ${esc(CONFIG.ZONA_ENVIO_GRATIS)}. El horario lo coordinamos por WhatsApp.</div>`
+        : `<div class="envio-note">🛵 El envío se <b>coordina por WhatsApp</b>: te confirmamos costo y horario.${falta > 0 ? `<small>Sumando ${money(falta)} más, el envío es gratis en ${esc(CONFIG.ZONA_ENVIO_GRATIS)}.</small>` : ''}</div>`;
     const seg = (campo, ops) => `<div class="seg">${ops.map(o => `<button type="button" class="${cliente[campo] === o ? 'on' : ''}" data-act="seg" data-k="${campo}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
     const prevScroll = panel.scrollTop;
     panel.innerHTML = `<div class="grip"></div><button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
         <div class="cs">
             <div class="cs-h"><h2>Tu pedido</h2><button class="btn-ghost" data-act="vaciar">Vaciar</button></div>
-            ${r.lineas.map(l => `<div class="ci">
-                <div class="ci-img">${imgHTML(l.p)}</div>
-                <div class="ci-info"><b>${esc(l.p.titulo)}</b>
-                    <small>${l.pu > 0 ? (l.pu < l.pl ? `<s>${money(l.pl)}</s><em>${money(l.pu)}</em>` : money(l.pu)) + ' c/u' : 'Precio a consultar'}</small></div>
-                <div class="stepper"><button data-act="dec" data-id="${l.p.id}" aria-label="Quitar uno">−</button><span>${l.q}</span><button data-act="inc" data-id="${l.p.id}" aria-label="Sumar uno">+</button></div>
-            </div>`).join('')}
+            ${r.lineas.map(l => {
+                const cu = l.pu > 0 ? (l.conMay ? `<s>${money(l.regular)}</s><em>${money(l.pu)}</em>` : money(l.pu)) + ' c/u' : 'Precio a consultar';
+                const promo = l.promoDia
+                    ? `<span class="ci-dia">${esc(l.promoDia.titulo || 'Promo del día')} · ahorrás ${money(redondearPesos(l.regular * l.q) - l.lineTotal)}</span>`
+                    : (l.promo && l.descuento > 0) ? `<span class="ci-promo">${esc(etiquetaOferta(l.promo))} · ahorrás ${money(l.descuento)}</span>` : '';
+                return `<div class="ci">
+                    <div class="ci-img">${imgHTML(l.p)}</div>
+                    <div class="ci-info"><b>${esc(l.p.titulo)}</b><small>${cu}</small>${promo}</div>
+                    <div class="ci-right">
+                        <div class="stepper"><button data-act="dec" data-id="${l.p.id}" aria-label="Quitar uno">−</button><span>${l.q}</span><button data-act="inc" data-id="${l.p.id}" aria-label="Sumar uno">+</button></div>
+                        <span class="ci-total">${money(l.lineTotal)}</span>
+                    </div>
+                </div>`;
+            }).join('')}
             ${may}
             <div class="form">
                 <label for="f-nombre">Tu nombre</label>
                 <input id="f-nombre" data-k="nombre" value="${esc(cliente.nombre)}" autocomplete="name" placeholder="¿A nombre de quién?">
                 <label>¿Cómo lo recibís?</label>
                 ${seg('entrega', CONFIG.ENTREGAS)}
-                ${esEnvio() ? `<label for="f-dir">Dirección de entrega</label>
+                ${envio ? `<label for="f-dir">Dirección de entrega</label>
                 <input id="f-dir" data-k="direccion" value="${esc(cliente.direccion)}" autocomplete="street-address" placeholder="Calle, número, barrio">` : ''}
+                ${notaEnvio}
                 <label>¿Cómo pagás?</label>
                 ${seg('pago', CONFIG.PAGOS)}
                 <label for="f-notas">Notas (opcional)</label>
                 <textarea id="f-notas" data-k="notas" rows="2" placeholder="Ej: timbre B, sin hielo, horario…">${esc(cliente.notas)}</textarea>
             </div>
-            <div class="tot"><span>Total</span><b>${money(r.total)}</b></div>
+            ${r.ahorroPromos > 0 ? `<div class="tline ok"><span>Promos aplicadas</span><b>ahorrás ${money(r.ahorroPromos)}</b></div>` : ''}
+            ${envio ? `<div class="tline${gratis ? ' ok' : ''}"><span>Envío</span><b>${gratis ? 'Gratis' : 'A coordinar'}</b></div>` : ''}
+            <div class="tot"><span>Total${envio && !gratis ? ' (sin envío)' : ''}</span><b>${money(r.total)}</b></div>
         </div>
-        <div class="foot"><button class="btn btn-wpp" data-act="send">Enviar pedido por WhatsApp</button></div>`;
+        <div class="foot"><button class="btn btn-wpp" data-act="send">${envio ? 'Enviar pedido y coordinar envío' : 'Enviar pedido por WhatsApp'}</button></div>`;
     panel.scrollTop = prevScroll;
 }
+
 function enviar() {
     const r = calcular();
     if (!r.lineas.length) return;
     const fNombre = $('#f-nombre'), fDir = $('#f-dir');
     if (!cliente.nombre.trim()) { fNombre.classList.add('err'); fNombre.focus(); toast('Completá tu nombre'); return; }
     if (esEnvio() && !cliente.direccion.trim()) { fDir.classList.add('err'); fDir.focus(); toast('Completá la dirección de entrega'); return; }
-    let t = `¡Hola ${CONFIG.NOMBRE}! 👋 Quiero hacer este pedido:\n\n`;
+    const envio = esEnvio(), gratis = envio && r.total >= CONFIG.ENVIO_GRATIS_DESDE;
+    let t = `¡Hola ${CONFIG.NOMBRE}! 🍷 Este es mi pedido:\n\n`;
     r.lineas.forEach(l => {
-        t += `• ${l.q} x ${l.p.titulo}` + (l.pu > 0 ? ` — ${money(l.pu * l.q)}` + (l.q > 1 ? ` (${money(l.pu)} c/u)` : '') : ' — precio a consultar') + '\n';
+        // Con el nombre tal cual está en el sistema y qué promo lleva cada renglón, así el mostrador cobra lo mismo
+        t += `• ${l.q} x ${l.p.nombre}` + (l.pu > 0 ? ` (${money(l.pu)} c/u)` : ' (precio a consultar)');
+        if (l.promoDia) t += ` — ${l.promoDia.titulo || 'Promo del día'}: ${money(l.lineTotal)}`;
+        else if (l.promo && l.descuento > 0) t += ` — ${etiquetaOferta(l.promo)}: ${money(l.lineTotal)}`;
+        t += '\n';
     });
-    if (r.may) t += `\n🍷 Precio mayorista aplicado (${VINOS_PARA_MAYORISTA}+ vinos)` + (r.ahorro > 0 ? ` — ahorro ${money(r.ahorro)}` : '') + '\n';
+    if (r.may) t += `\n✅ Precio mayorista aplicado (${VINOS_PARA_MAYORISTA}+ vinos)`;
+    if (r.ahorroPromos > 0) t += `\n🔥 Promos aplicadas: ahorro ${money(r.ahorroPromos)}`;
     t += `\n*Total: ${money(r.total)}*\n\n`;
-    t += `👤 ${cliente.nombre.trim()}\n🛵 ${cliente.entrega}\n`;
-    if (esEnvio()) t += `📍 ${cliente.direccion.trim()}\n`;
+    t += `👤 ${cliente.nombre.trim()}\n`;
+    if (envio) t += `🛵 Envío a domicilio — ${gratis ? `gratis (pedido de más de ${money(CONFIG.ENVIO_GRATIS_DESDE)})` : 'costo y horario a coordinar'}\n📍 ${cliente.direccion.trim()}\n`;
+    else t += `🏪 Retiro en el local\n`;
     t += `💳 ${cliente.pago}\n`;
     if (cliente.notas.trim()) t += `📝 ${cliente.notas.trim()}\n`;
-    window.open(`https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(t)}`, '_blank');
-    toast('¡Listo! Se abrió WhatsApp con tu pedido');
+    t += envio ? (gratis ? '\n¿Me confirman el horario de entrega? ¡Gracias!' : '\n¿Me confirman el costo y el horario del envío? ¡Gracias!')
+               : '\n¿Me avisan cuándo lo puedo pasar a buscar? ¡Gracias!';
+    enviadoUrl = waLink(t);
+    window.open(enviadoUrl, '_blank');
+    renderCarrito();
+}
+
+function renderConfirmacion(panel) {
+    const envio = esEnvio(), gratis = envio && calcular().total >= CONFIG.ENVIO_GRATIS_DESDE;
+    const sigue = envio
+        ? (gratis ? 'coordinamos el horario de entrega (el envío es gratis).' : 'coordinamos el envío: te confirmamos costo y horario.')
+        : 'te avisamos cuándo lo podés pasar a buscar.';
+    panel.innerHTML = `<button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+        <div class="conf">
+            <div class="conf-ico">✅</div>
+            <h2>¡Tu pedido está listo!</h2>
+            <p>Se abrió WhatsApp con el detalle. <b>Mandá el mensaje</b> y ${sigue}</p>
+            <p class="muted">¿No se abrió WhatsApp? Tocá el botón de abajo.</p>
+        </div>
+        <div class="foot col">
+            <button class="btn btn-wpp" data-act="reabrir">Abrir WhatsApp de nuevo</button>
+            <button class="btn-ghost" data-act="nuevo">Ya lo envié: vaciar el pedido</button>
+            <button class="btn-ghost" data-act="volver">Volver al pedido</button>
+        </div>`;
 }
 
 /* ---------- Info ---------- */
@@ -861,12 +1169,12 @@ function renderInfo() {
         <div class="info">
             <h2>${esc(CONFIG.NOMBRE)}</h2><p>${esc(CONFIG.SUBTITULO)}</p>
             <ul>
-                <li><span>🛵</span><span>${esc(CONFIG.ENTREGAS.join(' · '))}</span></li>
+                <li><span>🛵</span><span>${esc(CONFIG.ENTREGAS.join(' · '))}. Envío gratis en ${esc(CONFIG.ZONA_ENVIO_GRATIS)} superando los ${money(CONFIG.ENVIO_GRATIS_DESDE)}; si no, se coordina por WhatsApp.</span></li>
                 <li><span>💳</span><span>${esc(CONFIG.PAGOS.join(' · '))}</span></li>
-                <li><span>🍷</span><span>Precio mayorista llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar).</span></li>
+                <li><span>🍷</span><span>Precio mayorista llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar). Los que están en oferta quedan a su precio de oferta.</span></li>
                 <li><span>🛒</span><span>Armá tu pedido, tocá <b>Ver pedido</b> y lo enviás por WhatsApp. Te confirmamos al toque.</span></li>
             </ul>
-            <a class="btn btn-wpp" href="https://wa.me/${CONFIG.WHATSAPP}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+            <a class="btn btn-wpp" href="${waLink('')}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
         </div>`;
 }
 
@@ -882,6 +1190,10 @@ function toast(msg) {
 /* =====================================================================
    Eventos
    ===================================================================== */
+function vaciarCarrito() {
+    cart.clear(); guardarCarrito(); actualizarBarra();
+    document.querySelectorAll('[data-ctl]').forEach(c => c.innerHTML = ctlHTML(c.dataset.ctl));
+}
 document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-act]');
     if (!el) return;
@@ -911,9 +1223,12 @@ document.addEventListener('click', (e) => {
         case 'seg':
             cliente[el.dataset.k] = el.dataset.v; guardarCliente(); renderCarrito(); break;
         case 'vaciar':
-            if (confirm('¿Vaciar el pedido?')) { cart.clear(); guardarCarrito(); actualizarBarra(); document.querySelectorAll('[data-ctl]').forEach(c => c.innerHTML = ctlHTML(c.dataset.ctl)); renderCarrito(); }
+            if (confirm('¿Vaciar el pedido?')) { vaciarCarrito(); renderCarrito(); }
             break;
         case 'send': enviar(); break;
+        case 'reabrir': if (enviadoUrl) window.open(enviadoUrl, '_blank'); break;
+        case 'volver': enviadoUrl = null; renderCarrito(); break;
+        case 'nuevo': vaciarCarrito(); closeSheet(); toast('¡Gracias por tu pedido! 🍷'); break;
     }
 });
 document.addEventListener('input', (e) => {
@@ -971,9 +1286,9 @@ function skeleton() {
 async function cargar() {
     skeleton();
     try {
-        const res = await fetch(CONFIG.EXCEL_URL + '&t=' + Date.now());
+        const res = await fetch(CONFIG.API_URL + '&t=' + Date.now());
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        construir(await res.text());
+        construir(await res.json());
         cargarCarrito();
         actualizarBarra();
         route();
