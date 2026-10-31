@@ -319,6 +319,7 @@ const CONFIG = {
     // Todo sale del sistema de gestión: productos, precios, stock, precio mayorista, ofertas y combos
     API_URL: 'https://sistema-monje.vercel.app/api/catalogo?formato=json',
     RECORTES: 'recortes/index.json',     // fotos con fondo blanco (las arma herramientas/recortar_fotos.py)
+    FOTOS_AUTO: 'fotos-auto/index.json', // fotos buscadas para los productos sin foto en el sistema
     WHATSAPP: '5493517874303',          // 351 787-4303 en formato internacional (549 + característica + número)
     NOMBRE: 'Monje Negro',
     SUBTITULO: 'Botillería · Córdoba',
@@ -391,8 +392,15 @@ function imgUrl(u) {
 // Fotos con fondo blanco: recortes/index.json dice qué foto tiene su versión recortada
 // (la genera herramientas/recortar_fotos.py). Si no está, se usa la foto original.
 let recortes = {};
-function fotosProducto(u) {
+// Fotos de producto buscadas automáticamente para los que no tienen foto en el sistema (fotos-auto/index.json:
+// nombre del producto → [archivo, versión]). Si después se sube una foto en el sistema, esa tiene prioridad.
+let fotosAuto = {};
+function fotosProducto(u, nombre) {
     const foto = imgUrl(u);
+    if (!foto) {
+        const a = fotosAuto[norm(nombre)];
+        return a ? { img: 'fotos-auto/' + encodeURIComponent(a[0]) + '?v=' + a[1], foto: '', rc: true } : { img: '', foto: '', rc: false };
+    }
     let archivo = '';
     try { archivo = decodeURIComponent(foto); } catch (e) { archivo = foto; }
     const r = !/^https?:/i.test(foto) && recortes[archivo];
@@ -554,7 +562,7 @@ const INFERIR = [
     [/CERVEZA|PORRON|LATON/, 'CERVEZAS', ''],
     [/ACEITUNA|SALAME|JAMON|PICADA|BONDIOLA|QUESO|\bMANI\b|ALFAJOR|PAPAS/, 'COMIDA', 'COMIDA'],
     [/TABACO|VAN HAASEN|LUCKY STRIKE|\bOCB\b|FILTRO/, 'TABACO', 'TABACO'],
-    [/COPA|MEDIDOR|JIGGER|SACACORCHO|DESTAPADOR/, 'REGALERIA', 'REGALERIA'],
+    [/COPA|COPON|VASO|MEDIDOR|JIGGER|SACACORCHO|DESTAPADOR/, 'REGALERIA', 'REGALERIA'],
 ];
 // Errores de tipeo del sistema que partirían un filtro en dos ("Vodka" y "Voska")
 const CORREGIR = { VOSKA: 'VODKA', JAGGER: 'LICOR' };
@@ -614,7 +622,7 @@ function construir(data) {
     const txt = (v) => (v === null || v === undefined) ? '' : String(v).trim();
     // Botella recortada de cada producto (aunque no tenga stock), para armar la foto de los combos
     const recortePorNombre = new Map();
-    filas.forEach(f => { const x = fotosProducto(txt(f.IMAGEN)); if (x.rc) recortePorNombre.set(norm(f.NOMBRE), x.img); });
+    filas.forEach(f => { const x = fotosProducto(txt(f.IMAGEN), f.NOMBRE); if (x.rc) recortePorNombre.set(norm(f.NOMBRE), x.img); });
     const seen = {};
     productos = [];
     filas.forEach(f => {
@@ -636,7 +644,7 @@ function construir(data) {
         productos.push({
             id, nombre, titulo: titulo(nombre),
             precio: parseNum(f.PRECIO), mayorista: parseNum(f.MAYORISTA),
-            ...fotosProducto(txt(f.IMAGEN)),       // img (la recortada, si hay), foto (la original) y rc
+            ...fotosProducto(txt(f.IMAGEN), nombre),   // img (la recortada, si hay), foto (la original) y rc
             C, T, F: esCombo ? '' : corregido(norm(f.VARIETAL)),
             tipo, varietal: esCombo ? '' : txt(f.VARIETAL),
             stock: Number(f.STOCK),
@@ -1369,7 +1377,7 @@ function pintarEncabezado() {
     $('#h-pills').innerHTML = CONFIG.PILLS.map(t => `<span class="hpill">${esc(t)}</span>`).join('');
     $('#anuncio').textContent = CONFIG.ANUNCIO;
     $('#anuncio').style.display = CONFIG.ANUNCIO ? '' : 'none';
-    $('#pie').innerHTML = `${esc(CONFIG.NOMBRE)} · ${esc(CONFIG.SUBTITULO)}<br>Pedidos por WhatsApp`;
+    $('#pie').innerHTML = `${esc(CONFIG.NOMBRE)} · ${esc(CONFIG.SUBTITULO)}<br>Pedidos por <a href="${waLink('')}" target="_blank" rel="noopener" style="text-decoration:underline">WhatsApp</a> · Coordinamos la entrega por WhatsApp<br>© ${new Date().getFullYear()} ${esc(CONFIG.NOMBRE)} · Botillería`;
 }
 function skeleton() {
     $('#main').innerHTML = `<section class="sec"><div class="sec-h"><h2>Categorías</h2></div>
@@ -1378,13 +1386,16 @@ function skeleton() {
 async function cargar() {
     skeleton();
     try {
-        // La lista de fotos recortadas se pide junto con los productos (si no llega, se usan las fotos originales)
-        const [res, rc] = await Promise.all([
+        // Las listas de fotos se piden junto con los productos (si no llegan, se usan las fotos originales)
+        const pedirJson = (url) => fetch(url + '?v=' + Math.floor(Date.now() / 6e5)).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+        const [res, rc, auto] = await Promise.all([
             fetch(CONFIG.API_URL + '&t=' + Date.now()),
-            fetch(CONFIG.RECORTES + '?v=' + Math.floor(Date.now() / 6e5)).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+            pedirJson(CONFIG.RECORTES),
+            pedirJson(CONFIG.FOTOS_AUTO),
         ]);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         recortes = rc || {};
+        fotosAuto = auto || {};
         construir(await res.json());
         cargarCarrito();
         actualizarBarra();
