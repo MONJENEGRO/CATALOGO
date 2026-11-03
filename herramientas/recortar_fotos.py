@@ -130,7 +130,7 @@ def limpiar(indice):
     # Borra los recortes que ya no corresponden a ninguna foto
     en_uso = {v[0] for v in indice.values()} | {'index.json'}
     for archivo in os.listdir(CARPETA):
-        if archivo not in en_uso:
+        if archivo not in en_uso and os.path.isfile(os.path.join(CARPETA, archivo)):
             os.remove(os.path.join(CARPETA, archivo))
             print('borrado (sin foto):', archivo)
 

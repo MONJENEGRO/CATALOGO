@@ -1,1267 +1,1408 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0a">
-    <meta name="description" content="Monje Negro — Botillería. Vinos, espumantes, destilados, cervezas y más. Pedí por WhatsApp y te lo acercamos.">
-    <title>Monje Negro - Botillería</title>
-    <style>
-        @font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
-        @font-face { font-family: 'Monley'; src: url('MonleyRegular.Ttf'); font-display: swap; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Monje Negro — Botillería en Córdoba. Vinos, espumantes, cervezas, destilados, combos y promos. Armá tu pedido y envialo por WhatsApp.">
+<title>Monje Negro · Botillería</title>
+<style>
+@font-face { font-family: 'AM Tripoli'; src: url('AMTripoli-Regular.ttf'); font-display: swap; }
 
-        :root {
-            --rojo: #ed1c24; --rojo-osc: #c9151c;
-            --negro: #0a0a0b; --panel: #0e0e11; --card-a: #17171c; --card-b: #111114;
-            --linea: #28282f; --gold: #d4af37; --verde-wpp: #25d366;
-            --texto: #f3f3f4; --muted: #9a9aa3;
-        }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { background: var(--negro); color: var(--texto); font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 90px; -webkit-font-smoothing: antialiased; }
-        .container { padding: 0 16px; max-width: 1100px; margin: auto; }
+/* Tema oscuro (predeterminado). El claro se activa con data-tema="claro" (o abriendo con ?tema=claro). */
+:root {
+    color-scheme: dark;
+    --bg: #0b0b0d; --card: #16161a; --card2: #1e1e23; --text: #f3f3f4; --muted: #9b9ba5; --line: #2a2a31;
+    --brand: #000000; --accent: #ed1c24; --accent-2: #c9151c; --gold: #d4af37; --ok: #3ccf6e;
+    --promo: #ff6b6f; --dia: #c4b5fd;
+    --cta: var(--accent);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+    --radius: 14px;
+    /* Fotos de producto sobre blanco, en los dos temas */
+    --foto-bg: #ffffff;
+    --ok-bg: #dcf5e3; --ok-tx: #17663a;
+}
+:root[data-tema="claro"] {
+    color-scheme: light;
+    --bg: #f2f2f4; --card: #ffffff; --card2: #f6f6f8; --text: #16161a; --muted: #6c6c76; --line: #e3e3e8;
+    --brand: #0a0a0a; --accent: #d4141c; --accent-2: #a50f15; --gold: #a8760a; --ok: #14833b;
+    --promo: #c4161c; --dia: #6d28d9;
+    --cta: #0a0a0a;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.06);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 14px; }
 
-        .promobar { background: #000; color: var(--gold); text-align: center; font-size: 0.72em; letter-spacing: 1.4px; text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid #1b1b20; }
+/* ---------- Encabezado ---------- */
+.hdr { background: var(--brand); color: #fff; position: relative; overflow: hidden; }
+.hdr::before { content: ""; position: absolute; inset: 0; background: radial-gradient(90% 160% at 12% -30%, rgba(237,28,36,.38), transparent 62%); pointer-events: none; }
+.hdr-in { position: relative; display: flex; align-items: center; gap: 14px; padding: 18px 14px 16px; max-width: 1100px; margin: 0 auto; }
+.logo { width: 62px; height: 62px; border-radius: 50%; background: #000; border: 2px solid rgba(255,255,255,.16); display: flex; align-items: center; justify-content: center; font-family: 'AM Tripoli', serif; color: var(--accent); font-size: 25px; flex: none; }
+.hdr-txt { min-width: 0; }
+.hdr-txt h1 { margin: 0; font-family: 'AM Tripoli', serif; font-weight: normal; font-size: 26px; letter-spacing: 1px; line-height: 1; }
+.hdr-txt p { margin: 5px 0 0; font-size: 13px; color: rgba(255,255,255,.72); }
+.hdr-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.hpill { font-size: 11.5px; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.11); }
+.hdr-info { margin-left: auto; align-self: flex-start; background: rgba(255,255,255,.13); border: 0; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12.5px; flex: none; }
+.anuncio { background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 600; text-align: center; padding: 8px 12px; line-height: 1.4; }
 
-        header { background: radial-gradient(120% 120% at 50% -30%, #240608 0%, #000 62%); padding: 26px 20px 20px; text-align: center; border-bottom: 1px solid var(--linea); position: relative; }
-        header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--rojo), var(--gold), var(--rojo), transparent); opacity: .65; }
-        .brand { color: var(--rojo); font-family: 'AM Tripoli', sans-serif; font-size: 3.2em; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 24px rgba(237,28,36,.25); cursor: pointer; }
-        .sub { color: #fff; font-family: 'Monley', cursive; font-size: 1.6em; margin-top: 2px; display: block; }
-        .tagline { color: var(--muted); font-size: 0.72em; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
+/* ---------- Barra superior (búsqueda + categorías) ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: var(--bg); padding: 10px 0 8px; transition: box-shadow .2s; }
+.topbar.scrolled { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+.srow { display: flex; align-items: center; gap: 8px; }
+.back { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); display: none; align-items: center; justify-content: center; flex: none; font-size: 20px; }
+.back.show { display: flex; }
+.sbox { flex: 1; position: relative; }
+.sbox input { width: 100%; height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); padding: 0 38px 0 40px; font-size: 15px; outline: none; -webkit-appearance: none; }
+.sbox input:focus { border-color: var(--accent); }
+.sbox .ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); opacity: .5; pointer-events: none; }
+.sbox .clr { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; width: 32px; height: 32px; border-radius: 50%; display: none; color: var(--muted); font-size: 17px; }
+.sbox.has .clr { display: block; }
+.chips { position: relative; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 10px 0 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chips:empty { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 13px; font-size: 13px; white-space: nowrap; }
+.chip.on { background: var(--cta); color: #fff; border-color: var(--cta); }
+/* Nombre de la fila de filtros: queda fijo a la izquierda y las opciones pasan por detrás */
+.clbl { position: sticky; left: 0; z-index: 2; flex: none; display: flex; align-items: center; font-size: 10.5px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: var(--muted); background: var(--bg); padding-right: 8px; box-shadow: 10px 0 10px -4px var(--bg); }
 
-        .topbar { position: sticky; top: 0; z-index: 30; }
-        .mainnav { background: #000; border-bottom: 1px solid var(--linea); position: relative; }
-        .nav-inner { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; justify-content: center; }
-        .nav-inner::-webkit-scrollbar { display: none; }
-        .nav-item { background: none; border: none; color: #fff; font-size: 0.78em; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; padding: 14px 12px; cursor: pointer; white-space: nowrap; transition: .2s; border-bottom: 2px solid transparent; }
-        .nav-item:hover { color: var(--gold); }
-        .nav-item.open { color: var(--gold); border-bottom-color: var(--rojo); }
-        .nav-panel { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 40; background: #0e0e11; border-bottom: 1px solid var(--linea); max-height: 62vh; overflow-y: auto; box-shadow: 0 14px 30px rgba(0,0,0,.55); }
-        .nav-panel.show { display: block; }
-        .nav-panel-inner { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; max-width: 1100px; margin: auto; }
-        .nav-opt { background: #15151a; border: 1px solid var(--linea); color: #ddd; padding: 8px 14px; border-radius: 999px; font-size: 0.82em; cursor: pointer; transition: .2s; }
-        .nav-opt:hover { border-color: var(--gold); color: #fff; background: #1d1d22; }
-        .nav-empty { color: var(--muted); font-size: .85em; padding: 6px; }
+/* ---------- Secciones ---------- */
+.sec { margin: 12px 0 24px; }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
+.sec-h h2 { font-size: 18px; margin: 0; }
 
-        .filtros-area { background: rgba(10,10,12,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 12px 0; border-bottom: 1px solid var(--linea); }
-        .search-wrap { position: relative; }
-        .search-ico { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: .45; pointer-events: none; }
-        #buscador { width: 100%; padding: 12px 16px 12px 42px; background: #101013; border: 1px solid var(--linea); border-radius: 10px; color: #fff; outline: none; transition: .25s; font-size: 0.95em; }
-        #buscador::placeholder { color: #6c6c75; }
-        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(237,28,36,.15); }
+/* Tiles de categorías */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (min-width: 560px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 820px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1040px) { .tiles { grid-template-columns: repeat(5, 1fr); } }
+.tile { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius); overflow: hidden; background: radial-gradient(120% 90% at 50% 8%, var(--tint, rgba(120,120,130,.16)), var(--card) 80%); box-shadow: var(--shadow); display: block; transition: transform .15s; }
+.tile:active { transform: scale(.97); }
+.tile-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tile-emoji { position: absolute; left: 0; right: 0; top: 16%; text-align: center; font-size: 56px; line-height: 1; }
+.tile-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px 11px; color: var(--text); }
+.tile.foto .tile-cap { padding-top: 38px; background: linear-gradient(transparent, rgba(0,0,0,.86)); color: #fff; }
+.tile-cap b { display: block; font-size: 15px; line-height: 1.15; }
+.tile-cap small { display: block; font-size: 11.5px; opacity: .75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-badge { position: absolute; top: 8px; left: 8px; z-index: 3; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px; }
 
-        /* ---- Portada / Home ---- */
-        .hero { position: relative; }
-        .hero-window { overflow: hidden; }
-        .hero-track { display: flex; transition: transform .5s ease; }
-        .hero-slide { min-width: 100%; min-height: 270px; padding: 50px 30px; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .slide1 { background: radial-gradient(130% 150% at 18% 0%, #2c0a0e, #0a0a0b 68%); }
-        .slide2 { background: radial-gradient(130% 150% at 82% 0%, #2b220b, #0a0a0b 68%); }
-        .slide3 { background: radial-gradient(130% 150% at 50% 0%, #0a1c15, #0a0a0b 68%); }
-        .hero-content h2 { font-size: 2.1em; margin: 0 0 10px; color: #fff; letter-spacing: 1px; }
-        .hero-content p { color: #d8d8de; margin: 0 0 20px; font-size: 1em; max-width: 460px; }
-        .hero-btn { background: var(--rojo); color: #fff; border: none; padding: 13px 30px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: .82em; cursor: pointer; transition: .2s; }
-        .hero-btn:hover { background: var(--rojo-osc); box-shadow: 0 6px 18px rgba(237,28,36,.4); }
-        .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.4); border: 1px solid var(--linea); color: #fff; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2em; cursor: pointer; z-index: 2; transition: .2s; }
-        .hero-arrow.left { left: 10px; } .hero-arrow.right { right: 10px; }
-        .hero-arrow:hover { background: var(--rojo); border-color: var(--rojo); }
-        .hero-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
-        .hero-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: rgba(255,255,255,.35); cursor: pointer; padding: 0; }
-        .hero-dot.active { background: var(--gold); }
+/* Tira horizontal (promo del día, recomendados) */
+.hscroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding: 2px 2px 8px; margin: 0 -2px; }
+.hscroll::-webkit-scrollbar { display: none; }
+.card { flex: 0 0 150px; scroll-snap-align: start; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; cursor: pointer; display: flex; flex-direction: column; }
+.card-img { position: relative; height: 130px; border-radius: 10px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 9px; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 6px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
 
-        .bloque { margin: 28px 0; }
-        .bloque-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
-        .bloque h2 { font-size: 1.3em; margin: 0; color: #fff; letter-spacing: .5px; }
-        .ver-mas { background: none; border: none; color: var(--gold); cursor: pointer; font-size: .82em; white-space: nowrap; }
-        .ver-mas:hover { text-decoration: underline; }
+/* Lista de productos (estilo app de delivery) */
+.lh { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 6px 0 4px; }
+.lh h1 { font-size: 21px; margin: 0; line-height: 1.15; }
+.lh span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+.lh select { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 8px; font-size: 13px; max-width: 46%; }
+.subchips { margin: 4px 0 6px; }
+.plist { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+@media (min-width: 760px) { .plist { grid-template-columns: 1fr 1fr; } }
+.prow { display: flex; gap: 12px; background: var(--card); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); cursor: pointer; }
+.prow-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.prow-name { font-size: 15px; font-weight: 600; margin: 0 0 3px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.prow-meta { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow-desc { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.price { margin-top: auto; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.price b { font-size: 16px; }
+.price s { font-size: 12.5px; color: var(--muted); }
+.price .consultar { font-size: 14px; color: var(--muted); }
+.off { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px; }
+.off.dia { background: #7c3aed; }
+/* Ofertas del sistema: 2X, CAJA, 3x2… */
+.ochips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 6px; }
+.ochip { font-size: 11.5px; font-weight: 700; color: var(--promo); background: rgba(237,28,36,.12); border: 1px solid rgba(237,28,36,.35); padding: 2px 7px; border-radius: 6px; }
+.ohint { width: 100%; font-size: 12px; color: var(--muted); }
+/* Precio mayorista informativo */
+.mayline { display: block; font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 5px; }
+.stock { font-size: 11.5px; color: var(--accent); font-weight: 600; margin-top: 4px; }
+.prow-img { position: relative; width: 96px; height: 96px; flex: none; border-radius: 12px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; }
+.prow-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+.ph { font-size: 38px; line-height: 1; }
+/* Botellas recortadas (sin el fondo del local): enteras y centradas sobre blanco */
+img.rc { object-fit: contain !important; padding: 5px; border-radius: 0 !important; }
+.card-img img.rc { padding: 8px; }
+/* Combos sin foto: las botellas que lleva, una al lado de la otra */
+.combo-fotos { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 100%; padding: 6px 4px 4px; }
+.combo-fotos img { height: 100%; width: auto; max-width: 52%; object-fit: contain; margin: 0 -5px; }
+.combo-fotos img:nth-child(2) { height: 86%; }
+/* "Hasta X% OFF" sobre la foto */
+.pbadge { position: absolute; top: 5px; left: 5px; z-index: 2; background: var(--ok-bg); color: var(--ok-tx); font-size: 9px; font-weight: 800; line-height: 1.15; padding: 3px 6px; border-radius: 999px; box-shadow: 0 1px 3px rgba(0,0,0,.22); text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+.card-img .pbadge { font-size: 10.5px; padding: 4px 7px; }
+/* con cartel, la botella baja un poco para que no le tape el cuello */
+.prow-img .pbadge + img.rc, .prow-img .pbadge + .combo-fotos { padding-top: 21px; }
+.card-img .pbadge + img.rc, .card-img .pbadge + .combo-fotos { padding-top: 27px; }
+.ps-hero .pbadge { top: 14px; left: 14px; font-size: 12.5px; padding: 5px 10px; }
+.ctl { position: absolute; right: -6px; bottom: -6px; }
+.addbtn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--cta); color: #fff; font-size: 22px; line-height: 1; box-shadow: 0 3px 8px rgba(0,0,0,.25); display: flex; align-items: center; justify-content: center; }
+.stepper { display: inline-flex; align-items: center; background: var(--cta); color: #fff; border-radius: 999px; height: 34px; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
+.stepper button { width: 32px; height: 34px; border: 0; background: transparent; color: #fff; font-size: 19px; line-height: 1; }
+.stepper span { min-width: 16px; text-align: center; font-weight: 700; font-size: 14px; }
+.more { text-align: center; color: var(--muted); font-size: 13px; padding: 18px 0; }
+.vacio { text-align: center; color: var(--muted); padding: 40px 16px; line-height: 1.6; }
 
-        .ofertas { display: block; width: 100%; text-align: left; margin: 6px 0 4px; cursor: pointer; border: 1px solid rgba(237,28,36,.4); border-radius: 16px; background: linear-gradient(100deg, #1c0a0c, #0e0e11 70%); overflow: hidden; }
-        .ofertas-inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; gap: 12px; }
-        .ofertas-kicker { color: var(--gold); font-size: .72em; letter-spacing: 2px; text-transform: uppercase; }
-        .ofertas h3 { margin: 6px 0 0; color: #fff; font-size: 1.35em; }
-        .ofertas-cta { color: #fff; font-weight: 700; background: var(--rojo); padding: 10px 18px; border-radius: 10px; white-space: nowrap; font-size: .9em; }
+/* Skeleton de carga */
+.sk { background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%); background-size: 200% 100%; animation: sk 1.2s infinite; border-radius: var(--radius); }
+@keyframes sk { to { background-position: -200% 0; } }
 
-        .bodegas-row { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; scroll-behavior: smooth; }
-        .bodegas-row::-webkit-scrollbar { display: none; }
-        .bodega-item { flex: 0 0 auto; width: 92px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .bodega-circle { width: 74px; height: 74px; border-radius: 50%; border: 1px solid var(--linea); background: linear-gradient(180deg, #16161b, #0f0f12); display: flex; align-items: center; justify-content: center; font-family: 'AM Tripoli', sans-serif; font-size: 1.5em; color: var(--gold); transition: .2s; }
-        .bodega-item:hover .bodega-circle { border-color: var(--gold); transform: translateY(-3px); }
-        .bodega-name { font-size: 0.72em; color: var(--muted); text-align: center; line-height: 1.2; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 26px 14px 10px; }
 
-        /* ---- Página Bodegas / Marcas ---- */
-        .idx-hero { background: radial-gradient(120% 130% at 50% -20%, #2a0a0e, #0a0a0b 70%); border-bottom: 1px solid var(--linea); padding: 34px 20px; text-align: center; }
-        .idx-hero h1 { font-family: 'AM Tripoli', sans-serif; color: #fff; font-size: 2.8em; letter-spacing: 5px; margin: 0; text-transform: uppercase; }
-        .idx-crumb { color: var(--muted); font-size: 0.8em; padding: 14px 0 4px; }
-        .idx-crumb a { color: var(--gold); cursor: pointer; }
-        .idx-layout { display: flex; gap: 24px; margin: 12px 0; align-items: flex-start; }
-        .idx-list { flex: 0 0 210px; max-height: 72vh; overflow-y: auto; border-right: 1px solid var(--linea); padding-right: 8px; }
-        .idx-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #c7c7cf; padding: 9px 12px; cursor: pointer; font-size: 0.9em; border-left: 2px solid transparent; border-radius: 6px; transition: .15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .idx-item:hover { color: #fff; background: #15151a; }
-        .idx-item.active { color: var(--gold); border-left-color: var(--rojo); background: #15151a; font-weight: 600; }
-        .idx-main { flex: 1; min-width: 0; }
-        .idx-main-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
-        .idx-main-head h2 { margin: 0; color: #fff; font-size: 1.2em; }
-        @media (max-width: 767px) {
-            .idx-hero h1 { font-size: 2em; letter-spacing: 3px; }
-            .idx-layout { flex-direction: column; }
-            .idx-list { display: flex; flex-direction: row; gap: 8px; flex: none; width: 100%; max-height: none; overflow-x: auto; overflow-y: hidden; border-right: none; border-bottom: 1px solid var(--linea); padding: 0 0 10px; scrollbar-width: none; }
-            .idx-list::-webkit-scrollbar { display: none; }
-            .idx-item { width: auto; flex: 0 0 auto; border-left: none; border: 1px solid var(--linea); border-radius: 999px; }
-            .idx-item.active { border-color: var(--rojo); }
-        }
+/* ---------- Barra del carrito ---------- */
+#cartbar { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translate(-50%, 160%); width: calc(100% - 24px); max-width: 520px; background: var(--cta); color: #fff; border: 0; border-radius: 16px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.35); z-index: 40; transition: transform .25s; }
+#cartbar.show { transform: translate(-50%, 0); }
+.cb-n { background: rgba(255,255,255,.18); border-radius: 10px; min-width: 30px; height: 30px; padding: 0 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.cb-t { flex: 1; font-weight: 700; text-align: left; }
+.cb-total { font-weight: 800; }
 
-        /* ---- Catálogo ---- */
-        .catalog-tools { padding-top: 16px; }
-        .scroll-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 4px; }
-        .scroll-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3em; cursor: pointer; padding: 0 5px; transition: .2s; user-select: none; }
-        .scroll-btn:hover { color: var(--gold); }
-        .scroll-btn:active { transform: scale(0.8); }
-        .filtro-grupo { flex-grow: 1; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; margin: 0 4px; padding: 2px 0; }
-        .filtro-grupo::-webkit-scrollbar { display: none; }
-        .btn-filtro { background: #15151a; color: #c7c7cf; border: 1px solid var(--linea); padding: 8px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; font-size: 0.82em; letter-spacing: .3px; transition: .2s; }
-        .btn-filtro:hover { border-color: #555; color: #fff; }
-        .btn-filtro.active { background: var(--rojo); color: #fff; border-color: var(--rojo); font-weight: 700; box-shadow: 0 2px 12px rgba(237,28,36,.35); }
-        .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
-        .result-count { color: var(--muted); font-size: 0.8em; letter-spacing: .4px; }
-        #orden { background: #101013; color: #ddd; border: 1px solid var(--linea); border-radius: 8px; padding: 8px 10px; font-size: 0.8em; outline: none; cursor: pointer; }
+/* ---------- Hojas (modales) ---------- */
+.sheet { position: fixed; inset: 0; z-index: 60; display: none; }
+.sheet.vis { display: block; }
+.sheet-bg { position: absolute; inset: 0; background: rgba(0,0,0,.5); opacity: 0; transition: opacity .2s; }
+.sheet.open .sheet-bg { opacity: 1; }
+.sheet-panel { position: absolute; left: 0; right: 0; bottom: 0; max-height: 92vh; overflow-y: auto; overscroll-behavior: contain; background: var(--card); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform .25s ease; }
+.sheet.open .sheet-panel { transform: none; }
+@media (min-width: 700px) {
+    .sheet-panel { left: 50%; right: auto; bottom: auto; top: 50%; width: 560px; max-height: 88vh; border-radius: 20px; transform: translate(-50%, -46%); opacity: 0; transition: transform .22s, opacity .22s; }
+    .sheet.open .sheet-panel { transform: translate(-50%, -50%); opacity: 1; }
+}
+.sheet-x { position: absolute; top: 10px; right: 10px; z-index: 3; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 17px; }
+.grip { width: 42px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 0; }
+.ps-hero { position: relative; height: 290px; overflow: hidden; background: var(--card2); display: flex; align-items: center; justify-content: center; border-radius: 20px 20px 0 0; }
+.ps-hero .blur { position: absolute; inset: -30px; background-size: cover; background-position: center; filter: blur(24px) brightness(.62); transform: scale(1.1); }
+.ps-hero img { position: relative; max-height: 90%; max-width: 84%; object-fit: contain; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
+.ps-hero .ph { font-size: 92px; }
+.ps-hero.blanco { background: var(--foto-bg); }
+.ps-hero.blanco img { max-height: 92%; border-radius: 0; box-shadow: none; padding: 0; }
+.ps-hero .combo-fotos { height: 88%; width: 80%; }
+.ps-body { padding: 16px 18px 6px; }
+.ps-body h2 { margin: 0 0 8px; font-size: 21px; line-height: 1.2; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.tag { font-size: 12px; padding: 4px 9px; border-radius: 999px; background: var(--card2); color: var(--muted); }
+.ps-desc { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 12px; }
+.ps-body .price b { font-size: 22px; }
+.ps-body .ochips { margin-top: 10px; }
+.ps-body .ochip { font-size: 13px; padding: 4px 9px; }
+.note { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; background: rgba(212,175,55,.14); color: var(--gold); }
+.foot { position: sticky; bottom: 0; display: flex; gap: 10px; align-items: center; padding: 12px 18px calc(14px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--line); }
+.foot.col { flex-direction: column; align-items: stretch; gap: 6px; }
+.foot.col .btn { flex: none; width: 100%; }
+.foot .stepper { height: 46px; }
+.foot .stepper button { width: 42px; height: 46px; }
+.btn { flex: 1; height: 48px; border: 0; border-radius: 14px; background: var(--cta); color: #fff; font-weight: 700; font-size: 15.5px; }
+.btn-wpp { background: #1faa53 !important; }
+.btn-ghost { background: transparent; border: 0; color: var(--muted); font-size: 13px; text-decoration: underline; padding: 6px; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; margin-top: 16px; }
-        .producto { background: linear-gradient(180deg, var(--card-a), var(--card-b)); border: 1px solid var(--linea); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, border-color .2s, box-shadow .2s; }
-        .producto:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.45); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
-        .img-wrap { height: 170px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; background: radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 70%); border-radius: 10px; }
-        .producto img { max-width: 100%; max-height: 170px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,.55)); }
-        /* El varietal también entero: hay varios largos (CABERNET SAUVIGNON) */
-        .tag { align-self: flex-start; font-size: 0.6em; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); border: 1px solid rgba(212,175,55,.3); background: rgba(212,175,55,.08); padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; max-width: 100%; }
-        .producto { position: relative; }
-        /* El cartel de la oferta se lee entero: si no entra en un renglón,
-           pasa al siguiente en vez de cortarse ("Día del Pinot Noir"). */
-        .promo-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--rojo); color: #fff; font-size: 0.58em; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; padding: 4px 8px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.45); max-width: 78%; text-align: right; line-height: 1.25; }
-        /* Cuando un producto tiene más de una oferta se listan todas, porque al
-           cliente le conviene una u otra según cuánto lleve (2X si lleva dos,
-           SIX PACK si lleva seis). En el cartelito de arriba no entran. */
-        .promos { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
-        .promos-titulo { width: 100%; color: var(--gris); font-size: 0.64em; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 2px; }
-        .promo-chip { font-size: 0.62em; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; background: rgba(237,28,36,.16); border: 1px solid rgba(237,28,36,.45); padding: 3px 7px; border-radius: 6px; }
-        /* Lo que lleva un combo, completo: antes se cortaba a tres líneas y no
-           se veían todos los productos que trae. */
-        .lleva { color: var(--gris); font-size: 0.72em; line-height: 1.3; margin: -4px 0 8px; }
-        .ahorro { color: #4ade80; font-size: 0.72em; font-weight: 700; margin: -6px 0 10px; }
-        /* El nombre se ve COMPLETO, sin recortar. Antes estaba limitado a dos
-           líneas y los nombres largos (CERVEZA HEINEKEN S/ALCOHOL PORRONCITO
-           330 CC) quedaban cortados con puntos suspensivos. El min-height
-           mantiene alineadas las tarjetas de nombre corto, y el margin-top:auto
-           del precio deja el precio y el botón abajo, parejos en toda la fila. */
-        .nombre { font-weight: 600; font-size: 0.88em; line-height: 1.25; margin-bottom: 8px; min-height: 2.4em; overflow-wrap: break-word; }
-        .precio { color: #fff; font-size: 1.25em; font-weight: 800; display: block; margin-top: auto; margin-bottom: 12px; letter-spacing: .5px; }
-        /* Con un descuento por porcentaje se muestran los dos precios: el de
-           lista tachado y, al lado, lo que sale de verdad. */
-        .precio-lista { color: var(--gris); font-size: 0.72em; font-weight: 600; margin-right: 6px; }
-        /* La promo del día lleva su propio cartel, con el título que se le puso */
-        .promo-badge-dia { background: #7c3aed; }
-        .selector-cantidad { display: flex; align-items: center; justify-content: space-between; background: #0c0c0f; border: 1px solid var(--linea); border-radius: 9px; margin-bottom: 9px; overflow: hidden; }
-        .btn-qty { background: transparent; color: #fff; border: none; padding: 9px 0; cursor: pointer; width: 38px; font-size: 1.1em; font-weight: bold; transition: .15s; }
-        .btn-qty:hover { background: #1d1d22; color: var(--gold); }
-        .input-qty { background: transparent; color: #fff; border: none; width: 40px; text-align: center; font-weight: bold; outline: none; font-size: 0.95em; -moz-appearance: textfield; }
-        .input-qty::-webkit-outer-spin-button, .input-qty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .btn-add { background: var(--rojo); color: #fff; border: none; padding: 11px; border-radius: 9px; cursor: pointer; width: 100%; font-weight: 700; text-transform: uppercase; font-size: 0.72em; letter-spacing: 1px; transition: .2s; }
-        .btn-add:hover { background: var(--rojo-osc); box-shadow: 0 4px 14px rgba(237,28,36,.4); }
-        .btn-add:active { transform: scale(0.97); }
-        .vacio { grid-column: 1/-1; text-align: center; color: var(--muted); padding: 50px 20px; line-height: 1.6; }
+/* Carrito / checkout */
+.cs { padding: 14px 18px 4px; }
+.cs-h { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 6px; padding-right: 40px; }
+.cs-h h2 { margin: 0; font-size: 21px; }
+.ci { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.ci-img { width: 52px; height: 52px; border-radius: 10px; background: var(--foto-bg); display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden; }
+.ci-img img.rc { padding: 3px; }
+.ci-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.ci-img .ph { font-size: 24px; }
+.ci-info { flex: 1; min-width: 0; }
+.ci-info b { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ci-info small { color: var(--muted); font-size: 12.5px; }
+.ci-info small s { margin-right: 4px; }
+.ci-info small em { font-style: normal; color: var(--gold); font-weight: 600; }
+.ci-promo { display: block; font-size: 12px; color: var(--ok); margin-top: 2px; }
+.ci-dia { display: block; font-size: 12px; color: var(--dia); margin-top: 2px; }
+.ci-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.ci-total { font-weight: 700; font-size: 14px; }
+.ci .stepper { height: 32px; }
+.ci .stepper button { width: 30px; height: 32px; font-size: 17px; }
+.may { margin: 12px 0 4px; padding: 11px 12px; border-radius: 12px; background: rgba(212,175,55,.14); color: var(--gold); font-size: 13px; font-weight: 600; }
+.may small { display: block; font-weight: 500; margin-top: 4px; color: var(--muted); }
+.bar { height: 6px; border-radius: 3px; background: rgba(212,175,55,.25); margin-top: 7px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--gold); border-radius: 3px; }
+.form { margin-top: 14px; }
+.form label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
+.form input, .form textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 11px 12px; font-size: 15px; outline: none; }
+.form input:focus, .form textarea:focus { border-color: var(--accent); }
+.form .err { border-color: var(--accent) !important; }
+.seg { display: flex; gap: 8px; flex-wrap: wrap; }
+.seg button { flex: 1 1 auto; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 10px; font-size: 13.5px; }
+.seg button.on { border-color: var(--cta); background: var(--cta); color: #fff; }
+/* Envío: a coordinar o gratis */
+.envio-note { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; background: var(--card2); }
+.envio-note small { display: block; color: var(--muted); margin-top: 3px; }
+.envio-note.gratis { background: rgba(60,207,110,.14); color: var(--ok); }
+.tline { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; color: var(--muted); margin: 8px 0 0; }
+.tline b { color: var(--text); font-weight: 600; }
+.tline.ok b { color: var(--ok); }
+.tot { display: flex; justify-content: space-between; align-items: baseline; margin: 12px 0 4px; font-size: 15px; }
+.tot b { font-size: 22px; }
 
-        .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
-        .spinner { width: 34px; height: 34px; border: 3px solid #2a2a30; border-top-color: var(--rojo); border-radius: 50%; margin: 0 auto 14px; animation: spin .8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+/* Confirmación del pedido */
+.conf { text-align: center; padding: 30px 22px 8px; }
+.conf-ico { font-size: 54px; line-height: 1; }
+.conf h2 { margin: 12px 0 8px; font-size: 21px; }
+.conf p { margin: 0 0 10px; color: var(--text); line-height: 1.5; font-size: 14.5px; }
+.conf p.muted { color: var(--muted); font-size: 13px; }
 
-        footer { background: #0c0c0e; border-top: 1px solid var(--linea); margin-top: 40px; padding: 34px 0 20px; scroll-margin-top: 110px; }
-        .footer-inner { display: flex; flex-wrap: wrap; gap: 26px; }
-        .f-col { flex: 1; min-width: 200px; }
-        .f-brand { font-family: 'AM Tripoli', sans-serif; color: var(--rojo); font-size: 1.5em; letter-spacing: 1px; }
-        .f-col h4 { color: #fff; font-size: 0.95em; margin: 0 0 8px; letter-spacing: .5px; }
-        .f-col p { color: var(--muted); font-size: 0.85em; line-height: 1.6; margin: 6px 0 0; }
-        .f-link { color: var(--verde-wpp); text-decoration: none; }
-        .f-link:hover { text-decoration: underline; }
-        .footer-bottom { text-align: center; color: #5a5a62; font-size: 0.75em; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--linea); }
+/* Info */
+.info { padding: 22px 18px 18px; }
+.info h2 { margin: 0 0 2px; font-family: 'AM Tripoli', serif; font-weight: normal; font-size: 26px; color: var(--accent); }
+.info > p { margin: 0 0 14px; color: var(--muted); }
+.info ul { list-style: none; padding: 0; margin: 0 0 16px; }
+.info li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
+.info a.btn { display: flex; align-items: center; justify-content: center; }
 
-        #cart-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 430px; background: linear-gradient(180deg, #28d56c, #1faa53); color: #fff; padding: 15px 20px; display: none; align-items: center; justify-content: space-between; gap: 10px; border-radius: 14px; cursor: pointer; font-weight: 700; z-index: 99; box-shadow: 0 10px 30px rgba(0,0,0,.55); }
-        .cart-bar-count { background: rgba(0,0,0,.18); padding: 4px 12px; border-radius: 999px; font-size: 0.85em; }
-
-        #cart-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; padding: 16px; align-items: flex-end; justify-content: center; }
-        @media (min-width: 600px) { #cart-modal { align-items: center; } }
-        .modal-content { background: #141418; width: 100%; max-width: 520px; border-radius: 18px; padding: 22px; max-height: 86vh; overflow-y: auto; border: 1px solid var(--linea); border-top: 3px solid var(--rojo); position: relative; }
-        .modal-x { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-size: 1.2em; cursor: pointer; padding: 4px; line-height: 1; }
-        .modal-x:hover { color: #fff; }
-        .modal-title { color: #fff; margin: 0 0 16px; font-size: 1.3em; padding-right: 30px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--linea); padding: 12px 0; font-size: 0.9em; gap: 10px; }
-        .cart-item-info { flex-grow: 1; }
-        .cart-qty-controls { display: flex; align-items: center; background: #000; border: 1px solid var(--linea); border-radius: 6px; }
-        .cart-qty-btn { background: #1a1a1f; color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 1em; }
-        .cart-qty-btn:hover { color: var(--gold); }
-        .cart-qty-val { width: 28px; text-align: center; font-weight: bold; color: #fff; font-size: 0.9em; }
-        .cart-item-total { font-weight: bold; min-width: 70px; text-align: right; }
-        .cart-remove { color: var(--rojo); background: none; border: none; font-size: 1.1em; cursor: pointer; font-weight: bold; padding: 0 5px; }
-        .modal-footer { margin-top: 20px; }
-        .btn-send { background: linear-gradient(180deg, #28d56c, #1faa53); color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; font-size: 1em; cursor: pointer; transition: .2s; }
-        .btn-send:hover { filter: brightness(1.08); }
-        .btn-close { color: var(--muted); background: none; border: none; margin-top: 14px; cursor: pointer; font-size: 0.88em; width: 100%; }
-        .btn-close:hover { color: #fff; }
-    </style>
+/* Toast */
+#toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px); background: #222; color: #fff; padding: 10px 16px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 80; max-width: 90%; text-align: center; }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
 </head>
 <body>
 
-<div class="promobar">🍷 Pedí por WhatsApp · Envío gratis en Córdoba Capital superando los $100.000 · Precio mayorista en vinos llevando 6 o más (los que están en oferta suman, pero quedan a su precio de oferta)</div>
-
-<header>
-    <h1 class="brand" onclick="showHome()">MONJE NEGRO</h1>
-    <span class="sub">botillería</span>
-    <div class="tagline">Vinos · Espumantes · Destilados · Cervezas</div>
+<header class="hdr">
+    <div class="hdr-in">
+        <div class="logo">MN</div>
+        <div class="hdr-txt">
+            <h1 id="h-nombre">MONJE NEGRO</h1>
+            <p id="h-sub">Botillería · Córdoba</p>
+            <div class="hdr-pills" id="h-pills"></div>
+        </div>
+        <button class="hdr-info" data-act="info">ⓘ Info</button>
+    </div>
 </header>
+<div class="anuncio" id="anuncio"></div>
 
-<div class="topbar">
-    <nav class="mainnav">
-        <div class="nav-inner container">
-            <button class="nav-item" onclick="showHome()">Inicio</button>
-            <button class="nav-item" onclick="toggleNav('prod', this)">Productos ▾</button>
-            <button class="nav-item" onclick="showIndex(true)">Bodegas</button>
-            <button class="nav-item" onclick="comoComprar()">Cómo comprar</button>
-            <button class="nav-item" onclick="contacto()">Contacto</button>
-        </div>
-        <div id="nav-panel" class="nav-panel"></div>
-    </nav>
-
-    <div class="filtros-area">
-        <div class="container">
-            <div class="search-wrap">
-                <span class="search-ico">🔍</span>
-                <input type="text" id="buscador" placeholder="Buscar vinos, bodegas, bebidas…" oninput="onSearch()">
+<div class="topbar" id="topbar">
+    <div class="wrap">
+        <div class="srow">
+            <button class="back" id="back" data-act="back" aria-label="Volver">‹</button>
+            <div class="sbox" id="sbox">
+                <span class="ico">🔍</span>
+                <input id="q" type="search" placeholder="Buscar vinos, bodegas, bebidas…" autocomplete="off" enterkeyhint="search">
+                <button class="clr" data-act="clear" aria-label="Borrar búsqueda">✕</button>
             </div>
         </div>
+        <div class="chips" id="navchips"></div>
     </div>
 </div>
 
-<div id="loading" class="loading"><div class="spinner"></div>Preparando la cava…</div>
+<main class="wrap" id="main"></main>
+<footer id="pie"></footer>
 
-<!-- PORTADA -->
-<div id="home-view" style="display:none;">
-    <section class="hero">
-        <button class="hero-arrow left" onclick="heroMove(-1)">‹</button>
-        <div class="hero-window">
-            <div class="hero-track" id="hero-track">
-                <div class="hero-slide slide1">
-                    <div class="hero-content">
-                        <h2>¿Fan del vino?</h2>
-                        <p>Encontrá tu próxima botella entre nuestras etiquetas seleccionadas.</p>
-                        <button class="hero-btn" onclick="navTo('tipo','VINOS TINTOS')">Ver vinos</button>
-                    </div>
-                </div>
-                <div class="hero-slide slide2">
-                    <div class="hero-content">
-                        <h2>Precio Mayorista 🍷</h2>
-                        <p>Llevando 6 vinos o más, el precio baja solo. Ideal para juntadas.</p>
-                        <button class="hero-btn" onclick="navTo('tipo','VINOS TINTOS')">Aprovechar</button>
-                    </div>
-                </div>
-                <div class="hero-slide slide3">
-                    <div class="hero-content">
-                        <h2>Pedí por WhatsApp</h2>
-                        <p>Armás tu pedido en segundos y te lo acercamos.</p>
-                        <button class="hero-btn" onclick="comoComprar()">Cómo comprar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button class="hero-arrow right" onclick="heroMove(1)">›</button>
-        <div class="hero-dots" id="hero-dots"></div>
-    </section>
+<button id="cartbar" data-act="cart">
+    <span class="cb-n" id="cb-n">0</span>
+    <span class="cb-t">Ver pedido</span>
+    <span class="cb-total" id="cb-total">$0</span>
+</button>
 
-    <div class="container">
-        <section class="bloque" id="bloque-ofertas" style="display:none">
-            <div class="bloque-head">
-                <h2>🔥 Ofertas y combos</h2>
-                <button class="ver-mas" onclick="navTo('tipo','OFERTAS')">Ver todas →</button>
-            </div>
-            <div id="ofertas-grid" class="grid"></div>
-        </section>
+<div class="sheet" id="sheet-producto"><div class="sheet-bg" data-act="close"></div><div class="sheet-panel" id="sp-producto"></div></div>
+<div class="sheet" id="sheet-carrito"><div class="sheet-bg" data-act="close"></div><div class="sheet-panel" id="sp-carrito"></div></div>
+<div class="sheet" id="sheet-info"><div class="sheet-bg" data-act="close"></div><div class="sheet-panel" id="sp-info"></div></div>
+<div id="toast"></div>
 
-        <section class="bloque">
-            <div class="bloque-head">
-                <h2>Destacados</h2>
-                <button class="ver-mas" onclick="navTo('tipo','Todos')">Ver todo →</button>
-            </div>
-            <div id="destacados" class="grid"></div>
-        </section>
-
-        <button class="ofertas" onclick="navTo('tipo','OFERTAS')">
-            <div class="ofertas-inner">
-                <div>
-                    <span class="ofertas-kicker">🔥 Promos vigentes</span>
-                    <h3 id="ofertas-banner-titulo">Ofertas y combos</h3>
-                </div>
-                <span class="ofertas-cta">Ver ofertas →</span>
-            </div>
-        </button>
-
-        <section class="bloque">
-            <div class="bloque-head">
-                <h2>Bodegas que más trabajamos</h2>
-                <button class="ver-mas" onclick="showIndex(true)">Ver todas →</button>
-            </div>
-            <div id="bodegas-row" class="bodegas-row"></div>
-        </section>
-    </div>
-</div>
-
-<!-- BODEGAS / MARCAS -->
-<div id="index-view" style="display:none;">
-    <div class="idx-hero"><h1 id="idx-hero-title">BODEGAS</h1></div>
-    <div class="container">
-        <div class="idx-crumb"><a onclick="showHome()">Inicio</a> &rsaquo; <span id="idx-crumb">Bodegas</span></div>
-        <div class="idx-layout">
-            <aside class="idx-list" id="idx-list"></aside>
-            <div class="idx-main">
-                <div class="idx-main-head">
-                    <h2 id="idx-sel-title">Todas las bodegas</h2>
-                    <span class="result-count" id="idx-count"></span>
-                </div>
-                <div id="idx-grid" class="grid"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- CATÁLOGO -->
-<div id="catalogo-view" style="display:none;">
-    <div class="container">
-        <div class="catalog-tools">
-            <div class="scroll-wrapper">
-                <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', -200)">&#10094;</button>
-                <div id="filtros-tipo" class="filtro-grupo"></div>
-                <button class="scroll-btn" onclick="scrollMenu('filtros-tipo', 200)">&#10095;</button>
-            </div>
-            <div id="seccion-cepas" style="display:none; margin-top: 8px;">
-                <div class="scroll-wrapper">
-                    <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', -200)">&#10094;</button>
-                    <div id="filtros-cepa" class="filtro-grupo"></div>
-                    <button class="scroll-btn" onclick="scrollMenu('filtros-cepa', 200)">&#10095;</button>
-                </div>
-            </div>
-            <div id="seccion-varietal" style="display:none; margin-top: 8px;">
-                <div class="scroll-wrapper">
-                    <button class="scroll-btn" onclick="scrollMenu('filtros-varietal', -200)">&#10094;</button>
-                    <div id="filtros-varietal" class="filtro-grupo"></div>
-                    <button class="scroll-btn" onclick="scrollMenu('filtros-varietal', 200)">&#10095;</button>
-                </div>
-            </div>
-            <div class="toolbar">
-                <span class="result-count" id="result-count"></span>
-                <select id="orden" onchange="renderProducts()" aria-label="Ordenar productos">
-                    <option value="destacados">Ordenar: Destacados</option>
-                    <option value="precio-asc">Precio: menor a mayor</option>
-                    <option value="precio-desc">Precio: mayor a menor</option>
-                    <option value="az">Nombre: A-Z</option>
-                </select>
-            </div>
-        </div>
-        <div id="catalogo-grid" class="grid"></div>
-    </div>
-</div>
-
-<footer id="footer">
-    <div class="footer-inner container">
-        <div class="f-col">
-            <div class="f-brand">MONJE NEGRO</div>
-            <p>Botillería. Vinos, espumantes, destilados, cervezas y más.</p>
-        </div>
-        <div class="f-col">
-            <h4>Cómo comprar</h4>
-            <p>Elegí tus productos, tocá <strong>Ver mi pedido</strong> y enviá el carrito por WhatsApp. Te lo preparamos al toque.</p>
-        </div>
-        <div class="f-col">
-            <h4>Beneficio</h4>
-            <p>🍷 Precio mayorista en vinos y espumantes llevando 6 o más unidades. Los productos en oferta suman para llegar a las 6, pero ya vienen con su descuento, así que no llevan precio mayorista.</p>
-        </div>
-        <div class="f-col">
-            <h4>Contacto</h4>
-            <p>📱 <a class="f-link" id="wpp-link" href="#" target="_blank" rel="noopener">Escribinos por WhatsApp</a><br>
-               📍 Córdoba, Argentina<br>
-               🕘 Coordinamos la entrega por WhatsApp.</p>
-        </div>
-    </div>
-    <div class="footer-bottom">© 2026 Monje Negro · Botillería</div>
-</footer>
-
-<div id="cart-bar" onclick="toggleModal(true)">
-    <span>🛒 Ver mi pedido</span>
-    <span class="cart-bar-count"><span id="count">0</span> ítems</span>
-</div>
-
-<div id="cart-modal">
-    <div class="modal-content">
-        <button class="modal-x" onclick="toggleModal(false)">✕</button>
-        <h2 class="modal-title">Tu pedido</h2>
-        <div id="cart-list"></div>
-        <div class="modal-footer">
-            <div id="total-details" style="text-align: right; margin-bottom: 15px; line-height: 1.5;"></div>
-            <button class="btn-send" onclick="sendWpp()">Enviar pedido por WhatsApp</button>
-            <button class="btn-close" onclick="toggleModal(false)">Seguir comprando</button>
-        </div>
-    </div>
-</div>
+<noscript><p style="padding:20px;text-align:center">Para ver el catálogo necesitás activar JavaScript.</p></noscript>
 
 <script>
-    // Los datos salen del sistema de gestión: precios, stock, ofertas y combos
-    // se publican solos, sin tocar ninguna planilla.
-    const API_URL = 'https://sistema-monje.vercel.app/api/catalogo?formato=json';
-    // wa.me necesita el número solo con dígitos: 549 + característica + número (351 787-4303)
-    const WHATSAPP_NUMBER = "5493517874303";
+/* =====================================================================
+   CONFIGURACIÓN — lo que más vas a querer cambiar está acá
+   ===================================================================== */
+const CONFIG = {
+    // Todo sale del sistema de gestión: productos, precios, stock, precio mayorista, ofertas y combos
+    API_URL: 'https://sistema-monje.vercel.app/api/catalogo?formato=json',
+    RECORTES: 'recortes/index.json',     // fotos con fondo blanco (las arma herramientas/recortar_fotos.py)
+    FOTOS_AUTO: 'fotos-auto/index.json', // fotos buscadas para los productos sin foto en el sistema
+    WHATSAPP: '5493517874303',          // 351 787-4303 en formato internacional (549 + característica + número)
+    NOMBRE: 'Monje Negro',
+    SUBTITULO: 'Botillería · Córdoba',
+    ANUNCIO: '🛵 Envío gratis en Córdoba Capital superando los $100.000 · 🍷 Precio mayorista llevando 6 vinos o más',
+    PILLS: ['🛵 Envíos', '🏪 Retiro en el local'],
+    ENTREGAS: ['Envío a domicilio', 'Retiro en el local'],
+    PAGOS: ['Efectivo', 'Transferencia', 'Mercado Pago'],
+    ENVIO_GRATIS_DESDE: 100000,          // desde este total el envío es gratis
+    ZONA_ENVIO_GRATIS: 'Córdoba Capital',
+    TEMA: 'oscuro',                      // 'oscuro' o 'claro' (también se puede probar con ?tema=claro)
+};
 
-    // Imagen para los productos que todavía no tienen foto cargada: se muestran
-    // igual, con el logo, en vez de quedar afuera del catálogo.
-    const SIN_FOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
-           <rect width="200" height="260" fill="#121212"/>
-           <text x="100" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="34" fill="#d4af37">MN</text>
-           <text x="100" y="150" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#7a7a7a" letter-spacing="2">MONJE NEGRO</text>
-           <text x="100" y="176" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#555">foto en camino</text>
-         </svg>`);
+/* Precio mayorista: con 6 o más vinos/espumantes en el pedido, cada uno se cobra al precio mayorista
+   que manda el sistema. Los que están en oferta suman para llegar a 6, pero no bajan: quedan a su precio de oferta. */
+const TIPOS_MAYORISTA = ['VINOS TINTOS', 'VINOS BLANCOS', 'VINOS ROSADOS', 'ESPUMANTES'];
+const VINOS_PARA_MAYORISTA = 6;
 
-    // Los combos dejaron de ser una categoría suelta del menú: viven adentro de
-    // OFERTAS, como una subpestaña más.
-    const TIPOS = ["Todos", "OFERTAS", "APERITIVOS", "CERVEZAS", "ESPUMANTES", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VINOS", "VODKA", "WHISKY"];
-    // Subpestañas de OFERTAS. Se muestran solo las que tienen algo en oferta.
-    const TIPOS_OFERTA = ["COMBOS", "VINOS", "ESPUMANTES", "CERVEZAS", "APERITIVOS", "GASEOSAS", "GIN", "LICORES", "RON", "TEQUILA", "VERMOUTH", "VODKA", "WHISKY"];
+/* =====================================================================
+   Utilidades
+   ===================================================================== */
+const $ = (s) => document.querySelector(s);
+const norm = (s) => (s == null ? '' : String(s)).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
+const parseNum = (v) => parseFloat((v == null ? '' : String(v)).replace(/\./g, '').replace(',', '.')) || 0;
+const money = (n) => '$' + Math.round(n).toLocaleString('es-AR');
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+};
+const waLink = (texto) => `https://wa.me/${CONFIG.WHATSAPP.replace(/\D/g, '')}` + (texto ? `?text=${encodeURIComponent(texto)}` : '');
 
-    // Subcategorías: solo VINOS (por color) y ESPUMANTES (por tipo) tienen submenú.
-    const CEPAS = {
-        "VINOS": ["Todos", "TINTOS", "BLANCOS", "ROSADOS"],
-        "ESPUMANTES": ["Todos", "APERITIEF", "BLANC DE BLANCAS", "BLANC DE NOIRS", "BRUT", "BRUT NATURE", "BRUT ROSE", "DELICE", "DEMI SEC", "DULCE", "DULCE NATURAL", "EXTRA BRUT", "NARANJO", "ROSE", "ROSE EXTRA BRUT", "SPRITZ", "ZERO"]
-    };
+// "ABSOLUT MANGO 750ML" -> "Absolut Mango 750ml"
+const MINUS = new Set(['DE', 'DEL', 'LA', 'LAS', 'EL', 'LOS', 'Y', 'E', 'O', 'U', 'CON', 'SIN', 'A', 'AL', 'EN', 'X', 'POR']);
+const ROMANOS = new Set(['II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'XI', 'XII']);
+const SIGLAS = new Set(['IPA', 'APA', 'DOC', 'DOCG', 'AOC', 'IGT', 'XO', 'VSOP', 'VS', 'MN']);
+const UNIDADES = /^(ML|CC|CL|KG|GR|G|LTS|LT|L)$/;
+function cap(w) {
+    const i = w.search(/\p{L}/u);
+    if (i < 0) return w;
+    return w.slice(0, i) + w[i].toUpperCase() + w.slice(i + 1).toLowerCase();
+}
+function titulo(s) {
+    return (s || '').trim().split(/\s+/).map((w, i, todas) => {
+        const W = norm(w);
+        const u = W.match(/^(\d+(?:[.,]\d+)?)(ML|CC|CL|KG|GR|G|LTS|LT|L)$/);
+        if (u) return u[1] + (u[2] === 'L' ? 'L' : u[2].toLowerCase());
+        if (i > 0 && UNIDADES.test(W) && /^\d+([.,]\d+)?$/.test(todas[i - 1])) return W === 'L' ? 'L' : W.toLowerCase();   // "473 ML" -> "473 ml"
+        if (/\d/.test(w)) return w;
+        if (ROMANOS.has(W) || SIGLAS.has(W)) return W;
+        if (i > 0 && MINUS.has(W)) return w.toLowerCase();
+        return w.split('-').map(cap).join('-');
+    }).join(' ');
+}
+// Para filtros y datos: con tildes donde corresponde ("REGALERIA" -> "Regalería", "PORRON" -> "Porrón")
+const ACENTOS = { Regaleria: 'Regalería', Mani: 'Maní', Tonica: 'Tónica', Porron: 'Porrón', Laton: 'Latón', Rose: 'Rosé', Sifon: 'Sifón', Torrontes: 'Torrontés', Semillon: 'Semillón', Limon: 'Limón', Cachaca: 'Cachaça', Degustacion: 'Degustación' };
+const bonito = (s) => titulo(s).split(' ').map(w => ACENTOS[w] || w).join(' ');
+const slug = (s) => norm(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'item';
 
-    const CATEGORIAS_PROMO = ["VINOS TINTOS", "VINOS BLANCOS", "VINOS ROSADOS", "ESPUMANTES"];
-    const VINOS_PARA_MAYORISTA = 6;
-
-    let allProducts = [];
-    let ofertas = { productos: [], combos: [] };
-    let cart = [];
-    let fTipo = 'Todos';
-    let fCepa = 'Todos';
-    let fMarca = '';
-    let fColor = 'Todos';
-    let fOferta = 'Todos';   // subpestaña dentro de OFERTAS
-
-    const normalizar = (texto) => {
-        if (!texto) return "";
-        return texto.toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
-    };
-    const parseNum = (v) => parseFloat((v || '').toString().replace(/\./g, '').replace(',', '.')) || 0;
-    // Los precios se muestran sin centavos, como se cobran: $36.000
-    const precioTexto = (v) => Math.round(parseNum(v)).toLocaleString('es-AR');
-    // Lo mismo pero para números ya calculados (totales, precios unitarios).
-    // No pasa por parseNum, que es para los textos que manda el sistema.
-    const pesosTexto = (n) => Math.round(Number(n) || 0).toLocaleString('es-AR');
-    const esVino = (tipo) => CATEGORIAS_PROMO.some(cat => normalizar(cat) === normalizar(tipo));
-
-    // Un producto entra en una categoría por su Tipo o su Cepa (así "GIN" agarra los que tienen cepa GIN).
-    // VINOS agrupa tintos, blancos y rosados.
-    function matchCategoria(p, cat) {
-        if (cat === 'Todos') return true;
-        const c = normalizar(cat), t = normalizar(p.tipo), ce = normalizar(p.cepa);
-        // Ofertas: todo lo que tenga una promo vigente, incluidos los combos
-        if (c === 'ofertas') return !!p.promo || !!p.promoDia;
-        if (c === 'combos') return t === 'combos';
-        if (c === 'vinos') return t.indexOf('vino') === 0;
-        // El sistema tiene las cervezas separadas por formato (CERVEZA LATA,
-        // CERVEZAS BOTELLA, CERVEZA PORRONCITO, CERVEZA LATON). Para el cliente
-        // son todas "cervezas": se juntan en una sola categoría. Antes se
-        // buscaba una categoría llamada "cervezas", que no existe, y la
-        // pestaña quedaba siempre vacía.
-        if (c === 'cervezas') return t.indexOf('cerveza') === 0;
-        if (c === 'licores') return [t, ce].some(x => x === 'licor' || x === 'licores');
-        if (c === 'vermouth') return [t, ce].some(x => x === 'vermouth' || x === 'vermut');
-        return t === c || ce === c;
+// Las fotos cargadas como "github.com/.../CATALOGO/blob/<versión>/X?raw=true" se sirven desde
+// este mismo sitio (más rápido, sin redirección).
+function imgUrl(u) {
+    u = (u || '').trim();
+    if (!u) return '';
+    const m = u.match(/^https?:\/\/github\.com\/[^/]+\/CATALOGO\/blob\/[^/]+\/([^?#]+)/i);
+    if (m) return m[1];
+    if (/^https?:\/\/github\.com\/[^/]+\/[^/]+\/blob\//i.test(u))
+        return u.replace(/^https?:\/\/github\.com\//i, 'https://raw.githubusercontent.com/').replace('/blob/', '/').replace(/\?raw=true$/i, '');
+    return u;
+}
+// Fotos con fondo blanco: recortes/index.json dice qué foto tiene su versión recortada
+// (la genera herramientas/recortar_fotos.py). Si no está, se usa la foto original.
+let recortes = {};
+// Fotos de producto buscadas automáticamente para los que no tienen foto en el sistema (fotos-auto/index.json:
+// nombre del producto → [archivo, versión]). Si después se sube una foto en el sistema, esa tiene prioridad.
+let fotosAuto = {};
+function fotosProducto(u, nombre) {
+    const foto = imgUrl(u);
+    if (!foto) {
+        const a = fotosAuto[norm(nombre)];
+        return a ? { img: 'fotos-auto/' + encodeURIComponent(a[0]) + '?v=' + a[1], foto: '', rc: true } : { img: '', foto: '', rc: false };
     }
-    // Subcategoría (no-vinos): la cepa del producto.
-    function matchSub(p, cat, sub) {
-        if (sub === 'Todos') return true;
-        return normalizar(p.cepa) === normalizar(sub);
+    let archivo = '';
+    try { archivo = decodeURIComponent(foto); } catch (e) { archivo = foto; }
+    const r = !/^https?:/i.test(foto) && recortes[archivo];
+    if (!r) return { img: foto, foto, rc: false };
+    return { img: 'recortes/' + encodeURIComponent(r[0]) + '?v=' + r[1], foto, rc: true };
+}
+
+/* =====================================================================
+   Promos — portado tal cual del catálogo actual (que a su vez sale de
+   src/lib/promos.ts del sistema). El catálogo tiene que COBRAR lo mismo
+   que el mostrador.
+   ===================================================================== */
+const redondearPesos = (n) => Math.round(n);
+const esPrecioPorCantidad = (p) => !!p && p.kind === 'PRECIO' && p.nBuy > 1;
+
+function calcularLinea(qty, unitPrice, promo) {
+    const base = redondearPesos(qty * unitPrice);
+    if (!promo) return { total: base, discount: 0 };
+    let total = base;
+    if (promo.kind === 'PORCENTAJE') {
+        total = redondearPesos(qty * unitPrice * (1 - promo.percent / 100));
+    } else if (promo.kind === 'NXM' && promo.nBuy > 0 && promo.nPay > 0 && promo.nPay < promo.nBuy) {
+        // Cada grupo de nBuy unidades se cobra nPay; el resto va completo
+        const grupos = Math.floor(qty / promo.nBuy);
+        const resto = qty % promo.nBuy;
+        total = redondearPesos((grupos * promo.nPay + resto) * unitPrice);
+    } else if (esPrecioPorCantidad(promo) && promo.precioPack > 0) {
+        // Desde que llega a nBuy, TODAS salen al unitario del pack. Abajo de nBuy no hay promo.
+        if (qty >= promo.nBuy) total = redondearPesos((qty * promo.precioPack) / promo.nBuy);
     }
+    if (total < 0) total = 0;
+    return { total, discount: base - total };
+}
 
-    // ── Promos ──────────────────────────────────────────────────────────
-    // Portado tal cual de src/lib/promos.ts del sistema. El catálogo tiene que
-    // COBRAR lo mismo que el mostrador: antes mostraba la etiqueta ("2X
-    // $17.000") pero sumaba dos unidades sueltas.
-    const redondearPesos = (n) => Math.round(n);
-    const esPrecioPorCantidad = (p) => !!p && p.kind === 'PRECIO' && p.nBuy > 1;
+// Cómo se escribe una oferta: el % se redondea ("21.56862745098039% OFF" -> "22% OFF")
+function etiquetaOferta(o) {
+    if (o.kind === 'PORCENTAJE' && o.percent > 0) return `${Math.round(o.percent)}% OFF`;
+    return o.etiqueta || o.nombre || '';
+}
 
-    function calcularLinea(qty, unitPrice, promo) {
-        const base = redondearPesos(qty * unitPrice);
-        if (!promo) return { total: base, discount: 0 };
-        let total = base;
-        if (promo.kind === 'PORCENTAJE') {
-            total = redondearPesos(qty * unitPrice * (1 - promo.percent / 100));
-        } else if (promo.kind === 'NXM' && promo.nBuy > 0 && promo.nPay > 0 && promo.nPay < promo.nBuy) {
-            // Cada grupo de nBuy unidades se cobra nPay; el resto va completo
-            const grupos = Math.floor(qty / promo.nBuy);
-            const resto = qty % promo.nBuy;
-            total = redondearPesos((grupos * promo.nPay + resto) * unitPrice);
-        } else if (esPrecioPorCantidad(promo) && promo.precioPack > 0) {
-            // Desde que llega a nBuy, TODAS salen al unitario del pack: con
-            // "2X $17.000" (unitario $8.500) llevando 3 se pagan $25.500, no
-            // $17.000 + 1 a precio de lista. Abajo de nBuy no hay promo.
-            if (qty >= promo.nBuy) total = redondearPesos((qty * promo.precioPack) / promo.nBuy);
-        }
-        if (total < 0) total = 0;
-        return { total, discount: base - total };
+// Lo que termina saliendo CADA UNIDAD llevando esa oferta
+function unitarioConOferta(o, precioLista) {
+    if (o.kind === 'PORCENTAJE') return precioLista * (1 - o.percent / 100);
+    if (o.kind === 'NXM' && o.nBuy > 0 && o.nPay > 0 && o.nPay < o.nBuy) return precioLista * o.nPay / o.nBuy;
+    if (esPrecioPorCantidad(o) && o.precioPack > 0) return o.precioPack / o.nBuy;
+    return precioLista;
+}
+
+// De las ofertas del producto, la que más le conviene al cliente con esa cantidad
+function mejorOferta(ofertas, qty, unitPrice) {
+    if (!ofertas || !ofertas.length) return null;
+    let mejor = ofertas[0];
+    let mejorTotal = calcularLinea(qty, unitPrice, mejor).total;
+    for (const o of ofertas) {
+        const t = calcularLinea(qty, unitPrice, o).total;
+        if (t < mejorTotal) { mejor = o; mejorTotal = t; }
     }
+    return mejor;
+}
 
-    // Cómo se escribe una oferta. El nombre de las de porcentaje puede venir
-    // con muchos decimales ("10.16949152542373% OFF", que sale de calcular el
-    // descuento sobre un precio), así que se arma con el % redondeado.
-    function etiquetaOferta(o) {
-        if (o.kind === 'PORCENTAJE' && o.percent > 0) return `${Math.round(o.percent)}% OFF`;
-        return o.etiqueta || o.nombre || '';
-    }
+// Un 2x1 se puede armar entre variedades de la misma línea: son la misma familia los que
+// empiezan igual, valen lo mismo y tienen la misma promo.
+const inicioNombre = (n) => norm(n).split(' ').slice(0, 2).join(' ');
 
-    // Lo que termina saliendo CADA UNIDAD llevando esa oferta. Es el número que
-    // le sirve al cliente para comparar.
-    function unitarioConOferta(o, precioLista) {
-        if (o.kind === 'PORCENTAJE') return precioLista * (1 - o.percent / 100);
-        if (o.kind === 'NXM' && o.nBuy > 0 && o.nPay > 0 && o.nPay < o.nBuy)
-            return precioLista * o.nPay / o.nBuy;
-        if (esPrecioPorCantidad(o) && o.precioPack > 0) return o.precioPack / o.nBuy;
-        return precioLista;
-    }
-
-    // De las ofertas del producto, la que más le conviene al cliente con esa
-    // cantidad. Si todavía ninguna descuenta (un 2x1 llevando 1), queda la
-    // primera para que igual pueda armarse entre variedades.
-    function mejorOferta(ofertas, qty, unitPrice) {
-        if (!ofertas || !ofertas.length) return null;
-        let mejor = ofertas[0];
-        let mejorTotal = calcularLinea(qty, unitPrice, mejor).total;
-        for (const o of ofertas) {
-            const t = calcularLinea(qty, unitPrice, o).total;
-            if (t < mejorTotal) { mejor = o; mejorTotal = t; }
-        }
-        return mejor;
-    }
-
-    // Un 2x1 se puede armar entre variedades de la misma línea: 1 Malbec + 1
-    // Cabernet del mismo vino y precio cuentan como dos unidades de la promo.
-    // Son la misma familia los que empiezan igual, valen lo mismo y tienen la
-    // misma promo.
-    const sinAcentos = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-    const inicioNombre = (n) => sinAcentos(n).split(/\s+/).slice(0, 2).join(' ');
-
-    // Qué promo le toca a cada renglón. No alcanza con que cada uno elija la
-    // suya: si dos variedades de la misma línea eligen promos distintas dejan
-    // de contarse juntas y se pierde el 3x2 armado entre variedades. Así que
-    // primero se mira si al grupo le conviene una promo común.
-    function asignarPromos(lineas) {
-        const grupos = new Map();
-        lineas.forEach((l, i) => {
-            const clave = `${redondearPesos(l.unitPrice)}|${inicioNombre(l.nombre)}`;
-            grupos.set(clave, [...(grupos.get(clave) || []), i]);
-        });
-
-        for (const indices of grupos.values()) {
-            // Opción 1: cada renglón con la que más le conviene por su cuenta
-            const propias = indices.map(i => mejorOferta(lineas[i].of, lineas[i].qty, lineas[i].unitPrice));
-            let asignacion = propias;
-            let mejorTotal = indices.reduce((a, i, n) =>
-                a + calcularLinea(lineas[i].qty, lineas[i].unitPrice, propias[n]).total, 0);
-
-            // Opción 2: una promo común a TODO el grupo, contando las unidades
-            // juntas. Solo las que están en todos los renglones se pueden armar
-            // entre variedades.
-            if (indices.length > 1) {
-                const comunes = (lineas[indices[0]].of || []).filter(o =>
-                    indices.every(i => (lineas[i].of || []).some(x =>
-                        x.nombre === o.nombre && (x.precioPack || 0) === (o.precioPack || 0))));
-                const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
-                const precio = lineas[indices[0]].unitPrice;
-                for (const o of comunes) {
-                    const total = calcularLinea(unidades, precio, o).total;
-                    if (total < mejorTotal) { mejorTotal = total; asignacion = indices.map(() => o); }
-                }
-            }
-            indices.forEach((i, n) => { lineas[i].promo = asignacion[n]; });
-        }
-        return lineas;
-    }
-
-    function claveFamilia(l) {
-        const pack = (l.promo && l.promo.precioPack) ? redondearPesos(l.promo.precioPack) : '';
-        return `${(l.promo && l.promo.nombre) || ''}|${redondearPesos(l.unitPrice)}|${pack}|${inicioNombre(l.nombre)}`;
-    }
-
-    // Reparte un importe en pesos enteros según el peso de cada parte. La
-    // diferencia del redondeo va a la última, así la suma da exacta.
-    function repartir(total, pesos) {
-        const suma = pesos.reduce((a, b) => a + b, 0);
-        if (suma <= 0) return pesos.map(() => 0);
-        const montos = pesos.map(p => redondearPesos((p / suma) * total));
-        const dif = redondearPesos(total) - montos.reduce((a, b) => a + b, 0);
-        if (dif !== 0) montos[montos.length - 1] += dif;
-        return montos;
-    }
-
-    function calcularLineas(lineas) {
-        const resultado = lineas.map(l => calcularLinea(l.qty, l.unitPrice, l.promo));
-        // Las que se cuentan por unidades hay que mirarlas entre varias líneas.
-        // Un porcentaje da igual por línea que en conjunto.
-        const porUnidades = (p) =>
-            (!!p && p.kind === 'NXM' && p.nBuy > 0 && p.nPay > 0 && p.nPay < p.nBuy) ||
-            (esPrecioPorCantidad(p) && !!p.precioPack && p.precioPack > 0);
-
-        const familias = new Map();
-        lineas.forEach((l, i) => {
-            if (!porUnidades(l.promo)) return;
-            const clave = claveFamilia(l);
-            familias.set(clave, [...(familias.get(clave) || []), i]);
-        });
-
-        for (const indices of familias.values()) {
-            if (indices.length < 2) continue; // una sola línea ya se calculó bien
-            const p = lineas[indices[0]].promo;
+function asignarPromos(lineas) {
+    const grupos = new Map();
+    lineas.forEach((l, i) => {
+        const clave = `${redondearPesos(l.unitPrice)}|${inicioNombre(l.nombre)}`;
+        grupos.set(clave, [...(grupos.get(clave) || []), i]);
+    });
+    for (const indices of grupos.values()) {
+        // Opción 1: cada renglón con la que más le conviene por su cuenta
+        const propias = indices.map(i => mejorOferta(lineas[i].of, lineas[i].qty, lineas[i].unitPrice));
+        let asignacion = propias;
+        let mejorTotal = indices.reduce((a, i, n) => a + calcularLinea(lineas[i].qty, lineas[i].unitPrice, propias[n]).total, 0);
+        // Opción 2: una promo común a TODO el grupo, contando las unidades juntas
+        if (indices.length > 1) {
+            const comunes = (lineas[indices[0]].of || []).filter(o =>
+                indices.every(i => (lineas[i].of || []).some(x => x.nombre === o.nombre && (x.precioPack || 0) === (o.precioPack || 0))));
             const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
             const precio = lineas[indices[0]].unitPrice;
-            const grupos = Math.floor(unidades / p.nBuy);
-            const resto = unidades % p.nBuy;
-            // Igual que en calcularLinea: llegando a nBuy, todas al unitario
-            const totalFamilia = esPrecioPorCantidad(p)
-                ? (unidades >= p.nBuy
-                    ? redondearPesos((unidades * (p.precioPack || 0)) / p.nBuy)
-                    : redondearPesos(unidades * precio))
-                : redondearPesos((grupos * p.nPay + resto) * precio);
-            const montos = repartir(totalFamilia, indices.map(i => lineas[i].qty));
-            indices.forEach((indice, n) => {
-                const base = redondearPesos(lineas[indice].qty * lineas[indice].unitPrice);
-                resultado[indice] = { total: montos[n], discount: base - montos[n] };
-            });
-        }
-        return resultado;
-    }
-
-    function precioUnitario(item, mayorista) {
-        const regular = parseNum(item.p);
-        // Los vinos en oferta suman para llegar a los 6, pero no bajan al
-        // precio mayorista: se cobran a su precio de oferta.
-        if (mayorista && esVino(item.t) && !(item.of && item.of.length)) {
-            // El precio mayorista sale tal cual del sistema: tiene que ser el
-            // mismo que cobra el mostrador en una venta mayorista. Antes acá se
-            // tomaba el más barato de los dos, así que en los productos donde
-            // el mayorista quedó por encima del minorista el catálogo prometía
-            // un precio que después no coincidía con el del sistema.
-            const may = parseNum(item.m);
-            if (may > 0) return may;
-        }
-        return regular;
-    }
-
-    function calcularResumen() {
-        const itemsVino = cart.reduce((acc, i) => acc + (esVino(i.t) ? i.q : 0), 0);
-        const mayorista = itemsVino >= VINOS_PARA_MAYORISTA;
-        const lineas = cart.map(item => {
-            const regular = parseNum(item.p);
-            const base = precioUnitario(item, mayorista);
-            // La promo del día no se acumula con las ofertas del producto: se
-            // toma la que le deje el total más bajo al cliente.
-            const pd = (item.pd && item.pd.precio > 0 && item.pd.precio < base) ? item.pd : null;
-            let pu = base, of = item.of, promoDia = null;
-            if (pd) {
-                const conOferta = calcularLinea(item.q, base, mejorOferta(item.of, item.q, base)).total;
-                const conDia = redondearPesos(item.q * pd.precio);
-                if (conDia <= conOferta) { pu = pd.precio; of = []; promoDia = pd; }
+            for (const o of comunes) {
+                const total = calcularLinea(unidades, precio, o).total;
+                if (total < mejorTotal) { mejorTotal = total; asignacion = indices.map(() => o); }
             }
-            return {
-                item, regular, pu, esVinoItem: esVino(item.t), promoDia,
-                // Lo que necesita el motor de promos
-                nombre: item.n, qty: item.q, unitPrice: pu, of, promo: null,
-            };
+        }
+        indices.forEach((i, n) => { lineas[i].promo = asignacion[n]; });
+    }
+    return lineas;
+}
+
+function claveFamilia(l) {
+    const pack = (l.promo && l.promo.precioPack) ? redondearPesos(l.promo.precioPack) : '';
+    return `${(l.promo && l.promo.nombre) || ''}|${redondearPesos(l.unitPrice)}|${pack}|${inicioNombre(l.nombre)}`;
+}
+
+// Reparte un importe en pesos enteros según el peso de cada parte (la diferencia del redondeo va a la última)
+function repartir(total, pesos) {
+    const suma = pesos.reduce((a, b) => a + b, 0);
+    if (suma <= 0) return pesos.map(() => 0);
+    const montos = pesos.map(p => redondearPesos((p / suma) * total));
+    const dif = redondearPesos(total) - montos.reduce((a, b) => a + b, 0);
+    if (dif !== 0) montos[montos.length - 1] += dif;
+    return montos;
+}
+
+function calcularLineas(lineas) {
+    const resultado = lineas.map(l => calcularLinea(l.qty, l.unitPrice, l.promo));
+    // Las que se cuentan por unidades hay que mirarlas entre varias líneas
+    const porUnidades = (p) =>
+        (!!p && p.kind === 'NXM' && p.nBuy > 0 && p.nPay > 0 && p.nPay < p.nBuy) ||
+        (esPrecioPorCantidad(p) && !!p.precioPack && p.precioPack > 0);
+    const familias = new Map();
+    lineas.forEach((l, i) => {
+        if (!porUnidades(l.promo)) return;
+        const clave = claveFamilia(l);
+        familias.set(clave, [...(familias.get(clave) || []), i]);
+    });
+    for (const indices of familias.values()) {
+        if (indices.length < 2) continue;
+        const p = lineas[indices[0]].promo;
+        const unidades = indices.reduce((a, i) => a + lineas[i].qty, 0);
+        const precio = lineas[indices[0]].unitPrice;
+        const grupos = Math.floor(unidades / p.nBuy);
+        const resto = unidades % p.nBuy;
+        const totalFamilia = esPrecioPorCantidad(p)
+            ? (unidades >= p.nBuy ? redondearPesos((unidades * (p.precioPack || 0)) / p.nBuy) : redondearPesos(unidades * precio))
+            : redondearPesos((grupos * p.nPay + resto) * precio);
+        const montos = repartir(totalFamilia, indices.map(i => lineas[i].qty));
+        indices.forEach((indice, n) => {
+            const base = redondearPesos(lineas[indice].qty * lineas[indice].unitPrice);
+            resultado[indice] = { total: montos[n], discount: base - montos[n] };
         });
-        asignarPromos(lineas);
-        const totales = calcularLineas(lineas);
-        let total = 0, ahorroPromos = 0;
-        lineas.forEach((ln, i) => {
-            ln.lineTotal = totales[i].total;
-            ln.descuento = totales[i].discount;
-            total += ln.lineTotal;
-            ahorroPromos += ln.descuento;
+    }
+    return resultado;
+}
+
+/* =====================================================================
+   Categorías
+   C = CATEGORIA, T = TIPO, F = VARIETAL del sistema (en mayúsculas y sin acentos)
+   ===================================================================== */
+// En los combos, la bebida principal se reconoce por el nombre (para el filtro dentro de Combos)
+const BEBIDAS = [
+    ['Fernet', /FERNET|BRANCA/],
+    ['Vodka', /VODKA|SKYY|SKKY|ABSOLUT|SMIRNOFF|SERNOVA/],
+    ['Vermut', /VERMU|CARPANO|CINZANO|DESCONFIADO|LUNFA|FASANO|MARTINI/],
+    ['Gin', /\bGIN\b|BEEFEATER|BOMBAY|GORDON|HEREDERO|MALARIA/],
+    ['Whisky', /WHISK|JACK DANIEL|CHIVAS|JAME?N?SON/],
+    ['Ron', /\bRON\b|BACARDI|HAVANA/],
+    ['Aperitivo', /APEROL|CAMPARI|GANCIA|CYNAR/],
+];
+const bebidaCombo = (p) => { const n = norm(p.nombre + ' ' + p.lleva); const b = BEBIDAS.find(([, re]) => re.test(n)); return b ? b[0] : ''; };
+
+// Productos que el sistema tiene SIN categoría: si el nombre lo deja claro, se ubican solos.
+// Los que no (ej. "PRUEBA") no aparecen en ninguna categoría, solo si alguien los busca.
+const INFERIR = [
+    [/ESPUMANTE|CHAMPAGNE/, 'ESPUMANTES', 'ESPUMANTES'],
+    [/MALBEC|CABERNET|CHARDONNAY|SAUVIGNON|PINOT|SYRAH|MERLOT|BLEND|TORRONTES|BONARDA|TANNAT|DULCE NATURAL/, 'VINOS', ''],
+    [/CERVEZA|PORRON|LATON/, 'CERVEZAS', ''],
+    [/ACEITUNA|SALAME|JAMON|PICADA|BONDIOLA|QUESO|\bMANI\b|ALFAJOR|PAPAS/, 'COMIDA', 'COMIDA'],
+    [/TABACO|VAN HAASEN|LUCKY STRIKE|\bOCB\b|FILTRO/, 'TABACO', 'TABACO'],
+    [/COPA|COPON|VASO|MEDIDOR|JIGGER|SACACORCHO|DESTAPADOR/, 'REGALERIA', 'REGALERIA'],
+];
+// Errores de tipeo del sistema que partirían un filtro en dos ("Vodka" y "Voska")
+const CORREGIR = { VOSKA: 'VODKA', JAGGER: 'LICOR' };
+const corregido = (s) => CORREGIR[s] || s;
+
+// Cada producto cae en la PRIMERA sección que coincide
+const GRUPOS = [
+    { id: 'combos',     nombre: 'Combos',                 emoji: '🎉', tint: 'rgba(237,120,28,.22)', test: p => p.C === 'COMBOS' || p.T === 'COMBOS' },
+    { id: 'vinos',      nombre: 'Vinos',                  emoji: '🍷', tint: 'rgba(122,16,40,.22)',  test: p => p.C.startsWith('VINO') || p.T.startsWith('VINO') },
+    { id: 'espumantes', nombre: 'Espumantes',             emoji: '🥂', tint: 'rgba(212,175,55,.26)', test: p => ['ESPUMANTES', 'ESPUMANTE'].includes(p.C) || p.T === 'ESPUMANTES' },
+    { id: 'sidras',     nombre: 'Sidras',                 emoji: '🍏', tint: 'rgba(150,190,40,.20)', test: p => ['SIDRA', 'SIDRAS'].includes(p.C) || ['SIDRA', 'SIDRAS'].includes(p.T) },
+    { id: 'cervezas',   nombre: 'Cervezas',               emoji: '🍺', tint: 'rgba(230,150,20,.22)', test: p => p.C.startsWith('CERVEZA') || p.T.startsWith('CERVEZA') },
+    { id: 'vermouth',   nombre: 'Vermouth',               emoji: '🍸', tint: 'rgba(180,40,40,.18)',  test: p => [p.C, p.T, p.F].some(x => x === 'VERMUT' || x === 'VERMOUTH') },
+    { id: 'aperitivos', nombre: 'Aperitivos',             emoji: '🍹', tint: 'rgba(200,60,40,.18)',  test: p => p.C === 'APERITIVOS' || p.T === 'APERITIVOS' },
+    { id: 'gin',        nombre: 'Gin',                    emoji: '🌿', tint: 'rgba(40,140,170,.20)', test: p => [p.C, p.T, p.F].includes('GIN') },
+    { id: 'vodka',      nombre: 'Vodka',                  emoji: '🧊', tint: 'rgba(90,110,200,.18)', test: p => [p.C, p.T, p.F].includes('VODKA') },
+    { id: 'ron',        nombre: 'Ron y cachaça',          emoji: '🌴', tint: 'rgba(140,80,30,.20)',  test: p => [p.C, p.T, p.F].some(x => x === 'RON' || x === 'CACHACA') },
+    { id: 'tequila',    nombre: 'Tequila y pisco',        emoji: '🌵', tint: 'rgba(120,170,40,.20)', test: p => [p.C, p.T, p.F].some(x => x === 'TEQUILA' || x === 'PISCO') },
+    { id: 'whisky',     nombre: 'Whisky',                 emoji: '🥃', tint: 'rgba(170,100,20,.22)', test: p => [p.C, p.T, p.F].includes('WHISKY') },
+    { id: 'licores',    nombre: 'Licores',                emoji: '🍯', tint: 'rgba(150,50,130,.18)', test: p => [p.C, p.T].some(x => ['LICOR', 'LICORES'].includes(x)) },
+    { id: 'gaseosas',   nombre: 'Gaseosas',               emoji: '🥤', tint: 'rgba(30,160,90,.18)',  test: p => p.C === 'GASEOSAS' || p.T === 'GASEOSAS' },
+    { id: 'sinalcohol', nombre: 'Energizantes, aguas y más', emoji: '💧', tint: 'rgba(30,140,200,.18)', test: p => ['ENERGIZANTES', 'AGUA', 'AGUAS', 'SODA', 'JUGOS', 'JUGO', 'HIELO', 'DEPORTIVAS'].includes(p.C) },
+    { id: 'kiosco',     nombre: 'Kiosco',                 emoji: '🍫', tint: 'rgba(200,120,40,.20)', test: p => ['COMIDA', 'TABACO', 'HABANO', 'HABANOS', 'KIOSCO', 'CEDAS', 'FILTROS'].includes(p.C) },
+    { id: 'regaleria',  nombre: 'Regalería y accesorios', emoji: '🎁', tint: 'rgba(130,60,170,.18)', test: p => ['REGALERIA', 'SACACORCHOS', 'VASOS', 'ENCENDEDORES', 'ACCESORIOS', 'ESTUCHES', 'PACKAGING'].includes(p.C) },
+    { id: 'otros',      nombre: 'Otros',                  emoji: '🛒', tint: 'rgba(120,120,130,.18)', test: p => !!p.C },   // con categoría que no encaja en las de arriba
+];
+// Promos: todo lo que tiene una oferta vigente en el sistema (menos los combos, que van aparte).
+// Cada producto sigue apareciendo también en su categoría.
+const PROMOS_DEF = { id: 'promos', nombre: 'Promos', emoji: '🔥', tint: 'rgba(237,28,36,.22)' };
+
+/* Filtros dentro de cada categoría: TIPO → SUBCATEGORÍA → MARCA (columna Etiqueta).
+   Acá va el nombre que se muestra en cada fila: [primera fila, segunda fila]. */
+const FILTROS = {
+    vinos: ['Tipo', 'Varietal'], espumantes: ['Tipo', 'Estilo'], cervezas: ['Envase', 'Estilo'],
+    gaseosas: ['Tipo', 'Sabor'], aperitivos: ['Tipo', 'Tipo'], kiosco: ['Tipo', 'Producto'],
+    sinalcohol: ['Tipo', 'Presentación'], combos: ['', 'Bebida'], promos: ['Categoría', 'Subcategoría'],
+};
+const FILTROS_DEF = ['Tipo', 'Subcategoría'];
+const NIVEL_TIPO = { key: p => p.T, label: p => bonito((p.tipo || '').replace(/^\s*(vinos?|cervezas?)\s+/i, '')) };   // "VINOS TINTOS" -> "Tintos", "CERVEZA LATA" -> "Lata"
+const NIVEL_VARIETAL = { key: p => (p.F && p.F !== p.T && p.F !== p.C) ? p.F : '', label: p => bonito(p.varietal) };
+const NIVEL_BEBIDA = { key: bebidaCombo, label: bebidaCombo };
+const NIVEL_CATEGORIA = { key: p => p.grupo, label: p => (GRUPOS.find(g => g.id === p.grupo) || {}).nombre || 'Otros' };
+const NIVEL_MARCA = { key: p => p.marca, label: p => bonito(p.marcaTxt) };
+function nivelesDe(g) {
+    if (g.id === 'combos') return [null, NIVEL_BEBIDA];
+    if (g.id === 'vermouth') return [null, null];         // el sistema los tiene como VERMUT o APERITIVOS: se elige directo la marca
+    if (g.id === 'promos') return [NIVEL_CATEGORIA, NIVEL_VARIETAL];
+    return [NIVEL_TIPO, NIVEL_VARIETAL];
+}
+
+/* =====================================================================
+   Datos (desde el sistema)
+   ===================================================================== */
+let productos = [], byId = {}, grupos = [], promosGrupo = null;
+
+function construir(data) {
+    const filas = Array.isArray(data) ? data : ((data && data.productos) || []);
+    // Lo que lleva cada combo, con el texto completo que arma el sistema
+    const llevaDe = {};
+    ((data && data.ofertas && data.ofertas.combos) || []).forEach(c => { if (c && c.nombre) llevaDe[norm(c.nombre)] = c.lleva || ''; });
+    const txt = (v) => (v === null || v === undefined) ? '' : String(v).trim();
+    // Botella recortada de cada producto (aunque no tenga stock), para armar la foto de los combos
+    const recortePorNombre = new Map();
+    filas.forEach(f => { const x = fotosProducto(txt(f.IMAGEN), f.NOMBRE); if (x.rc) recortePorNombre.set(norm(f.NOMBRE), x.img); });
+    const seen = {};
+    productos = [];
+    filas.forEach(f => {
+        const nombre = txt(f.NOMBRE);
+        if (!nombre || !(Number(f.STOCK) > 0)) return;          // sin stock no se muestra
+        let C = corregido(norm(f.CATEGORIA)), T = corregido(norm(f.TIPO));
+        let tipo = CORREGIR[norm(f.TIPO)] || txt(f.TIPO) || txt(f.CATEGORIA);
+        if (!C && !T) {
+            const r = INFERIR.find(([re]) => re.test(norm(nombre)));
+            if (r) { C = r[1]; T = r[2]; tipo = r[2]; }
+        }
+        const esCombo = C === 'COMBOS' || T === 'COMBOS';
+        // Las ofertas con su regla (2x1, 20% OFF, precio por pack): es lo que permite cobrarlas como el mostrador
+        const ofertas = (Array.isArray(f.OFERTAS) ? f.OFERTAS : []).filter(o => o && norm(o.etiqueta || o.nombre) !== 'COMBO');
+        const promos = (Array.isArray(f.PROMOS) ? f.PROMOS : (txt(f.PROMO) ? txt(f.PROMO).split(' + ') : []))
+            .map(txt).filter(s => s && norm(s) !== 'COMBO');
+        let id = slug(nombre);
+        if (seen[id]) id += '-' + (++seen[id]); else seen[id] = 1;
+        productos.push({
+            id, nombre, titulo: titulo(nombre),
+            precio: parseNum(f.PRECIO), mayorista: parseNum(f.MAYORISTA),
+            ...fotosProducto(txt(f.IMAGEN), nombre),   // img (la recortada, si hay), foto (la original) y rc
+            C, T, F: esCombo ? '' : corregido(norm(f.VARIETAL)),
+            tipo, varietal: esCombo ? '' : txt(f.VARIETAL),
+            stock: Number(f.STOCK),
+            marca: norm(f.Etiqueta), marcaTxt: txt(f.Etiqueta),
+            ofertas, promos,
+            // Promo del día ("hoy todos los Pinot al precio mayorista"): llega con el precio ya resuelto
+            promoDia: (f.PROMO_DIA && f.PROMO_DIA.precio > 0) ? f.PROMO_DIA : null,
+            esCombo, lleva: esCombo ? (llevaDe[norm(nombre)] || txt(f.VARIETAL)) : '',
+            // Para el mayorista cuenta el TIPO tal cual viene del sistema (no el que se deduce del nombre),
+            // igual que en el catálogo actual
+            vinoMay: TIPOS_MAYORISTA.includes(norm(f.TIPO)),
         });
-        return { itemsVino, mayorista, total, lineas, ahorroPromos };
-    }
+    });
+    byId = {};
+    productos.forEach(p => {
+        byId[p.id] = p;
+        const g = GRUPOS.find(x => x.test(p));
+        p.grupo = g ? g.id : '';
+        p.enPromo = !p.esCombo && (p.ofertas.length > 0 || p.promos.length > 0 || !!p.promoDia);
+        p.desc = descuentoMax(p);
+        p.combo = (p.esCombo && !p.img) ? fotosCombo(p.lleva, recortePorNombre) : [];
+    });
+    grupos = GRUPOS.map(g => ({ ...g, items: productos.filter(p => p.grupo === g.id) })).filter(g => g.items.length);
+    const enPromo = productos.filter(p => p.enPromo);
+    promosGrupo = enPromo.length ? { ...PROMOS_DEF, items: enPromo } : null;
+}
 
-    function scrollMenu(id, px) {
-        document.getElementById(id).scrollBy({ left: px, behavior: 'smooth' });
-    }
+const esVinoMay = (p) => p.vinoMay;
+const grupoDe = (id) => id === 'promos' ? promosGrupo : grupos.find(g => g.id === id);
+// Orden de la portada y del menú: primero Combos y Promos, después el resto
+function ordenGrupos() {
+    const lista = [];
+    const gc = grupoDe('combos');
+    if (gc) lista.push(gc);
+    if (promosGrupo) lista.push(promosGrupo);
+    return lista.concat(grupos.filter(g => g.id !== 'combos'));
+}
+// Los vinos en oferta suman para llegar a los 6, pero no bajan al precio mayorista: quedan a su precio de oferta
+const conMayorista = (p) => esVinoMay(p) && p.mayorista > 0 && !p.ofertas.length;
+// Precio mayorista por unidad, para mostrarlo a modo informativo (solo donde se aplica: vinos y espumantes)
+const mayUnit = (p) => (conMayorista(p) && p.mayorista < p.precio) ? p.mayorista : 0;
 
-    // ---- Vistas: portada / catálogo ----
-    let mode = 'home';
-    function setView(v) {
-        document.getElementById('home-view').style.display = (v === 'home') ? 'block' : 'none';
-        document.getElementById('catalogo-view').style.display = (v === 'catalogo') ? 'block' : 'none';
-        document.getElementById('index-view').style.display = (v === 'index') ? 'block' : 'none';
-        mode = v;
-    }
-    function showHome() {
-        setView('home');
-        closeNav();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function showCatalogo() {
-        setView('catalogo');
-    }
+// Lo máximo que se ahorra con las ofertas del producto, en %: una cerveza de $4.000 que llevando 2
+// sale $3.500 c/u ($7.000 en vez de $8.000) → 12,5% → "Hasta 13% OFF"
+function descuentoMax(p) {
+    if (!(p.precio > 0)) return 0;
+    let max = 0;
+    p.ofertas.forEach(o => { max = Math.max(max, 1 - unitarioConOferta(o, p.precio) / p.precio); });
+    if (p.promoDia && p.promoDia.precio < p.precio) max = Math.max(max, 1 - p.promoDia.precio / p.precio);
+    return Math.round(max * 100);
+}
+const hastaOff = (n) => n > 0 ? `Hasta ${n}% OFF` : '';
 
-    // ---- Página de Bodegas / Marcas ----
-    let idxWines = true, idxSel = '__all__';
-    function showIndex(wines) {
-        idxWines = wines;
-        setView('index');
-        closeNav();
-        document.getElementById('idx-hero-title').textContent = wines ? 'BODEGAS' : 'MARCAS';
-        document.getElementById('idx-crumb').textContent = wines ? 'Bodegas' : 'Marcas';
-        buildIndexSidebar();
-        selectBodega('__all__');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function buildIndexSidebar() {
-        const list = idxWines ? brandList(true) : brandList(false);
-        document.getElementById('idx-list').innerHTML =
-            `<button class="idx-item active" data-val="__all__">${idxWines ? 'Todas las bodegas' : 'Todas las marcas'}</button>` +
-            list.map(b => `<button class="idx-item" data-val="${hesc(b)}">${hesc(b)}</button>`).join('');
-    }
-    function selectBodega(val) {
-        idxSel = val;
-        document.querySelectorAll('#idx-list .idx-item').forEach(b => b.classList.toggle('active', b.dataset.val === val));
-        const todos = idxWines ? 'Todas las bodegas' : 'Todas las marcas';
-        document.getElementById('idx-sel-title').textContent = (val === '__all__') ? todos : val;
-        const prods = allProducts.filter(p => (idxWines ? esVino(p.tipo) : !esVino(p.tipo)) && (val === '__all__' || normalizar(marcaDe(p)) === normalizar(val)));
-        prods.sort((a, b) => a.name.localeCompare(b.name, 'es'));
-        document.getElementById('idx-count').textContent = prods.length + (prods.length === 1 ? ' producto' : ' productos');
-        const grid = document.getElementById('idx-grid');
-        grid.innerHTML = prods.length ? prods.map((p, i) => productCard(p, 'qty-bod-' + i)).join('') : '<div class="vacio">No hay productos en esta selección todavía.</div>';
-    }
+// "1 × FERNET BRANCA 750 ML + 2 × a elegir: COCA COLA COMUN 1,5 L, COCA COLA ZERO 1,5 L" → las fotos de lo que lleva
+function fotosCombo(lleva, recortePorNombre) {
+    const fotos = [];
+    (lleva || '').split(' + ').forEach(parte => {
+        const opciones = parte.replace(/^\s*\d+\s*[×x]\s*/i, '').replace(/^a elegir:\s*/i, '').split(/,\s*|\s+y\s+\d+\s+más/i);
+        const img = opciones.map(n => recortePorNombre.get(norm(n))).find(Boolean);
+        if (img && !fotos.includes(img) && fotos.length < 3) fotos.push(img);
+    });
+    return fotos;
+}
 
-    // ---- Carrusel del hero ----
-    const HERO_N = 3;
-    let heroI = 0, heroTimer = null;
-    function heroRender() {
-        const t = document.getElementById('hero-track');
-        if (t) t.style.transform = 'translateX(-' + (heroI * 100) + '%)';
-        document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroI));
-    }
-    function heroMove(d) { heroI = (heroI + d + HERO_N) % HERO_N; heroRender(); resetHeroTimer(); }
-    function heroGo(i) { heroI = i; heroRender(); resetHeroTimer(); }
-    function resetHeroTimer() { clearInterval(heroTimer); heroTimer = setInterval(() => heroMove(1), 6000); }
-    function initHero() {
-        const dots = document.getElementById('hero-dots');
-        if (dots) dots.innerHTML = Array.from({ length: HERO_N }, (_, i) => `<button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="heroGo(${i})"></button>`).join('');
-        resetHeroTimer();
-    }
-
-    // ---- Menú de navegación ----
-    const hesc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    // Para meter un texto adentro de un onclick="...('aca')" sin que lo rompa un apóstrofo
-    const jesc = (s) => hesc(String(s === null || s === undefined ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
-    const uniqSorted = (arr) => [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-    const varietalesList = () => uniqSorted(allProducts.map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'));
-
-    const BRAND_PRE = new Set(['EL', 'LA', 'LOS', 'LAS', 'DON', 'DONA', 'FINCA', 'BODEGA', 'BODEGAS', 'SANTA', 'SAN', 'CASA', 'ALTA', 'GRAN', 'VINA', 'DOMAINE', 'CHACRA', 'VALLE', 'LUIGI']);
-    function brandOf(name) {
-        const w = (name || '').trim().split(/\s+/);
-        let b = w[0] || '';
-        if (w[1] && BRAND_PRE.has(normalizar(b).toUpperCase())) b = w[0] + ' ' + w[1];
-        return b;
-    }
-    // Marca/Bodega: usa la columna I de la planilla; si está vacía, la deduce del nombre.
-    function marcaDe(p) { return (p.marca && p.marca.trim()) ? p.marca.trim() : brandOf(p.name); }
-    const brandList = (wines) => uniqSorted(allProducts.filter(p => wines ? esVino(p.tipo) : !esVino(p.tipo)).map(p => marcaDe(p)));
-
-    // Bodegas más frecuentes (las que "más trabajamos")
-    function topBodegas(n) {
-        const counts = {};
-        allProducts.filter(p => esVino(p.tipo)).forEach(p => { const b = marcaDe(p); if (b) counts[b] = (counts[b] || 0) + 1; });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
-    }
-    function iniciales(b) {
-        const w = b.trim().split(/\s+/);
-        if (w.length >= 2) return (w[0][0] + w[1][0]).toUpperCase();
-        return b.slice(0, 2).toUpperCase();
-    }
-
-    function buildNavOptions(key) {
-        if (key === 'prod') return [{ kind: 'tipo', val: 'Todos', label: 'Ver todo' }].concat(TIPOS.filter(t => t !== 'Todos').map(t => ({ kind: 'tipo', val: t, label: t })));
-        if (key === 'var') return varietalesList().map(v => ({ kind: 'cepa', val: v, label: v }));
-        if (key === 'bod') return brandList(true).map(b => ({ kind: 'marca', val: b, label: b }));
-        if (key === 'mar') return brandList(false).map(b => ({ kind: 'marca', val: b, label: b }));
-        return [];
-    }
-
-    let navOpen = null;
-    function toggleNav(key, btn) {
-        const panel = document.getElementById('nav-panel');
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
-        if (navOpen === key) { navOpen = null; panel.classList.remove('show'); return; }
-        navOpen = key;
-        if (btn) btn.classList.add('open');
-        const items = buildNavOptions(key);
-        panel.innerHTML = '<div class="nav-panel-inner">' +
-            (items.length
-                ? items.map(it => `<button class="nav-opt" data-kind="${it.kind}" data-val="${hesc(it.val)}">${hesc(it.label)}</button>`).join('')
-                : '<span class="nav-empty">No hay opciones para mostrar.</span>') +
-            '</div>';
-        panel.classList.add('show');
-    }
-    function closeNav() {
-        navOpen = null;
-        const panel = document.getElementById('nav-panel');
-        if (panel) panel.classList.remove('show');
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('open'));
-    }
-
-    // Aplica la opción elegida: pasa al catálogo, filtra y sube al inicio
-    function navTo(kind, val) {
-        document.getElementById('buscador').value = '';
-        fTipo = 'Todos'; fCepa = 'Todos'; fMarca = ''; fColor = 'Todos'; fOferta = 'Todos';
-        if (kind === 'tipo') fTipo = val;
-        else if (kind === 'cepa') fCepa = val;
-        else if (kind === 'marca') fMarca = val;
-        closeNav();
-        showCatalogo();
-        renderFiltros();
-        renderProducts();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function comoComprar() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
-    function contacto() { closeNav(); document.getElementById('footer').scrollIntoView({ behavior: 'smooth' }); }
-
-    function onSearch() {
-        fMarca = '';
-        if (mode !== 'catalogo') showCatalogo();
-        renderProducts();
-    }
-
-    // ---- Mezcla aleatoria (para Destacados) ----
-    function shuffle(a) {
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
+/* =====================================================================
+   Carrito
+   ===================================================================== */
+let cart = new Map();
+function guardarCarrito() { store.set('mn_carrito', Object.fromEntries(cart)); }
+function cargarCarrito() {
+    const c = store.get('mn_carrito', {});
+    cart = new Map(Object.entries(c).filter(([id, q]) => byId[id] && q > 0));
+}
+function precioUnitario(p, mayorista) {
+    // El mayorista sale tal cual del sistema: es el mismo que cobra el mostrador en una venta mayorista.
+    // Los que están en oferta suman para llegar a los 6, pero se cobran a su precio de oferta.
+    if (mayorista && conMayorista(p)) return p.mayorista;
+    return p.precio;
+}
+function calcular() {
+    const items = [...cart].map(([id, q]) => ({ p: byId[id], q })).filter(x => x.p);
+    const vinos = items.reduce((a, x) => a + (esVinoMay(x.p) ? x.q : 0), 0);
+    const may = vinos >= VINOS_PARA_MAYORISTA;
+    const lineas = items.map(({ p, q }) => {
+        const base = precioUnitario(p, may);
+        // La promo del día no se acumula con las ofertas del producto: se toma la que deje el total más bajo
+        const pd = (p.promoDia && p.promoDia.precio > 0 && p.promoDia.precio < base) ? p.promoDia : null;
+        let pu = base, of = p.ofertas, promoDia = null;
+        if (pd) {
+            const conOferta = calcularLinea(q, base, mejorOferta(p.ofertas, q, base)).total;
+            const conDia = redondearPesos(q * pd.precio);
+            if (conDia <= conOferta) { pu = pd.precio; of = []; promoDia = pd; }
         }
-        return a;
+        return { p, q, regular: p.precio, base, pu, promoDia, nombre: p.nombre, qty: q, unitPrice: pu, of, promo: null };
+    });
+    asignarPromos(lineas);
+    const tot = calcularLineas(lineas);
+    let total = 0, ahorroPromos = 0, ahorroMay = 0;
+    lineas.forEach((l, i) => {
+        l.lineTotal = tot[i].total;
+        l.descuento = tot[i].discount;
+        l.conMay = may && esVinoMay(l.p) && !l.promoDia && Math.round(l.pu) !== Math.round(l.regular);
+        if (l.conMay) ahorroMay += redondearPesos((l.regular - l.pu) * l.q);
+        total += l.lineTotal;
+        ahorroPromos += l.descuento;
+    });
+    return { lineas, vinos, may, total, ahorroPromos, ahorroMay, unidades: items.reduce((a, x) => a + x.q, 0) };
+}
+function setQty(id, q) {
+    const antes = cart.get(id) || 0;
+    if (q <= 0) cart.delete(id); else cart.set(id, q);
+    guardarCarrito();
+    document.querySelectorAll('[data-ctl="' + id + '"]').forEach(el => el.innerHTML = ctlHTML(id));
+    actualizarBarra();
+    if (sheetOpen === 'carrito') renderCarrito();
+    if (!antes && q > 0) toast('Agregado: ' + byId[id].titulo);
+}
+const addQty = (id, d) => setQty(id, (cart.get(id) || 0) + d);
+function actualizarBarra() {
+    const r = calcular();
+    $('#cartbar').classList.toggle('show', r.unidades > 0);
+    $('#cb-n').textContent = r.unidades;
+    $('#cb-total').textContent = money(r.total);
+}
+
+/* =====================================================================
+   Piezas de HTML
+   ===================================================================== */
+function phEmoji(p) { const g = GRUPOS.find(x => x.id === p.grupo); return g ? g.emoji : '🛒'; }
+function imgHTML(p) {
+    if (p.img) return `<img src="${esc(p.img)}"${p.rc ? ` class="rc" data-orig="${esc(p.foto)}"` : ''} alt="" loading="lazy" decoding="async" data-ph="${phEmoji(p)}">`;
+    if (p.combo && p.combo.length) return comboHTML(p.combo);
+    return `<span class="ph">${phEmoji(p)}</span>`;
+}
+const comboHTML = (fotos) => `<div class="combo-fotos">${fotos.map(src => `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" data-quitar="1">`).join('')}</div>`;
+const badgeHTML = (p) => p.desc > 0 ? `<span class="pbadge">${hastaOff(p.desc)}</span>` : '';
+// El precio que se ve: con descuento tachado si hay promo del día o un % OFF
+function precioVista(p) {
+    const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
+    if (pd) return { actual: pd.precio, lista: p.precio, tag: pd.titulo || 'Promo del día', dia: true, pct: null };
+    const pct = p.ofertas.find(o => o.kind === 'PORCENTAJE' && o.percent > 0);
+    if (pct) return { actual: unitarioConOferta(pct, p.precio), lista: p.precio, tag: `-${Math.round(pct.percent)}%`, dia: false, pct };
+    return { actual: p.precio, lista: 0, tag: '', dia: false, pct: null };
+}
+function priceHTML(p) {
+    if (!(p.precio > 0)) return `<div class="price"><span class="consultar">Precio a consultar</span></div>`;
+    const v = precioVista(p);
+    // El % ya lo dice el cartel "Hasta X% OFF" de la foto; acá queda el precio de antes tachado
+    if (v.lista) return `<div class="price"><b>${money(v.actual)}</b><s>${money(v.lista)}</s>${v.dia ? `<span class="off dia">${esc(v.tag)}</span>` : ''}</div>`;
+    return `<div class="price"><b>${money(p.precio)}</b></div>`;
+}
+// Las demás ofertas (2X $X, CAJA $X, 3x2…). En las que no dicen precio (3x2) va lo que sale cada una.
+function ofertasHTML(p, completo) {
+    const yaEnPrecio = precioVista(p).pct;
+    const chips = p.ofertas.filter(o => o !== yaEnPrecio).map(o =>
+        `<span class="ochip">${esc(etiquetaOferta(o))}${o.kind === 'NXM' ? ' · x1 ' + money(unitarioConOferta(o, p.precio)) : ''}</span>`);
+    if (!p.ofertas.length) p.promos.forEach(t => chips.push(`<span class="ochip">${esc(t)}</span>`));   // si el sistema solo manda el texto
+    if (!chips.length) return '';
+    const total = p.ofertas.length || p.promos.length;
+    return `<div class="ochips">${completo && total > 1 ? '<span class="ohint">Tiene varias ofertas: se aplica sola la que más te conviene.</span>' : ''}${chips.join('')}</div>`;
+}
+function mayHTML(p) {
+    const m = mayUnit(p);
+    return m ? `<span class="mayline">🍷 Mayorista (${VINOS_PARA_MAYORISTA}+): ${money(m)} c/u</span>` : '';
+}
+function stockHTML(p) {
+    if (p.stock == null || p.stock <= 0 || p.stock > 3) return '';
+    return `<span class="stock">${p.stock === 1 ? '¡Última unidad!' : 'Quedan ' + p.stock}</span>`;
+}
+function metaDe(p) {
+    if (p.esCombo) return '';
+    const parts = [];
+    if (p.marca) parts.push(bonito(p.marcaTxt));
+    if (p.F && p.F !== p.marca && p.F !== p.T && p.F !== p.C) parts.push(bonito(p.varietal));
+    return parts.join(' · ');
+}
+function ctlHTML(id) {
+    const q = cart.get(id) || 0;
+    if (!q) return `<button class="addbtn" data-act="add" data-id="${id}" aria-label="Agregar">+</button>`;
+    return `<div class="stepper"><button data-act="dec" data-id="${id}" aria-label="Quitar uno">−</button><span>${q}</span><button data-act="inc" data-id="${id}" aria-label="Sumar uno">+</button></div>`;
+}
+function rowHTML(p) {
+    const meta = metaDe(p);
+    return `<div class="prow" data-act="open" data-id="${p.id}">
+        <div class="prow-info">
+            <h3 class="prow-name">${esc(p.titulo)}</h3>
+            ${meta ? `<p class="prow-meta">${esc(meta)}</p>` : ''}
+            ${p.lleva ? `<p class="prow-desc">Lleva: ${esc(p.lleva)}</p>` : ''}
+            ${priceHTML(p)}${ofertasHTML(p, false)}${mayHTML(p)}${stockHTML(p)}
+        </div>
+        <div class="prow-img">${badgeHTML(p)}${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
+    </div>`;
+}
+function cardHTML(p) {
+    return `<div class="card" data-act="open" data-id="${p.id}">
+        <div class="card-img">${badgeHTML(p)}${imgHTML(p)}<div class="ctl" data-ctl="${p.id}">${ctlHTML(p.id)}</div></div>
+        <h3>${esc(p.titulo)}</h3>${priceHTML(p)}${mayHTML(p)}
+    </div>`;
+}
+// La foto de la tarjeta es la original del local (a sangre); las recortadas sobre blanco van en la lista
+const fotoDe = (items) => (items.find(p => p.foto) || {}).foto || '';
+function tileHTML(t) {
+    return `<a class="tile ${t.img ? 'foto' : ''}" href="${t.href}" style="--tint:${t.tint}">
+        ${t.img ? `<img class="tile-img" src="${esc(t.img)}" alt="" loading="lazy" decoding="async" data-tile="${t.emoji}">` : `<span class="tile-emoji">${t.emoji}</span>`}
+        ${t.badge ? `<span class="tile-badge">${esc(t.badge)}</span>` : ''}
+        <div class="tile-cap"><b>${esc(t.nombre)}</b>${t.sub ? `<small>${esc(t.sub)}</small>` : ''}</div>
+    </a>`;
+}
+// Debajo del nombre de cada categoría: qué hay adentro (sin números)
+function resumenGrupo(g) {
+    const [n1, n2] = nivelesDe(g);
+    for (const n of [n1, n2, NIVEL_MARCA]) {
+        if (!n) continue;
+        const reales = opciones(g.items, n.key, n.label, '').filter(o => o.k !== OTROS);
+        if (reales.length >= 2) return reales.slice(0, 3).map(o => o.t).join(' · ');
     }
+    return '';
+}
+const badgeGrupo = (items) => hastaOff(items.reduce((m, p) => Math.max(m, p.desc || 0), 0));
 
-    // Todo lo que está en oferta: productos con promo vigente + combos.
-    // Sale del mismo sistema, así que lo que cargás en Productos u Ofertas
-    // aparece acá solo.
-    function enOferta() {
-        return allProducts.filter(p => !!p.promo || !!p.promoDia);
+/* =====================================================================
+   Vistas
+   ===================================================================== */
+// t / f / m = lo elegido en cada fila de filtros dentro de la categoría
+const view = { name: 'home', arg: '', t: '', f: '', m: '', orden: 'rel', q: '' };
+let pendientes = [], observer = null;
+
+function render() {
+    const main = $('#main');
+    $('#back').classList.toggle('show', view.name !== 'home' && !view.q);
+    renderNavChips(view.q || view.name !== 'home');
+    if (view.q) renderBusqueda(main);
+    else if (view.name === 'c') renderCategoria(main);
+    else renderHome(main);
+    centrarChips();
+}
+
+function renderNavChips(show) {
+    const el = $('#navchips');
+    if (!show) { el.innerHTML = ''; return; }
+    const cur = view.name === 'c' ? view.arg : '';
+    el.innerHTML = [['', 'Inicio']].concat(ordenGrupos().map(g => [g.id, g.nombre])).map(([id, n]) =>
+        `<a class="chip ${id && id === cur ? 'on' : ''}" href="${id ? '#/c/' + id : '#/'}">${esc(n)}</a>`).join('');
+}
+
+function renderHome(main) {
+    const tiles = ordenGrupos().map(g => ({
+        href: '#/c/' + g.id, nombre: g.nombre, emoji: g.emoji, tint: g.tint, sub: resumenGrupo(g),
+        img: fotoDe(g.items), badge: g.id === 'promos' ? badgeGrupo(g.items) : '',
+    }));
+    const dia = productos.filter(p => p.promoDia && p.promoDia.precio < p.precio);
+    // Las de mayor descuento (y entre las que empatan, primero las que tienen foto)
+    const top = productos.filter(p => p.desc > 0).sort((a, b) => b.desc - a.desc || (!!b.img - !!a.img)).slice(0, 12);
+    const conFoto = productos.filter(p => p.rc && esVinoMay(p) && p.precio > 0 && !p.desc);
+    const recos = (conFoto.length >= 6 ? conFoto : productos.filter(p => p.img && esVinoMay(p) && p.precio > 0))
+        .map(p => [Math.random(), p]).sort((a, b) => a[0] - b[0]).slice(0, 12).map(x => x[1]);
+    main.innerHTML = `
+        <section class="sec">
+            <div class="sec-h"><h2>Categorías</h2></div>
+            <div class="tiles">${tiles.map(tileHTML).join('')}</div>
+        </section>
+        ${dia.length ? `<section class="sec">
+            <div class="sec-h"><h2>⭐ ${esc(dia[0].promoDia.titulo || 'Promo del día')}</h2></div>
+            <div class="hscroll">${dia.slice(0, 12).map(cardHTML).join('')}</div>
+        </section>` : ''}
+        ${top.length ? `<section class="sec">
+            <div class="sec-h"><h2>🔥 Las mejores promos</h2><a href="#/c/promos" style="font-size:13px;color:var(--accent);font-weight:600">Ver todas ›</a></div>
+            <div class="hscroll">${top.map(cardHTML).join('')}</div>
+        </section>` : ''}
+        ${recos.length ? `<section class="sec">
+            <div class="sec-h"><h2>🍷 Recomendados</h2><a href="#/c/vinos" style="font-size:13px;color:var(--accent);font-weight:600">Ver vinos ›</a></div>
+            <div class="hscroll">${recos.map(cardHTML).join('')}</div>
+        </section>` : ''}`;
+}
+
+function ordenar(items) {
+    const a = items.slice();
+    if (view.orden === 'pmin') a.sort((x, y) => (precioVista(x).actual || 1e12) - (precioVista(y).actual || 1e12));
+    else if (view.orden === 'pmax') a.sort((x, y) => precioVista(y).actual - precioVista(x).actual);
+    else if (view.orden === 'az') a.sort((x, y) => x.titulo.localeCompare(y.titulo, 'es'));
+    return a;
+}
+function selectOrden() {
+    const ops = [['rel', 'Destacados'], ['pmin', 'Menor precio'], ['pmax', 'Mayor precio'], ['az', 'A - Z']];
+    return `<select id="orden" aria-label="Ordenar">${ops.map(([v, t]) => `<option value="${v}" ${view.orden === v ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
+}
+
+/* ---------- Filtros dentro de la categoría ---------- */
+const OTROS = '~otros';
+// Opciones de una fila: [{k, t, n}], de la que más productos tiene a la que menos.
+// Los productos sin ese dato van juntos en "Otros", así ninguno queda afuera.
+function opciones(items, keyFn, labelFn, otros) {
+    const m = new Map(); let sin = 0;
+    items.forEach(p => {
+        const k = keyFn(p);
+        if (!k) { sin++; return; }
+        const o = m.get(k) || { k, t: labelFn(p), n: 0 };
+        o.n++; m.set(k, o);
+    });
+    const arr = [...m.values()].sort((a, b) => b.n - a.n || a.t.localeCompare(b.t, 'es'));
+    if (arr.length && sin) arr.push({ k: OTROS, t: otros, n: sin });
+    return arr;
+}
+const coincide = (keyFn, sel) => (p) => !sel || (sel === OTROS ? !keyFn(p) : keyFn(p) === sel);
+function filaChips(k, rotulo, todos, ops, sel) {
+    return `<div class="chips subchips"><span class="clbl">${esc(rotulo)}</span>` +
+        `<button class="chip ${!sel ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="">${esc(todos)}</button>` +
+        ops.map(o => `<button class="chip ${sel === o.k ? 'on' : ''}" data-act="chip" data-k="${k}" data-v="${esc(o.k)}">${esc(o.t)}</button>`).join('') +
+        `</div>`;
+}
+
+function renderCategoria(main) {
+    const g = grupoDe(view.arg);
+    if (!g) { location.hash = '#/'; return; }
+    const [rot1, rot2] = FILTROS[g.id] || FILTROS_DEF;
+    const [n1, n2] = nivelesDe(g);
+    let items = g.items, filas = '';
+    const camino = [];
+
+    // 1) Tipo: solo si la categoría tiene más de uno (ej. Vinos: tintos / blancos / rosados)
+    const o1 = n1 ? opciones(items, n1.key, n1.label, 'Otros') : [];
+    const hay1 = o1.length >= 2;
+    if (!hay1 || !o1.some(o => o.k === view.t)) view.t = '';
+    if (hay1) {
+        filas += filaChips('t', rot1, 'Todos', o1, view.t);
+        if (view.t) { items = items.filter(coincide(n1.key, view.t)); camino.push(o1.find(o => o.k === view.t).t); }
     }
-
-    function buildOfertas() {
-        const lista = enOferta();
-        const bloque = document.getElementById('bloque-ofertas');
-        const banner = document.getElementById('ofertas-banner-titulo');
-        if (!lista.length) {
-            bloque.style.display = 'none';
-            if (banner) banner.textContent = 'Mirá todo el catálogo';
-            return;
-        }
-        bloque.style.display = '';
-        // Sin contar cuántas hay: el número cambia todo el tiempo y no le suma
-        // nada al cliente
-        if (banner) banner.textContent = 'Ofertas y combos';
-        // Primero los combos, después el resto
-        const orden = lista.slice().sort((a, b) => {
-            const ca = normalizar(a.tipo) === 'combos' ? 0 : 1;
-            const cb = normalizar(b.tipo) === 'combos' ? 0 : 1;
-            return ca - cb || a.name.localeCompare(b.name, 'es');
-        });
-        document.getElementById('ofertas-grid').innerHTML =
-            orden.slice(0, 8).map((p, i) => productCard(p, 'qty-of-' + i)).join('');
+    // 2) Subcategoría: si hay tipos, aparece después de elegir uno
+    const o2 = (n2 && (!hay1 || view.t)) ? opciones(items, n2.key, n2.label, 'Otros') : [];
+    const hay2 = o2.length >= 2;
+    if (!hay2 || !o2.some(o => o.k === view.f)) view.f = '';
+    if (hay2) {
+        filas += filaChips('f', rot2, 'Ver todos', o2, view.f);
+        if (view.f) { items = items.filter(coincide(n2.key, view.f)); camino.push(o2.find(o => o.k === view.f).t); }
     }
-
-    function buildHome() {
-        buildOfertas();
-        let pool = allProducts.filter(p => esVino(p.tipo));
-        if (pool.length < 8) pool = allProducts.slice();
-        const random = shuffle(pool.slice()).slice(0, 8);
-        document.getElementById('destacados').innerHTML = random.map((p, i) => productCard(p, 'qty-dest-' + i)).join('');
-
-        const tops = topBodegas(12);
-        document.getElementById('bodegas-row').innerHTML = tops.length
-            ? tops.map(b => `<button class="bodega-item" data-val="${hesc(b)}"><span class="bodega-circle">${hesc(iniciales(b))}</span><span class="bodega-name">${hesc(b)}</span></button>`).join('')
-            : '<span class="nav-empty">—</span>';
+    // 3) Marca (columna Etiqueta) de lo que quedó filtrado
+    const o3 = opciones(items, NIVEL_MARCA.key, NIVEL_MARCA.label, 'Otras');
+    const hay3 = o3.length >= 2;
+    if (!hay3 || !o3.some(o => o.k === view.m)) view.m = '';
+    if (hay3) {
+        filas += filaChips('m', 'Marca', 'Todas', o3, view.m);
+        if (view.m) { items = items.filter(coincide(NIVEL_MARCA.key, view.m)); camino.push(o3.find(o => o.k === view.m).t); }
     }
+    renderLista(main, g.emoji + ' ' + g.nombre, items, filas, camino);
+}
 
-    async function fetchProducts() {
-        try {
-            const res = await fetch(API_URL + '&t=' + new Date().getTime());
-            const data = await res.json();
-            const filas = Array.isArray(data) ? data : (data.productos || []);
-            const clean = (v) => (v === null || v === undefined) ? '' : String(v).trim();
+// Deja a la vista (centrado) el chip elegido en cada fila que se desliza
+function centrarChips() {
+    document.querySelectorAll('.chips').forEach(fila => {
+        const on = fila.querySelector('.chip.on');
+        if (on && fila.scrollWidth > fila.clientWidth) fila.scrollLeft = on.offsetLeft - (fila.clientWidth - on.offsetWidth) / 2;
+    });
+}
 
-            allProducts = filas.map(f => ({
-                name: clean(f.NOMBRE),
-                price: clean(f.PRECIO),
-                img: clean(f.IMAGEN) || SIN_FOTO,
-                tipo: clean(f.TIPO),
-                cepa: clean(f.VARIETAL),
-                stock: clean(f.STOCK),
-                mayorista: clean(f.MAYORISTA),
-                marca: clean(f.Etiqueta),   // bodega / marca, como la carga el sistema
-                promo: clean(f.PROMO),      // ofertas vigentes, todas juntas: "2X + SIX PACK"
-                // Las mismas ofertas pero una por una, para poder mostrarlas
-                // separadas. Si el sistema todavía no manda PROMOS (o los datos
-                // vienen de la planilla vieja), se parte PROMO por el " + ".
-                promos: Array.isArray(f.PROMOS)
-                    ? f.PROMOS.map(clean).filter(Boolean)
-                    : (clean(f.PROMO) ? clean(f.PROMO).split(' + ').map(s => s.trim()).filter(Boolean) : []),
-                // Las ofertas con su REGLA (2x1, 20% OFF, precio por pack), que
-                // es lo que permite cobrarlas igual que el mostrador
-                ofertas: Array.isArray(f.OFERTAS) ? f.OFERTAS : [],
-                // Promo del día ("hoy todos los Pinot al precio mayorista"):
-                // llega con el precio ya resuelto y el cartel para anunciarla
-                promoDia: (f.PROMO_DIA && f.PROMO_DIA.precio > 0) ? f.PROMO_DIA : null
-            })).filter(p => p.name !== "" && Number(p.stock) > 0);
+function renderBusqueda(main) {
+    const toks = norm(view.q).split(' ').filter(Boolean);
+    const items = productos.filter(p => {
+        const hay = norm([p.titulo, p.marcaTxt, p.varietal, p.tipo, p.C, p.lleva].join(' '));
+        return toks.every(t => hay.includes(t));
+    });
+    renderLista(main, `Resultados para “${view.q}”`, items);
+}
 
-            ofertas = (data && data.ofertas) ? data.ofertas : { productos: [], combos: [] };
-
-            renderFiltros();
-            buildHome();
-            document.getElementById('loading').style.display = 'none';
-            showHome();
-        } catch (e) {
-            console.error(e);
-            document.getElementById('loading').innerHTML = "Error al cargar los productos. Por favor, recargá la página.";
-        }
+// Sin contar cuántos productos hay: el número no le suma nada al cliente
+function renderLista(main, titulo_, items, filtros = '', camino = []) {
+    const lista = ordenar(items);
+    main.innerHTML = `<div class="lh"><div><h1>${esc(titulo_)}</h1>${camino.length ? `<span>${esc(camino.join(' › '))}</span>` : ''}</div>${lista.length > 1 ? selectOrden() : ''}</div>
+        ${filtros}
+        ${lista.length ? '<div class="plist" id="plist"></div><div class="more" id="more"></div>'
+            : '<div class="vacio">No encontramos productos.<br><small>Probá con otra búsqueda o categoría.</small></div>'}`;
+    if (!lista.length) return;
+    pendientes = lista;
+    agregarMas();
+    if (observer) observer.disconnect();
+    if ('IntersectionObserver' in window) {
+        observer = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) agregarMas(); }, { rootMargin: '600px' });
+        observer.observe($('#more'));
+    } else {
+        while (pendientes.length) agregarMas();
     }
+}
+function agregarMas() {
+    const el = $('#plist'); if (!el) return;
+    const tanda = pendientes.splice(0, 40);
+    el.insertAdjacentHTML('beforeend', tanda.map(rowHTML).join(''));
+    const more = $('#more');
+    if (more) more.textContent = pendientes.length ? 'Cargando más…' : '';
+}
 
-    function renderFiltros() {
-        // Nivel 1: categorías
-        document.getElementById('filtros-tipo').innerHTML = TIPOS.map(t => `<button class="btn-filtro ${t===fTipo?'active':''}" onclick="setFiltro('tipo', '${t}')">${t}</button>`).join('');
+/* =====================================================================
+   Navegación (con el botón "atrás" del celular funcionando)
+   ===================================================================== */
+function route() {
+    const h = location.hash.replace(/^#\/?/, '');
+    const [name, ...rest] = h.split('/');
+    view.name = name === 'c' ? 'c' : 'home';                // links viejos (ej. #/bodegas) van al inicio
+    view.arg = decodeURIComponent(rest.join('/'));
+    view.t = ''; view.f = ''; view.m = ''; view.orden = 'rel';
+    if (view.q) { view.q = ''; $('#q').value = ''; $('#sbox').classList.remove('has'); }
+    render();
+    window.scrollTo(0, 0);
+}
+function goBack() { location.hash = '#/'; }
 
-        const secCepas = document.getElementById('seccion-cepas');
-        const secVar = document.getElementById('seccion-varietal');
+/* Hojas (producto / carrito / info) */
+let sheetOpen = null, sheetPushed = false;
+const timers = {};
+function showSheet(name) {
+    const el = $('#sheet-' + name);
+    clearTimeout(timers[name]);
+    $('#toast').classList.remove('show');      // que el "Agregado: …" no tape el total del pedido
+    if (name === 'producto') renderProducto();
+    if (name === 'carrito') renderCarrito();
+    if (name === 'info') renderInfo();
+    el.classList.add('vis');
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('open')));
+    $('#sp-' + name).scrollTop = 0;
+    sheetOpen = name;
+    document.body.style.overflow = 'hidden';
+}
+function hideSheet(name) {
+    const el = $('#sheet-' + name);
+    el.classList.remove('open');
+    timers[name] = setTimeout(() => el.classList.remove('vis'), 240);
+    if (name === 'carrito') enviadoUrl = null;
+    sheetOpen = null;
+    document.body.style.overflow = '';
+}
+function openSheet(name) {
+    if (sheetOpen) hideSheet(sheetOpen);
+    else { history.pushState({ hoja: 1 }, ''); sheetPushed = true; }
+    showSheet(name);
+}
+function closeSheet() {
+    if (sheetPushed) history.back();
+    else if (sheetOpen) hideSheet(sheetOpen);
+}
+window.addEventListener('popstate', () => {
+    if (sheetOpen) { hideSheet(sheetOpen); sheetPushed = false; }
+});
 
-        if (normalizar(fTipo) === 'ofertas') {
-            // Nivel 2 en Ofertas: la categoría. Solo las que tienen algo hoy.
-            const enOf = allProducts.filter(p => !!p.promo || !!p.promoDia);
-            const conOferta = TIPOS_OFERTA.filter(t => enOf.some(p => matchCategoria(p, t)));
-            secCepas.style.display = conOferta.length ? 'block' : 'none';
-            document.getElementById('filtros-cepa').innerHTML = ['Todos', ...conOferta].map(t =>
-                `<button class="btn-filtro ${t === fOferta ? 'active' : ''}" onclick="setOferta('${t}')">${t}</button>`).join('');
-            secVar.style.display = 'none';
-        } else if (normalizar(fTipo) === 'vinos') {
-            // Nivel 2: color (Tintos / Blancos / Rosados)
-            secCepas.style.display = 'block';
-            const colores = [['Todos', 'Todos'], ['Tintos', 'TINTOS'], ['Blancos', 'BLANCOS'], ['Rosados', 'ROSADOS']];
-            document.getElementById('filtros-cepa').innerHTML = colores.map(([lab, val]) =>
-                `<button class="btn-filtro ${val===fColor?'active':''}" onclick="setColor('${val}')">${lab}</button>`).join('');
-            // Nivel 3: varietal (aparece al elegir un color)
-            const grapes = (fColor && fColor !== 'Todos')
-                ? uniqSorted(allProducts.filter(p => normalizar(p.tipo) === 'vinos ' + normalizar(fColor)).map(p => p.cepa).filter(c => c && normalizar(c) !== 'todos'))
-                : [];
-            if (grapes.length) {
-                secVar.style.display = 'block';
-                document.getElementById('filtros-varietal').innerHTML =
-                    `<button class="btn-filtro ${fCepa==='Todos'?'active':''}" data-cepa="Todos">Ver todos</button>` +
-                    grapes.map(g => `<button class="btn-filtro ${g===fCepa?'active':''}" data-cepa="${hesc(g)}">${hesc(g)}</button>`).join('');
-            } else {
-                secVar.style.display = 'none';
-            }
-        } else if (CEPAS[fTipo]) {
-            secCepas.style.display = 'block';
-            document.getElementById('filtros-cepa').innerHTML = CEPAS[fTipo].map(c =>
-                `<button class="btn-filtro ${c===fCepa?'active':''}" onclick="setFiltro('cepa', '${c}')">${c}</button>`).join('');
-            secVar.style.display = 'none';
-        } else {
-            secCepas.style.display = 'none';
-            secVar.style.display = 'none';
-        }
+/* ---------- Ficha de producto ---------- */
+let psId = null, psQty = 1;
+function abrirProducto(id) { psId = id; psQty = 1; openSheet('producto'); }
+// Lo que sale llevar esa cantidad, con la mejor oferta (el mayorista depende de todo el pedido)
+function totalFicha(p, q) {
+    if (!(p.precio > 0)) return 0;
+    const conOferta = calcularLinea(q, p.precio, mejorOferta(p.ofertas, q, p.precio)).total;
+    const pd = (p.promoDia && p.promoDia.precio < p.precio) ? p.promoDia : null;
+    return pd ? Math.min(conOferta, redondearPesos(q * pd.precio)) : conOferta;
+}
+// Foto grande de la ficha: la botella recortada sobre blanco; si solo hay foto del local, con su fondo desenfocado
+function heroHTML(p) {
+    if (p.img && !p.rc) return `<div class="ps-hero">${badgeHTML(p)}<div class="blur" style="background-image:url('${esc(p.img.replace(/'/g, '%27'))}')"></div><img src="${esc(p.img)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}"></div>`;
+    const dentro = p.img ? `<img src="${esc(p.img)}" class="rc" data-orig="${esc(p.foto)}" alt="${esc(p.titulo)}" data-ph="${phEmoji(p)}">`
+        : (p.combo && p.combo.length) ? comboHTML(p.combo) : `<span class="ph">${phEmoji(p)}</span>`;
+    return `<div class="ps-hero blanco">${badgeHTML(p)}${dentro}</div>`;
+}
+function renderProducto() {
+    const p = byId[psId]; if (!p) return;
+    const tags = [];
+    if (p.esCombo) tags.push('Combo');
+    if (p.marca) tags.push((p.grupo === 'vinos' || p.grupo === 'espumantes' ? 'Bodega: ' : 'Marca: ') + bonito(p.marcaTxt));
+    if (NIVEL_VARIETAL.key(p) && p.F !== p.marca) tags.push(bonito(p.varietal));
+    if (p.tipo && p.T !== p.F && !p.esCombo) tags.push(bonito(p.tipo));
+    const m = mayUnit(p);
+    const tf = totalFicha(p, psQty);
+    $('#sp-producto').innerHTML = `
+        <button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+        ${heroHTML(p)}
+        <div class="ps-body">
+            <h2>${esc(p.titulo)}</h2>
+            ${tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+            ${p.lleva ? `<p class="ps-desc"><b>Lleva:</b> ${esc(p.lleva)}</p>` : ''}
+            ${priceHTML(p)}${ofertasHTML(p, true)}${stockHTML(p)}
+            ${m ? `<p class="note">🍷 <b>Precio mayorista: ${money(m)} c/u</b><br>Llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar distintos). Ahorrás ${money(p.precio - m)} por unidad.</p>` : ''}
+        </div>
+        <div class="foot">
+            <div class="stepper"><button data-act="ps-dec" aria-label="Menos">−</button><span>${psQty}</span><button data-act="ps-inc" aria-label="Más">+</button></div>
+            <button class="btn" data-act="ps-add">Agregar${tf > 0 ? ' · ' + money(tf) : ''}</button>
+        </div>`;
+}
+
+/* ---------- Carrito + checkout ---------- */
+const cliente = Object.assign({ nombre: '', direccion: '', entrega: CONFIG.ENTREGAS[0], pago: CONFIG.PAGOS[0], notas: '' }, store.get('mn_cliente', {}));
+function guardarCliente() { const { notas, ...resto } = cliente; store.set('mn_cliente', resto); }
+const esEnvio = () => /env/i.test(cliente.entrega);
+let enviadoUrl = null;   // después de tocar "Enviar" se muestra la confirmación
+
+function renderCarrito() {
+    const panel = $('#sp-carrito');
+    if (enviadoUrl) return renderConfirmacion(panel);
+    const r = calcular();
+    if (!r.lineas.length) {
+        panel.innerHTML = `<button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+            <div class="cs"><div class="cs-h"><h2>Tu pedido</h2></div><div class="vacio">Tu pedido está vacío.<br><small>Agregá productos con el botón +</small></div></div>`;
+        return;
     }
-
-    function setFiltro(cat, val) {
-        if (cat === 'tipo') { fTipo = val; fCepa = 'Todos'; fColor = 'Todos'; fMarca = ''; fOferta = 'Todos'; }
-        else { fCepa = val; }
-        renderFiltros();
-        renderProducts();
+    let may = '';
+    if (r.may) {
+        may = `<div class="may">🍷 ¡Precio mayorista activado!${r.ahorroMay > 0 ? ' Ahorrás ' + money(r.ahorroMay) : ''}` +
+            (r.lineas.some(l => esVinoMay(l.p) && l.p.ofertas.length) ? '<small>Los que están en oferta suman para llegar a 6, pero quedan a su precio de oferta.</small>' : '') + `</div>`;
+    } else if (r.vinos > 0) {
+        const faltan = VINOS_PARA_MAYORISTA - r.vinos;
+        may = `<div class="may">🍷 Sumá ${faltan} ${faltan === 1 ? 'vino' : 'vinos'} más y pagás precio mayorista<div class="bar"><i style="width:${Math.round(100 * r.vinos / VINOS_PARA_MAYORISTA)}%"></i></div></div>`;
     }
-
-    function setOferta(val) {
-        fOferta = val;
-        renderFiltros();
-        renderProducts();
-    }
-    function setColor(val) {
-        fColor = val;
-        fCepa = 'Todos';
-        renderFiltros();
-        renderProducts();
-    }
-
-    function updateQty(btn, delta) {
-        const input = btn.parentElement.querySelector('input');
-        let val = parseInt(input.value) + delta;
-        if (val < 1) val = 1;
-        input.value = val;
-    }
-
-    // Tarjeta de producto reutilizable (qid debe ser único en la página)
-    function productCard(p, qid) {
-        const esCombo = normalizar(p.tipo) === 'combos';
-        // En los combos el "varietal" es lo que lleva adentro: va como detalle, no como tag
-        const tagRaw = esCombo ? 'COMBO'
-            : (p.cepa && normalizar(p.cepa) !== 'todos' && p.cepa.trim() !== '') ? p.cepa : p.tipo;
-        const tag = tagRaw ? `<span class="tag">${hesc(tagRaw)}</span>` : '';
-        // Un producto puede tener varias ofertas a la vez. En el cartelito de
-        // la esquina no entran todas, así que ahí va el número y abajo la lista
-        // completa, para que el cliente vea cuál le conviene y la pida.
-        const ofertas = p.ofertas || [];
-        const lista = parseNum(p.price);
-        // Los textos de respaldo, por si el sistema todavía no manda las reglas
-        const textos = (p.promos && p.promos.length) ? p.promos : (p.promo ? [p.promo] : []);
-        const etiquetas = ofertas.length ? ofertas.map(etiquetaOferta) : textos;
-
-        // Promo del día: alcanza al producto por ser de cierto varietal o
-        // categoría, no por estar cargada en su ficha. Manda sobre el resto.
-        const pd = (p.promoDia && p.promoDia.precio > 0 && p.promoDia.precio < lista) ? p.promoDia : null;
-
-        const badge = (pd && pd.titulo)
-            ? `<span class="promo-badge promo-badge-dia">${hesc(pd.titulo)}</span>`
-            : etiquetas.length
-                ? `<span class="promo-badge">${hesc(etiquetas.length > 1 ? etiquetas.length + ' ofertas' : etiquetas[0])}</span>`
-                : '';
-
-        // Un descuento se ve mejor en el precio mismo: la lista tachada y al
-        // lado lo que sale de verdad. Vale para la promo del día y para los
-        // descuentos por porcentaje.
-        const pct = ofertas.find(o => o.kind === 'PORCENTAJE' && o.percent > 0);
-        const precioConDescuento = pd ? pd.precio : (pct ? unitarioConOferta(pct, lista) : null);
-        const precioHtml = precioConDescuento !== null
-            ? `<span class="precio"><s class="precio-lista">$${precioTexto(p.price)}</s> $${pesosTexto(precioConDescuento)}</span>`
-            : `<span class="precio">$${precioTexto(p.price)}</span>`;
-
-        // El unitario solo hace falta en las promos que no dicen ningún precio
-        // (2x1, 3x2): ahí es el número con el que el cliente compara. En "2X
-        // $17.000" o "CAJA $58.800" el precio ya está escrito y agregarle el
-        // unitario era repetir lo mismo dos veces.
-        const chip = (o) => {
-            const et = hesc(etiquetaOferta(o));
-            return (o.kind === 'NXM')
-                ? `<span class="promo-chip">${et} · x1 $${pesosTexto(unitarioConOferta(o, lista))}</span>`
-                : `<span class="promo-chip">${et}</span>`;
-        };
-        const listaPromos = ofertas.length
-            ? `<div class="promos">` +
-              (ofertas.length > 1 ? `<span class="promos-titulo">Elegí la que te convenga</span>` : '') +
-              ofertas.map(chip).join('') + `</div>`
-            : (textos.length > 1
-                ? `<div class="promos"><span class="promos-titulo">Elegí la que te convenga</span>` +
-                  textos.map(t => `<span class="promo-chip">${hesc(t)}</span>`).join('') + `</div>`
-                : '');
-        const lleva = (esCombo && p.cepa) ? `<span class="lleva">Lleva: ${hesc(p.cepa)}</span>` : '';
-        return `
-                <div class="producto">
-                    ${badge}
-                    <div class="img-wrap"><img src="${p.img}" loading="lazy" decoding="async" alt="${hesc(p.name)}" onerror="this.onerror=null;this.src=SIN_FOTO"></div>
-                    ${tag}
-                    <span class="nombre">${p.name}</span>
-                    ${lleva}
-                    ${precioHtml}
-                    ${listaPromos}
-                    <div class="selector-cantidad">
-                        <button class="btn-qty" onclick="updateQty(this, -1)">−</button>
-                        <input type="number" class="input-qty" value="1" id="${qid}" readonly>
-                        <button class="btn-qty" onclick="updateQty(this, 1)">+</button>
+    const envio = esEnvio();
+    const gratis = envio && r.total >= CONFIG.ENVIO_GRATIS_DESDE;
+    const falta = CONFIG.ENVIO_GRATIS_DESDE - r.total;
+    const notaEnvio = !envio ? '' : gratis
+        ? `<div class="envio-note gratis">🎉 Tu pedido tiene <b>envío gratis</b> en ${esc(CONFIG.ZONA_ENVIO_GRATIS)}. El horario lo coordinamos por WhatsApp.</div>`
+        : `<div class="envio-note">🛵 El envío se <b>coordina por WhatsApp</b>: te confirmamos costo y horario.${falta > 0 ? `<small>Sumando ${money(falta)} más, el envío es gratis en ${esc(CONFIG.ZONA_ENVIO_GRATIS)}.</small>` : ''}</div>`;
+    const seg = (campo, ops) => `<div class="seg">${ops.map(o => `<button type="button" class="${cliente[campo] === o ? 'on' : ''}" data-act="seg" data-k="${campo}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+    const prevScroll = panel.scrollTop;
+    panel.innerHTML = `<div class="grip"></div><button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+        <div class="cs">
+            <div class="cs-h"><h2>Tu pedido</h2><button class="btn-ghost" data-act="vaciar">Vaciar</button></div>
+            ${r.lineas.map(l => {
+                const cu = l.pu > 0 ? (l.conMay ? `<s>${money(l.regular)}</s><em>${money(l.pu)}</em>` : money(l.pu)) + ' c/u' : 'Precio a consultar';
+                const promo = l.promoDia
+                    ? `<span class="ci-dia">${esc(l.promoDia.titulo || 'Promo del día')} · ahorrás ${money(redondearPesos(l.regular * l.q) - l.lineTotal)}</span>`
+                    : (l.promo && l.descuento > 0) ? `<span class="ci-promo">${esc(etiquetaOferta(l.promo))} · ahorrás ${money(l.descuento)}</span>` : '';
+                return `<div class="ci">
+                    <div class="ci-img">${imgHTML(l.p)}</div>
+                    <div class="ci-info"><b>${esc(l.p.titulo)}</b><small>${cu}</small>${promo}</div>
+                    <div class="ci-right">
+                        <div class="stepper"><button data-act="dec" data-id="${l.p.id}" aria-label="Quitar uno">−</button><span>${l.q}</span><button data-act="inc" data-id="${l.p.id}" aria-label="Sumar uno">+</button></div>
+                        <span class="ci-total">${money(l.lineTotal)}</span>
                     </div>
-                    <button class="btn-add" onclick="addItem('${jesc(p.name)}', '${jesc(p.price)}', '${jesc(p.tipo)}', '${jesc(p.mayorista)}', '${qid}')">Añadir al pedido</button>
                 </div>`;
-    }
+            }).join('')}
+            ${may}
+            <div class="form">
+                <label for="f-nombre">Tu nombre</label>
+                <input id="f-nombre" data-k="nombre" value="${esc(cliente.nombre)}" autocomplete="name" placeholder="¿A nombre de quién?">
+                <label>¿Cómo lo recibís?</label>
+                ${seg('entrega', CONFIG.ENTREGAS)}
+                ${envio ? `<label for="f-dir">Dirección de entrega</label>
+                <input id="f-dir" data-k="direccion" value="${esc(cliente.direccion)}" autocomplete="street-address" placeholder="Calle, número, barrio">` : ''}
+                ${notaEnvio}
+                <label>¿Cómo pagás?</label>
+                ${seg('pago', CONFIG.PAGOS)}
+                <label for="f-notas">Notas (opcional)</label>
+                <textarea id="f-notas" data-k="notas" rows="2" placeholder="Ej: timbre B, sin hielo, horario…">${esc(cliente.notas)}</textarea>
+            </div>
+            ${r.ahorroPromos > 0 ? `<div class="tline ok"><span>Promos aplicadas</span><b>ahorrás ${money(r.ahorroPromos)}</b></div>` : ''}
+            ${envio ? `<div class="tline${gratis ? ' ok' : ''}"><span>Envío</span><b>${gratis ? 'Gratis' : 'A coordinar'}</b></div>` : ''}
+            <div class="tot"><span>Total${envio && !gratis ? ' (sin envío)' : ''}</span><b>${money(r.total)}</b></div>
+        </div>
+        <div class="foot"><button class="btn btn-wpp" data-act="send">${envio ? 'Enviar pedido y coordinar envío' : 'Enviar pedido por WhatsApp'}</button></div>`;
+    panel.scrollTop = prevScroll;
+}
 
-    function renderProducts() {
-        const grid = document.getElementById('catalogo-grid');
-        const searchVal = document.getElementById('buscador').value.trim();
-        const search = normalizar(searchVal);
-
-        let filtered = allProducts.filter(p => {
-            const mTipo = matchCategoria(p, fTipo);
-            let mSub;
-            if (normalizar(fTipo) === 'ofertas') {
-                // Dentro de Ofertas se filtra por categoría: COMBOS, VINOS…
-                mSub = fOferta === 'Todos' || matchCategoria(p, fOferta);
-            } else if (normalizar(fTipo) === 'vinos') {
-                const mColor = fColor === 'Todos' || normalizar(p.tipo) === 'vinos ' + normalizar(fColor);
-                const mVar = fCepa === 'Todos' || normalizar(p.cepa) === normalizar(fCepa);
-                mSub = mColor && mVar;
-            } else {
-                mSub = matchSub(p, fTipo, fCepa);
-            }
-            const mMarca = fMarca === '' || normalizar(marcaDe(p)) === normalizar(fMarca);
-            const mSearch = search === '' || normalizar(p.name).includes(search);
-            return mTipo && mSub && mMarca && mSearch;
-        });
-
-        const orden = document.getElementById('orden').value;
-        if (orden === 'precio-asc') filtered.sort((a, b) => parseNum(a.price) - parseNum(b.price));
-        else if (orden === 'precio-desc') filtered.sort((a, b) => parseNum(b.price) - parseNum(a.price));
-        else if (orden === 'az') filtered.sort((a, b) => a.name.localeCompare(b.name, 'es'));
-
-        let ctx = '';
-        if (searchVal) ctx = '“' + searchVal + '” · ';
-        else if (fMarca) ctx = fMarca + ' · ';
-        else if (normalizar(fTipo) === 'vinos') {
-            const parts = ['VINOS'];
-            if (fColor && fColor !== 'Todos') parts.push(fColor);
-            if (fCepa && fCepa !== 'Todos') parts.push(fCepa);
-            ctx = parts.join(' · ') + ' · ';
-        }
-        else if (fCepa !== 'Todos') ctx = fCepa + ' · ';
-        else if (fTipo !== 'Todos') ctx = fTipo + ' · ';
-        document.getElementById('result-count').textContent =
-            ctx + filtered.length + (filtered.length === 1 ? ' producto' : ' productos');
-
-        if (filtered.length === 0) {
-            grid.innerHTML = `<div class="vacio">No encontramos productos para tu búsqueda.<br><small>Probá con otra categoría o nombre.</small></div>`;
-            return;
-        }
-        grid.innerHTML = filtered.map((p, index) => productCard(p, 'qty-' + index)).join('');
-    }
-
-    function addItem(n, p, t, m, qtyId) {
-        const qty = parseInt(document.getElementById(qtyId).value);
-        const item = cart.find(i => i.n === n);
-        // Las ofertas no viajan por el onclick (son objetos): se buscan acá por
-        // nombre, que es la misma clave con la que se agrupa el carrito.
-        const prod = allProducts.find(x => x.name === n);
-        if (item) item.q += qty; else cart.push({n, p, t, m, q: qty, of: prod ? prod.ofertas : [], pd: prod ? prod.promoDia : null});
-        document.getElementById(qtyId).value = 1;
-        updateCartUI();
-    }
-
-    function updateCartItemQty(index, delta) {
-        cart[index].q += delta;
-        if (cart[index].q < 1) { cart.splice(index, 1); }
-        updateCartUI();
-        if (cart.length === 0) { toggleModal(false); } else { renderCartModal(); }
-    }
-
-    function removeItem(index) {
-        cart.splice(index, 1);
-        updateCartUI();
-        if (cart.length === 0) toggleModal(false); else renderCartModal();
-    }
-
-    function toggleModal(show) {
-        document.getElementById('cart-modal').style.display = show ? 'flex' : 'none';
-        if (show) renderCartModal();
-    }
-
-    function updateCartUI() {
-        const count = cart.reduce((acc, i) => acc + i.q, 0);
-        document.getElementById('cart-bar').style.display = count > 0 ? 'flex' : 'none';
-        document.getElementById('count').innerText = count;
-    }
-
-    function renderCartModal() {
-        const list = document.getElementById('cart-list');
-        const details = document.getElementById('total-details');
-        list.innerHTML = '';
-        const { itemsVino, mayorista, total, lineas, ahorroPromos } = calcularResumen();
-
-        lineas.forEach((ln, index) => {
-            const { item, regular, pu, lineTotal, esVinoItem } = ln;
-            // El precio que se muestra tiene que ser el que se suma al total.
-            // Antes el mayorista solo se mostraba si era MÁS BARATO que la
-            // lista, así que si quedaba invertido se veía un precio y se
-            // cobraba otro.
-            const aplicado = mayorista && esVinoItem && Math.round(pu) !== Math.round(regular);
-            const precioCu = aplicado
-                ? `<s style="color:#777;">$${precioTexto(item.p)}</s> <span style="color:#d4af37;">$${pesosTexto(pu)}</span> c/u`
-                : `$${pesosTexto(pu)} c/u`;
-            // Qué promo se le aplicó a esta línea y cuánto le descontó
-            const promoAplicada = ln.promoDia
-                ? `<br><small style="color:#c4b5fd;">${hesc(ln.promoDia.titulo || 'Promo del día')} · ahorrás $${pesosTexto(redondearPesos(ln.regular * ln.item.q) - ln.lineTotal)}</small>`
-                : (ln.promo && ln.descuento > 0)
-                    ? `<br><small style="color:#4ade80;">${hesc(etiquetaOferta(ln.promo))} · ahorrás $${pesosTexto(ln.descuento)}</small>`
-                    : '';
-            list.innerHTML += `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <strong>${item.n}</strong><br>
-                        <small>${precioCu}</small>${promoAplicada}
-                    </div>
-                    <div class="cart-qty-controls">
-                        <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, -1)">-</button>
-                        <span class="cart-qty-val">${item.q}</span>
-                        <button class="cart-qty-btn" onclick="updateCartItemQty(${index}, 1)">+</button>
-                    </div>
-                    <span class="cart-item-total">$${pesosTexto(lineTotal)}</span>
-                    <button class="cart-remove" onclick="removeItem(${index})">✕</button>
-                </div>`;
-        });
-
-        // Lo que costaría todo a precio de lista, sin promo ni mayorista
-        const totalLista = lineas.reduce((a, ln) => a + redondearPesos(ln.regular * ln.item.q), 0);
-        // El ahorro se separa: una parte es de las promos y otra del mayorista.
-        // Juntarlos en un solo número no dejaba ver de dónde salía cada peso.
-        const ahorroMayorista = totalLista - total - ahorroPromos;
-
-        let htmlDetails = '';
-        if (mayorista) {
-            htmlDetails += `<div style="color:#d4af37; font-weight:bold;">🍷 ¡PRECIO MAYORISTA ACTIVADO!</div>`;
-            if (lineas.some((ln) => esVino(ln.item.t) && parseNum(ln.item.m) <= 0)) htmlDetails += `<div style="color:#888; font-size:0.85em;">Los que están en oferta quedan a su precio de oferta.</div>`;
-            if (ahorroMayorista > 0) htmlDetails += `<div style="color:#d4af37; font-size:0.9em;">Precio mayorista: ahorrás $${pesosTexto(ahorroMayorista)}</div>`;
-        }
-        if (ahorroPromos > 0) htmlDetails += `<div style="color:#4ade80; font-size:0.9em;">Promos aplicadas: ahorrás $${pesosTexto(ahorroPromos)}</div>`;
-        htmlDetails += `<div style="font-size:1.3em; font-weight:bold; margin-top:5px; color:#fff;">TOTAL: $${pesosTexto(total)}</div>`;
-        if (!mayorista && itemsVino > 0) {
-            const faltan = VINOS_PARA_MAYORISTA - itemsVino;
-            htmlDetails += `<small style="color:#888;">Llevás ${itemsVino} vino(s). ¡Sumá ${faltan} más y accedé al PRECIO MAYORISTA! 🍷</small>`;
-        }
-        details.innerHTML = htmlDetails;
-    }
-
-    function sendWpp() {
-        const { mayorista, total, lineas, ahorroPromos } = calcularResumen();
-        let msg = "¡Hola Monje Negro! 🍷 Este es mi pedido:%0A%0A";
-        lineas.forEach(ln => {
-            msg += `• ${ln.item.q}x ${ln.item.n} ($${pesosTexto(ln.pu)} c/u)`;
-            // Que el pedido llegue diciendo qué promo lleva cada renglón, así
-            // el mostrador cobra lo mismo que vio el cliente
-            if (ln.promoDia) msg += ` — ${ln.promoDia.titulo || 'Promo del día'}: $${pesosTexto(ln.lineTotal)}`;
-            else if (ln.promo && ln.descuento > 0) msg += ` — ${etiquetaOferta(ln.promo)}: $${pesosTexto(ln.lineTotal)}`;
-            msg += `%0A`;
-        });
-        if (mayorista) { msg += `%0A*✅ PRECIO MAYORISTA APLICADO (6+ vinos)*`; }
-        if (ahorroPromos > 0) { msg += `%0A*🔥 PROMOS APLICADAS: ahorro $${pesosTexto(ahorroPromos)}*`; }
-        msg += `%0A*TOTAL FINAL: $${pesosTexto(total)}*`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-    }
-
-    // Listeners
-    document.getElementById('nav-panel').addEventListener('click', (e) => {
-        const b = e.target.closest('.nav-opt');
-        if (b) navTo(b.dataset.kind, b.dataset.val);
+function enviar() {
+    const r = calcular();
+    if (!r.lineas.length) return;
+    const fNombre = $('#f-nombre'), fDir = $('#f-dir');
+    if (!cliente.nombre.trim()) { fNombre.classList.add('err'); fNombre.focus(); toast('Completá tu nombre'); return; }
+    if (esEnvio() && !cliente.direccion.trim()) { fDir.classList.add('err'); fDir.focus(); toast('Completá la dirección de entrega'); return; }
+    const envio = esEnvio(), gratis = envio && r.total >= CONFIG.ENVIO_GRATIS_DESDE;
+    let t = `¡Hola ${CONFIG.NOMBRE}! 🍷 Este es mi pedido:\n\n`;
+    r.lineas.forEach(l => {
+        // Con el nombre tal cual está en el sistema y qué promo lleva cada renglón, así el mostrador cobra lo mismo
+        t += `• ${l.q} x ${l.p.nombre}` + (l.pu > 0 ? ` (${money(l.pu)} c/u)` : ' (precio a consultar)');
+        if (l.promoDia) t += ` — ${l.promoDia.titulo || 'Promo del día'}: ${money(l.lineTotal)}`;
+        else if (l.promo && l.descuento > 0) t += ` — ${etiquetaOferta(l.promo)}: ${money(l.lineTotal)}`;
+        t += '\n';
     });
-    document.getElementById('bodegas-row').addEventListener('click', (e) => {
-        const b = e.target.closest('.bodega-item');
-        if (b) { showIndex(true); selectBodega(b.dataset.val); }
-    });
-    document.getElementById('idx-list').addEventListener('click', (e) => {
-        const b = e.target.closest('.idx-item');
-        if (b) selectBodega(b.dataset.val);
-    });
-    document.getElementById('filtros-varietal').addEventListener('click', (e) => {
-        const b = e.target.closest('[data-cepa]');
-        if (b) setFiltro('cepa', b.dataset.cepa);
-    });
-    document.addEventListener('click', (e) => { if (!e.target.closest('.mainnav')) closeNav(); });
+    if (r.may) t += `\n✅ Precio mayorista aplicado (${VINOS_PARA_MAYORISTA}+ vinos)`;
+    if (r.ahorroPromos > 0) t += `\n🔥 Promos aplicadas: ahorro ${money(r.ahorroPromos)}`;
+    t += `\n*Total: ${money(r.total)}*\n\n`;
+    t += `👤 ${cliente.nombre.trim()}\n`;
+    if (envio) t += `🛵 Envío a domicilio — ${gratis ? `gratis (pedido de más de ${money(CONFIG.ENVIO_GRATIS_DESDE)})` : 'costo y horario a coordinar'}\n📍 ${cliente.direccion.trim()}\n`;
+    else t += `🏪 Retiro en el local\n`;
+    t += `💳 ${cliente.pago}\n`;
+    if (cliente.notas.trim()) t += `📝 ${cliente.notas.trim()}\n`;
+    t += envio ? (gratis ? '\n¿Me confirman el horario de entrega? ¡Gracias!' : '\n¿Me confirman el costo y el horario del envío? ¡Gracias!')
+               : '\n¿Me avisan cuándo lo puedo pasar a buscar? ¡Gracias!';
+    enviadoUrl = waLink(t);
+    window.open(enviadoUrl, '_blank');
+    renderCarrito();
+}
 
-    const wl = document.getElementById('wpp-link');
-    if (wl) wl.href = 'https://wa.me/' + WHATSAPP_NUMBER;
+function renderConfirmacion(panel) {
+    const envio = esEnvio(), gratis = envio && calcular().total >= CONFIG.ENVIO_GRATIS_DESDE;
+    const sigue = envio
+        ? (gratis ? 'coordinamos el horario de entrega (el envío es gratis).' : 'coordinamos el envío: te confirmamos costo y horario.')
+        : 'te avisamos cuándo lo podés pasar a buscar.';
+    panel.innerHTML = `<button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+        <div class="conf">
+            <div class="conf-ico">✅</div>
+            <h2>¡Tu pedido está listo!</h2>
+            <p>Se abrió WhatsApp con el detalle. <b>Mandá el mensaje</b> y ${sigue}</p>
+            <p class="muted">¿No se abrió WhatsApp? Tocá el botón de abajo.</p>
+        </div>
+        <div class="foot col">
+            <button class="btn btn-wpp" data-act="reabrir">Abrir WhatsApp de nuevo</button>
+            <button class="btn-ghost" data-act="nuevo">Ya lo envié: vaciar el pedido</button>
+            <button class="btn-ghost" data-act="volver">Volver al pedido</button>
+        </div>`;
+}
 
-    initHero();
-    fetchProducts();
+/* ---------- Info ---------- */
+function renderInfo() {
+    $('#sp-info').innerHTML = `<button class="sheet-x" data-act="close" aria-label="Cerrar">✕</button>
+        <div class="info">
+            <h2>${esc(CONFIG.NOMBRE)}</h2><p>${esc(CONFIG.SUBTITULO)}</p>
+            <ul>
+                <li><span>🛵</span><span>${esc(CONFIG.ENTREGAS.join(' · '))}. Envío gratis en ${esc(CONFIG.ZONA_ENVIO_GRATIS)} superando los ${money(CONFIG.ENVIO_GRATIS_DESDE)}; si no, se coordina por WhatsApp.</span></li>
+                <li><span>💳</span><span>${esc(CONFIG.PAGOS.join(' · '))}</span></li>
+                <li><span>🍷</span><span>Precio mayorista llevando ${VINOS_PARA_MAYORISTA} vinos o espumantes o más (podés combinar). Los que están en oferta también suman para llegar a ${VINOS_PARA_MAYORISTA}, pero quedan a su precio de oferta.</span></li>
+                <li><span>🛒</span><span>Armá tu pedido, tocá <b>Ver pedido</b> y lo enviás por WhatsApp. Te confirmamos al toque.</span></li>
+            </ul>
+            <a class="btn btn-wpp" href="${waLink('')}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+        </div>`;
+}
+
+/* ---------- Toast ---------- */
+function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.classList.remove('show'), 1700);
+}
+
+/* =====================================================================
+   Eventos
+   ===================================================================== */
+function vaciarCarrito() {
+    cart.clear(); guardarCarrito(); actualizarBarra();
+    document.querySelectorAll('[data-ctl]').forEach(c => c.innerHTML = ctlHTML(c.dataset.ctl));
+}
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-act]');
+    if (!el) return;
+    const id = el.dataset.id;
+    switch (el.dataset.act) {
+        case 'add': addQty(id, 1); break;
+        case 'inc': addQty(id, 1); break;
+        case 'dec': addQty(id, -1); break;
+        case 'open': abrirProducto(id); break;
+        case 'chip':
+            if (['t', 'f', 'm'].includes(el.dataset.k)) { view[el.dataset.k] = el.dataset.v; render(); }
+            break;
+        case 'cart': openSheet('carrito'); break;
+        case 'info': openSheet('info'); break;
+        case 'close': closeSheet(); break;
+        case 'back': goBack(); break;
+        case 'clear': $('#q').value = ''; onBuscar(); $('#q').focus(); break;
+        case 'retry': cargar(); break;
+        case 'ps-inc': psQty++; renderProducto(); break;
+        case 'ps-dec': psQty = Math.max(1, psQty - 1); renderProducto(); break;
+        case 'ps-add': {
+            const antes = cart.get(psId) || 0;
+            setQty(psId, antes + psQty);
+            if (antes) toast('Sumado: ' + byId[psId].titulo);
+            closeSheet(); break;
+        }
+        case 'seg':
+            cliente[el.dataset.k] = el.dataset.v; guardarCliente(); renderCarrito(); break;
+        case 'vaciar':
+            if (confirm('¿Vaciar el pedido?')) { vaciarCarrito(); renderCarrito(); }
+            break;
+        case 'send': enviar(); break;
+        case 'reabrir': if (enviadoUrl) window.open(enviadoUrl, '_blank'); break;
+        case 'volver': enviadoUrl = null; renderCarrito(); break;
+        case 'nuevo': vaciarCarrito(); closeSheet(); toast('¡Gracias por tu pedido! 🍷'); break;
+    }
+});
+document.addEventListener('input', (e) => {
+    const k = e.target.dataset && e.target.dataset.k;
+    if (k && k in cliente) { cliente[k] = e.target.value; e.target.classList.remove('err'); guardarCliente(); }
+});
+document.addEventListener('change', (e) => {
+    if (e.target.id === 'orden') { view.orden = e.target.value; render(); }
+});
+// Si una foto no carga: el recorte pasa a la foto original, y si tampoco está, el ícono de su categoría
+document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img.tagName !== 'IMG') return;
+    if (img.dataset.orig) {
+        const orig = img.dataset.orig;
+        delete img.dataset.orig; img.classList.remove('rc'); img.src = orig; return;
+    }
+    if (img.dataset.tile) {
+        const t = img.closest('.tile'); if (t) t.classList.remove('foto');
+        const e = document.createElement('span'); e.className = 'tile-emoji'; e.textContent = img.dataset.tile; img.replaceWith(e); return;
+    }
+    if (img.dataset.quitar) {        // botellas de las tarjetas y de los combos: se saca la que falta
+        const caja = img.parentElement; img.remove();
+        if (caja && caja.dataset.emoji && !caja.querySelector('img')) {
+            const s = document.createElement('span'); s.className = 'tile-emoji'; s.textContent = caja.dataset.emoji; caja.appendChild(s);
+        }
+        return;
+    }
+    if (img.dataset.ph) { const s = document.createElement('span'); s.className = 'ph'; s.textContent = img.dataset.ph; img.replaceWith(s); }
+}, true);
+
+let tBuscar;
+function onBuscar() {
+    const v = $('#q').value;
+    $('#sbox').classList.toggle('has', !!v);
+    clearTimeout(tBuscar);
+    tBuscar = setTimeout(() => {
+        const antes = view.q;
+        view.q = v.trim();
+        if (view.q || antes) { render(); if (view.q && !antes) window.scrollTo(0, 0); }
+    }, 140);
+}
+$('#q').addEventListener('input', onBuscar);
+$('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.blur(); });
+window.addEventListener('hashchange', route);
+window.addEventListener('scroll', () => $('#topbar').classList.toggle('scrolled', window.scrollY > 120), { passive: true });
+
+/* =====================================================================
+   Arranque
+   ===================================================================== */
+function pintarEncabezado() {
+    const tema = new URLSearchParams(location.search).get('tema') || CONFIG.TEMA;
+    if (/^clar/i.test(tema)) document.documentElement.dataset.tema = 'claro';   // acepta ?tema=claro o ?tema=clara
+    $('#h-nombre').textContent = CONFIG.NOMBRE.toUpperCase();
+    $('#h-sub').textContent = CONFIG.SUBTITULO;
+    $('#h-pills').innerHTML = CONFIG.PILLS.map(t => `<span class="hpill">${esc(t)}</span>`).join('');
+    $('#anuncio').textContent = CONFIG.ANUNCIO;
+    $('#anuncio').style.display = CONFIG.ANUNCIO ? '' : 'none';
+    $('#pie').innerHTML = `${esc(CONFIG.NOMBRE)} · ${esc(CONFIG.SUBTITULO)}<br>Pedidos por <a href="${waLink('')}" target="_blank" rel="noopener" style="text-decoration:underline">WhatsApp</a> · Coordinamos la entrega por WhatsApp<br>© ${new Date().getFullYear()} ${esc(CONFIG.NOMBRE)} · Botillería`;
+}
+function skeleton() {
+    $('#main').innerHTML = `<section class="sec"><div class="sec-h"><h2>Categorías</h2></div>
+        <div class="tiles">${'<div class="tile sk"></div>'.repeat(6)}</div></section>`;
+}
+async function cargar() {
+    skeleton();
+    try {
+        // Las listas de fotos se piden junto con los productos (si no llegan, se usan las fotos originales)
+        const pedirJson = (url) => fetch(url + '?v=' + Math.floor(Date.now() / 6e5)).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+        const [res, rc, auto] = await Promise.all([
+            fetch(CONFIG.API_URL + '&t=' + Date.now()),
+            pedirJson(CONFIG.RECORTES),
+            pedirJson(CONFIG.FOTOS_AUTO),
+        ]);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        recortes = rc || {};
+        fotosAuto = auto || {};
+        construir(await res.json());
+        cargarCarrito();
+        actualizarBarra();
+        route();
+    } catch (err) {
+        console.error(err);
+        $('#main').innerHTML = `<div class="vacio">No pudimos cargar los productos.<br><button class="btn" style="max-width:220px;margin-top:14px" data-act="retry">Reintentar</button></div>`;
+    }
+}
+pintarEncabezado();
+cargar();
 </script>
 </body>
 </html>
